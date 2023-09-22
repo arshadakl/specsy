@@ -2,17 +2,19 @@ const express = require('express')
 const router = express()
 const bodyParser = require("body-parser")
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended:true}))
-app.set('view engine', 'hbs');
-app.set('views','../views')
+
+router.use(bodyParser.json())
+router.use(bodyParser.urlencoded({extended:true}))
+
+router.set('view engine', 'ejs');
+router.set('views','./views')
 
 const userController = require("../controllers/userController")
 
-app.get('/signup',(req,res)=>{
-    res.render('signup')
-})
 
-app.post("/signup",userController.inserUser)
+router.get('/home',userController.homePageLoad)
+router.get('/signup',userController.loadSignup)
+router.post("/signup",userController.inserUser)
+router.get('/login',userController.loginPageLoad)
 
-module.exports = app
+module.exports = router
