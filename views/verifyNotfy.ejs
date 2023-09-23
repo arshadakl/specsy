@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification Form</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Include Bootstrap JS and Popper.js (for Bootstrap's JavaScript functionality) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" >
+
+    <!-- Your custom CSS -->
+    <link rel="stylesheet" href="user/css/otp.css">
+    
+</head>
+<body class="container-fluid h-100 bg-body-tertiary  d-block">
+    <div class="row justify-content-center align-items-center d-flex otp-box">
+        <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">
+          <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
+            <div class="card-body p-5 text-center shadow text-center">
+              <i class="fa-solid fa-badge-check" style="color: #0dd95b;"></i>
+              
+              
+
+              <% if(wrong==1){%>
+                <h1><i class="fa-regular fa-circle-xmark" style="color: #e81717;"></i></h1>
+              <h4 class="font-monospace text-danger">The OTP has expired</h4>
+              <p class="font-monospace  text-center">OTPs are typically valid for a short period, and you might need to request a new one.</p>
+              <a href="/reotp?id=<%- userId %>" class="btn btn-dark">request again</a>
+              
+              <% }else{ %>
+                <h1><i class="fa-regular fa-circle-check" style="color: #6be109;"></i></h1>
+              <h4 class="font-monospace text-success">Verification Successful</h4>
+              <p class="font-monospace  text-center">Your account has been successfully verified. You can now access all the features and services associated with your account.</p>
+              <a href="/" class="btn btn-outline-dark">Home page</a>
+              <% } %>  
+                
+
+
+            
+            
+          </div>
+        </div>
+      </div>
+  
+  </body>
+</html>

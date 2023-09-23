@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification Form</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Include Bootstrap JS and Popper.js (for Bootstrap's JavaScript functionality) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-pzjw2f5M3h8HtAq9OjllFpWyb+st9R6lCvq/rVm2p+pOA+M/zDd5PpaT+pDK9Usl" crossorigin="anonymous">
+
+    <!-- Your custom CSS -->
+    <link rel="stylesheet" href="/user/css/otp.css">
+    
+</head>
+<body class="container-fluid h-100 bg-body-tertiary  d-block">
+    <div class="row justify-content-center align-items-center d-flex otp-box">
+        <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">
+          <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
+            <div class="card-body p-5 text-center shadow">
+              <h4>Verify</h4>
+              <p>Your code was sent to you via email</p>
+            <form action="/otp?id=<%- userId %>" method="post">
+              <div class="otp-field mb-4">
+                <input name="a" type="number" />
+                <input name="b" type="number" disabled />
+                <input name="c" type="number" disabled />
+                <input name="d"type="number" disabled />
+                <input name="e" type="number" disabled />
+                <input name="f"type="number" disabled />
+              </div>
+  
+              <button type="submit" class="btn btn-primary mb-3">
+                Verify
+              </button>
+            </form>
+            <p>Time left: <span class="text-danger" id="timer">02:00</span></p>
+              <p class="resend text-muted mb-0">
+                Didn't receive code? <a href="">Request again</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <script src="/user/main.js"></script>
+  </body>
+</html>
