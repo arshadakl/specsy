@@ -18,6 +18,7 @@ const generateOTP=(length = 6)=> {
 		return a + Math.floor(Math.random() * 10);
 	}, "");
 }
+
 // send mail
 const sentVerifyMail = async(name,email,userId)=>{
     try {
@@ -69,12 +70,12 @@ const sentVerifyMail = async(name,email,userId)=>{
 
 const homePageLoad = async(req,res)=>{
     try {
-        if(req.session.user){
-            console.log(req.session.user.userName);
-        }else{
-            console.log("no user...");
-        }
-        res.render('home',{user:req.session.user})
+        // if(req.session.user_id){
+        //     console.log(req.session.user.userName);
+        // }else{
+        //     console.log("no user...");
+        // }
+        res.render('home',{user:req.session.user_id})
         
     } catch (error) {
         console.log(error.message);
@@ -83,7 +84,7 @@ const homePageLoad = async(req,res)=>{
 
 const loadSignup = async(req,res)=>{
     try {
-        res.render("signup")
+        res.render("signup",{user:false})
     } catch (error) {
         res.send(error.message)
     }
@@ -104,11 +105,11 @@ const loadSignup = async(req,res)=>{
 
 const loginPageLoad = async (req, res) => {
     try {
-        let user = req.session.user;
-        user ? res.redirect('/') :
-        req.session.loginErr ? console.log("login error und") : null;
+        // let user = req.session.user_id;
+        // user ? res.redirect('/') :
+        // req.session.loginErr ? console.log("login error und") : null;
 
-        res.render('login', {loginErr: req.session.loginErr}, (err, html) => {
+        res.render('login', {loginErr: req.session.loginErr,user:false}, (err, html) => {
             if (!err) {
                 req.session.loginErr = false; // Set loginErr to false after rendering
                 res.send(html); // Send the rendered HTML to the client
@@ -131,7 +132,7 @@ const doLogin = async(req,res)=>{
                 if(status){
                     console.log("login success");
                     req.session.loggedIn = true;
-                    req.session.user=user
+                    req.session.user_id=user._id
                     res.redirect('/')
                     
                 }else{
@@ -152,7 +153,7 @@ const doLogin = async(req,res)=>{
 
 const doLogout = async(req,res)=>{
     try {
-        req.session.user=null
+        req.session.user_id=null
         res.redirect('/')
     } catch (error) {
         console.log(error.message);
@@ -161,14 +162,16 @@ const doLogout = async(req,res)=>{
 
 const inserUser = async(req,res)=>{
     try {
-        
+        let currentDate = new Date();
         let SecurePassword = await passwordEncrypt(req.body.password)
         const user = new User({
             userName:req.body.userName,
             fullName:req.body.fullName,
             email:req.body.email,
             password:SecurePassword,
-            verified:0
+            verified:0,
+            accountOpenAt:currentDate.toLocaleString(),
+            block:0
 
         })
         const result = await user.save()
@@ -181,7 +184,7 @@ const inserUser = async(req,res)=>{
 
 const productPageLoad = async(req,res)=>{
     try {
-        res.render('product')
+        res.render('product',{user:req.session.user_id})
     } catch (error) {
         console.log(error.message);
     }
@@ -228,7 +231,10 @@ const otpValid = async(req,res)=>{
 
 const profilePageLoad = async(req,res)=>{
     try {
-        res.render('userProfile',{user:req.session.user})
+        const userIpAddress = req.ip || req.connection.remoteAddress;
+        console.log(userIpAddress);
+        userData = await takeUserData(req.session.user_id)
+        res.render('userProfile',{user:userData})
     } catch (error) {
         console.log(error.message);
     }
@@ -252,6 +258,38 @@ const takeUserData = async(userId)=>{
         console.log(error.message);
     }
 }
+const updatePhoto = async(req,res)=>{
+    try {
+        let updatePhoto = await User.updateOne({_id:req.session.user_id},{$set:{image:req.file.filename}})
+        console.log(updatePhoto);
+        userData = await takeUserData(req.session.user_id);
+        res.render('userProfile', { user:userData });
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const updateUserData = async (req, res) => {
+    try {
+        let userData = req.body;
+        console.log(userData);
+        console.log(req.session.user_id);
+        let updateUser = await User.updateOne({_id:req.session.user_id},{$set:{
+                    userName: userData.userName,
+                    fullName: userData.fullName,
+                    email: userData.email,
+                    "address.shippingAddress": userData.shippingAddress,
+                    "address.state": userData.state,
+                    "address.pincode": userData.pincode
+        }})
+        console.log(updateUser);
+        userData = await takeUserData(req.session.user_id);
+        res.render('userProfile', { user:userData });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 
 module.exports={
     inserUser,
@@ -265,5 +303,7 @@ module.exports={
     doLogout,
     profilePageLoad,
     verifyPageLoad,
-    reVerifyUser
+    reVerifyUser,
+    updateUserData,
+    updatePhoto
 }

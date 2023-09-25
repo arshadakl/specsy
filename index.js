@@ -7,16 +7,21 @@ const path = require('path')
 const cookieParser = require('cookie-parser');
 const session = require("express-session")
 const nocache = require('nocache')
+const config = require('./config/config')
 
 app.use(express.static(path.join(__dirname, "public")));
 const userRouter = require('./routes/userRouter')
+const adminRouter = require('./routes/adminRouter')
+
 app.use(cookieParser());
-app.use(session({secret:"key",cookie:{maxAge:86400000}}))
+app.use(session({secret:config.sessionKey,cookie:{maxAge:86400000}}))
 app.use(nocache());
+// app.set('trust proxy', 'loopback');
 
 
 
 app.use('/',userRouter)
+app.use('/admin',adminRouter)
 
 
 app.listen(3000,()=>{

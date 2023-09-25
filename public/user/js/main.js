@@ -785,3 +785,61 @@ $(document).ready(function () {
 setTimeout(function() {
     document.getElementById('myAlert').style.display = 'none';
 }, 5000);
+
+
+
+
+// user profile 
+
+ 
+  // JavaScript to update the image preview when a file is selected
+//   document.getElementById('imageUpload').addEventListener('change', function () {
+//     var input = this;
+//     var imagePreview = document.getElementById('imagePreview');
+
+//     if (input.files && input.files[0]) {
+//       var reader = new FileReader();
+
+//       reader.onload = function (e) {
+//         imagePreview.src = e.target.result;
+//       };
+
+//       reader.readAsDataURL(input.files[0]);
+//     } else {
+//       imagePreview.src = '../images/dummy-profile.jpg'; // Set the dummy image if no image is selected
+//     }
+//   });
+
+document.getElementById('imageUpload').addEventListener('change', function () {
+    var input = this;
+    var imagePreview = document.getElementById('imagePreview');
+    var updateAvatarButton = document.getElementById('updateAvatarButton');
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(input.files[0]);
+
+        // Enable the "Update Profile Avatar" button when an image is selected
+        updateAvatarButton.disabled = false;
+    } else {
+        imagePreview.src = '../images/dummy-profile.jpg'; // Set the dummy image if no image is selected
+
+        // Disable the "Update Profile Avatar" button when no image is selected
+        updateAvatarButton.disabled = true;
+    }
+});
+
+// Add an event listener to the "Update Profile Avatar" button if needed
+document.getElementById('updateAvatarButton').addEventListener('click', function () {
+    // Perform the avatar update action here
+    // You can submit the form or trigger an API request to update the avatar
+});
+
+
+
+
