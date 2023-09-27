@@ -3,7 +3,7 @@ const router = express()
 const bodyParser = require("body-parser")
 const multer = require('multer')
 const path = require('path')
-const auth = require("../middleware/auth")
+const auth = require("../middleware/user")
 
 
 router.use(bodyParser.json())
