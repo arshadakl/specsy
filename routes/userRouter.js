@@ -14,6 +14,7 @@ router.set('view engine', 'ejs');
 router.set('views','./views/user/')
 
 const userController = require("../controllers/userController")
+const productController = require('../controllers/productsController')
 
 const storage = multer.diskStorage({
     destination:function(req,file,callbacks){
@@ -37,10 +38,10 @@ router.get('/login',auth.isLogout,userController.loginPageLoad)
 router.post('/login',auth.isLogout,userController.doLogin)
 router.get('/logout',userController.doLogout)
 
-router.get('/product',userController.productPageLoad)
 
 router.get('/otp',userController.optPageLoad)
 router.post('/otp',userController.otpValid)
+router.get('/expire',userController.otpValid)
 
 router.get('/reotp',userController.reVerifyUser)
 router.get('/verifypage',userController.verifyPageLoad)
@@ -49,6 +50,9 @@ router.get('/verifypage',userController.verifyPageLoad)
 router.get('/profile',auth.isLogin,userController.profilePageLoad)
 router.post('/updateUser',auth.isLogin,userController.updateUserData)
 router.post('/updatePhoto',auth.isLogin,upload.single("image"),userController.updatePhoto)
+
+
+router.get('/product',productController.singleProductLoad)
 
 
 

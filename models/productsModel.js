@@ -45,5 +45,29 @@ const productSchema = mongoose.Schema({
     }
 })
 
+const categorySchema = mongoose.Schema({
+    category_name:{
+        type:String,
+        require:true
+    },
+    createdAt:{
+        type:String,
+        require:true
+    },
+    icon:{
+        type:String,
+        require:true
+    },
+    block:{
+        type:String,
+        require:true
+    }
+})
+
+const category = mongoose.model('category',categorySchema)
+
 const product = mongoose.model("product",productSchema)
-module.exports = product
+module.exports = {
+    product,
+    category
+}

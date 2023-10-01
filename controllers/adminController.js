@@ -1,6 +1,7 @@
 const UserDB = require('../models/userModel')
 const AdminDB = require('../models/adminModel')
-const ProductDB = require('../models/productsModel')
+const ProductDB = require('../models/productsModel').product
+const CategoryDB = require('../models/productsModel').category
 const bcrypt = require('bcrypt')
 
 const adminPageLoad = async(req,res)=>{
@@ -106,7 +107,7 @@ const searchUsersByKey = async(key)=>{
 const productSearchByKey = async(key)=>{
     try {
         console.log("search api called...");
-        console.log(key);
+        // console.log(key);
         let products = await ProductDB.find({
             "$or": [
               { product_name: { $regex: key, $options: 'i' } },
@@ -114,7 +115,7 @@ const productSearchByKey = async(key)=>{
             ]
           })
           
-        console.log(products);
+        // console.log(products);
         return products
     } catch (error) {
         console.log(error.message);
@@ -131,13 +132,43 @@ const searchUsers = async(req,res)=>{
     }
 }
 
-const loginPageLoad = async(req,res)=>{
+// const loginPageLoad = async (req, res) => {
+//     try {
+//         res.render('login', {
+//             adminloginErr: req.session.adminloginErr
+//         });
+
+//         // Set req.session.adminloginErr to 0 after rendering the page
+//         req.session.adminloginErr = 0;
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// }
+
+
+const loginPageLoad = async (req, res) => {
     try {
-        res.render('login')
+      res.render(
+        "login",
+        {
+          adminloginErr: req.session.adminloginErr
+        },
+        (err, html) => {
+          if (!err) {
+            // Set adminloginErr to false after rendering
+            req.session.adminloginErr = false;
+  
+            res.send(html); // Send the rendered HTML to the client
+          } else {
+            console.log(err.message);
+          }
+        }
+      );
     } catch (error) {
-        console.log(error.message);
+      console.log(error.message);
     }
-}
+  };
+  
 
 // const insertAdmin = async(req,res)=>{
 //     try {
@@ -210,7 +241,8 @@ const productPageLoad = async(req,res)=>{
 
 const addproductPageLoad = async(req,res)=>{
     try {
-        res.render('addProduct')
+        let categories = await CategoryDB.find({})
+        res.render('addProduct',{categories:categories})
     } catch (error) {
         console.log(error.message);
     }
@@ -220,10 +252,7 @@ const addProduct = async(req,res)=>{
     try {
        let details = req.body
        const files = await req.files;
-    // let image = req.body.images
-    // Handle the uploaded files as needed
-    // You can access each file's properties like file.filename, file.originalname, etc.
-    // console.log(files.image1[0].filename);
+       console.log(files);
        console.log(files.image1[0].filename,files.image2[0].filename,files.image3[0].filename,files.image4[0].filename);
        let product = new ProductDB({
           product_name:details.product_name,
@@ -251,8 +280,8 @@ const productEditPageLoad = async(req,res)=>{
     try {
         
         let product = await getProductDetails(req.query.id)
-        
-        res.render('editProduct',{product:product})
+        let categories = await CategoryDB.find({})
+        res.render('editProduct',{product:product,categories:categories})
     } catch (error) {
         console.log(error.message);
     }
@@ -269,6 +298,133 @@ const searchproduct = async(req,res)=>{
     }
 }
 
+
+
+const updateProduct = async (req, res) => {
+    try {
+      let details = req.body;
+      let imagesFiles = req.files;
+      let currentData = await getProductDetails(req.query.id);
+  
+      let img1, img2, img3, img4;
+  
+      img1 = imagesFiles.image1 ? imagesFiles.image1[0].filename : currentData.images.image1;
+      img2 = imagesFiles.image2 ? imagesFiles.image2[0].filename : currentData.images.image2;
+      img3 = imagesFiles.image3 ? imagesFiles.image3[0].filename : currentData.images.image3;
+      img4 = imagesFiles.image4 ? imagesFiles.image4[0].filename : currentData.images.image4;
+  
+      let update = await ProductDB.updateOne(
+        { _id: req.query.id }, 
+        {
+          $set: {
+            product_name: details.product_name,
+            price: details.price,
+            frame_shape: details.frame_shape,
+            gender: details.gender,
+            description: details.description,
+            stock: details.stock,
+            "images.image1": img1,
+            "images.image2": img2,
+            "images.image3": img3,
+            "images.image4": img4
+          }
+        }
+      );
+  
+      console.log(update);
+  
+      res.redirect('/admin/products');
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  
+  const deleteproduct = async(req,res)=>{
+    try {
+        console.log(req.query.id);
+        let removeProduct = await ProductDB.deleteOne({_id:req.query.id})
+        console.log(removeProduct);
+        res.redirect('/admin/products')
+    } catch (error) {
+        console.log(error.message);
+    }
+  }
+
+const categoryPageLoad = async(req,res)=>{
+    try {
+        let categories = await CategoryDB.find({})
+        // console.log(categories);
+        res.render('category',{categories:categories})
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const addCategory = async(req,res)=>{
+    try {
+        console.log(req.body);
+        let currentDate = new Date();
+        let img = await req.file.filename
+        console.log(img);
+        let category = new CategoryDB({
+            category_name:req.body.category_name,
+            icon:img,
+            createdAt:currentDate.toLocaleString(),
+            block:0
+        })
+
+        let result = await category.save()
+        console.log(result);
+        res.redirect('/admin/category')
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const deleteCategory = async(req,res)=>{
+    try {
+        let deleteItem = await CategoryDB.deleteOne({_id:req.query.id})
+        console.log(deleteItem);
+        res.redirect('/admin/category')
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const searchCategory = async(req,res)=>{
+    try {
+        let categories = await CategoryDB.find({category_name:{$regex:req.query.key, $options: 'i'}})
+        console.log(categories);
+        res.render('category',{categories:categories})
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const categoryBlock = async(req,res)=>{
+    try {
+        // console.log("back end called........");
+        let blockStatus = await CategoryDB.findOne({_id:req.body.id})
+        console.log(blockStatus.block);
+
+        if(blockStatus.block==0){
+            let block = await CategoryDB.updateOne({_id:req.body.id},{$set:{block:1}})
+        }else{
+            let block = await CategoryDB.updateOne({_id:req.body.id},{$set:{block:0}})
+        }
+        
+        let categories = await CategoryDB.find({})
+        res.json({ categories:categories });
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+
 module.exports={
     adminPageLoad,
     userBlock,
@@ -282,5 +438,12 @@ module.exports={
     addproductPageLoad,
     addProduct,
     productEditPageLoad,
-    searchproduct
+    searchproduct,
+    updateProduct,
+    deleteproduct,
+    categoryPageLoad,
+    addCategory,
+    deleteCategory,
+    searchCategory,
+    categoryBlock
 }

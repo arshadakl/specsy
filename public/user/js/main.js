@@ -786,8 +786,13 @@ setTimeout(function() {
     document.getElementById('myAlert').style.display = 'none';
 }, 5000);
 
+setTimeout(function() {
+    document.getElementById('myAlert1').style.display = 'none';
+}, 500000);
 
-
+setTimeout(function() {
+    document.getElementById('myAlert2').style.display = 'none';
+}, 5000);
 
 // user profile 
 
@@ -810,6 +815,66 @@ setTimeout(function() {
 //     }
 //   });
 
+// document.getElementById('imageUpload').addEventListener('change', function () {
+//     var input = this;
+//     var imagePreview = document.getElementById('imagePreview');
+//     var updateAvatarButton = document.getElementById('updateAvatarButton');
+
+//     if (input.files && input.files[0]) {
+//         var reader = new FileReader();
+
+//         reader.onload = function (e) {
+//             imagePreview.src = e.target.result;
+//         };
+
+//         reader.readAsDataURL(input.files[0]);
+
+//         // Enable the "Update Profile Avatar" button when an image is selected
+//         updateAvatarButton.disabled = false;
+//     } else {
+//         imagePreview.src = '../images/dummy-profile.jpg'; // Set the dummy image if no image is selected
+
+//         // Disable the "Update Profile Avatar" button when no image is selected
+//         updateAvatarButton.disabled = true;
+//     }
+// });
+
+// // Add an event listener to the "Update Profile Avatar" button if needed
+// document.getElementById('updateAvatarButton').addEventListener('click', function () {
+//     // Perform the avatar update action here
+//     // You can submit the form or trigger an API request to update the avatar
+// });
+
+
+// document.getElementById('imageUpload').addEventListener('change', function () {
+//     var input = this;
+//     var imagePreview = document.getElementById('imagePreview');
+//     var updateAvatarButton = document.getElementById('updateAvatarButton');
+//     console.log("called....");
+
+//     if (input.files && input.files[0]) {
+//         var reader = new FileReader();
+
+//         reader.onload = function (e) {
+//             console.log("Image preview loaded.");
+//             imagePreview.src = e.target.result;
+//         };
+
+//         reader.readAsDataURL(input.files[0]);
+
+//         // Enable the "Update Profile Avatar" button when an image is selected
+//         updateAvatarButton.disabled = false;
+//     } else {
+//         console.log("No file selected.");
+//         imagePreview.src = 'user/images/dummy-profile.jpg'; // Correct the path to the dummy image
+
+//         // Disable the "Update Profile Avatar" button when no image is selected
+//         updateAvatarButton.disabled = true;
+//     }
+// });
+
+
+
 document.getElementById('imageUpload').addEventListener('change', function () {
     var input = this;
     var imagePreview = document.getElementById('imagePreview');
@@ -827,19 +892,10 @@ document.getElementById('imageUpload').addEventListener('change', function () {
         // Enable the "Update Profile Avatar" button when an image is selected
         updateAvatarButton.disabled = false;
     } else {
-        imagePreview.src = '../images/dummy-profile.jpg'; // Set the dummy image if no image is selected
-
-        // Disable the "Update Profile Avatar" button when no image is selected
+        // Clear the image preview and disable the button when no image is selected
+        imagePreview.src = 'user/images/dummy-profile.jpg'; // Correct the path to the dummy image
         updateAvatarButton.disabled = true;
     }
 });
-
-// Add an event listener to the "Update Profile Avatar" button if needed
-document.getElementById('updateAvatarButton').addEventListener('click', function () {
-    // Perform the avatar update action here
-    // You can submit the form or trigger an API request to update the avatar
-});
-
-
 
 

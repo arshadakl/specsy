@@ -62,7 +62,7 @@
                                                 <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
                                                 <label class="image-label">
                                                     <div class="rounded-image-preview">
-                                                        <img id="imagePreview" <% if(user.image){%>
+                                                        <img  <% if(user.image){%>
                                                         src="user/images/userImages/<%= user.image %>"
                                                             <%}else{%>
                                                                 src="user/images/dummy-profile-pr.jpg"
@@ -177,16 +177,16 @@
                                     <div class="tab-pane fade" id="tab-account" role="tabpanel"
                                         aria-labelledby="tab-account-link">
 
-                                        <form action="/updatePhoto" method="post" enctype="multipart/form-data">
+                                        <!-- <form action="/updatePhoto" method="post" enctype="multipart/form-data"> -->
 
                                             <!-- user profile  -->
-                                            <div class="form-group">
+                                            <!-- <div class="form-group"> -->
                                                 <!-- Hidden file input -->
-                                                <input type="file" class="form-control-file" name="image"
-                                                    id="imageUpload" accept="image/*" style="display: none;">
+                                                <!-- <input type="file" class="form-control-file" name="image"
+                                                    id="imageUpload" accept="image/*" style="display: none;"> -->
 
                                                 <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
-                                                <label for="imageUpload" class="image-label">
+                                                <!-- <label for="imageUpload" class="image-label">
                                                     <div class="rounded-image-preview">
                                                         <img id="imagePreview" <% if(user.image){%>
                                                         src="user/images/userImages/<%= user.image %>"
@@ -201,10 +201,33 @@
                                                             Avatar</button>
 
                                                     </div>
-                                                </label>
+                                                </label> -->
 
+                                            <!-- </div> -->
+                                        <!-- </form> -->
+                                        <form action="/updatePhoto" method="post" enctype="multipart/form-data">
+                                            <!-- user profile -->
+                                            <div class="form-group">
+                                                <!-- Hidden file input -->
+                                                <input type="file" class="form-control-file" name="image" id="imageUpload" accept="image/*" style="display: none;">
+                                        
+                                                <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
+                                                <label for="imageUpload" class="image-label">
+                                                    <div class="rounded-image-preview">
+                                                        <img id="imagePreview" <% if (user.image) { %>
+                                                            src="user/images/userImages/<%= user.image %>"
+                                                        <% } else { %>
+                                                            src="user/images/dummy-profile.jpg"
+                                                        <% } %>
+                                                        alt="Preview" />
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit" id="updateAvatarButton" class="btn btn-outline-dark" disabled>click to update Avatar</button>
+                                                    </div>
+                                                </label>
                                             </div>
                                         </form>
+                                        
                                         <form action="/updateUser" method="post">
 
                                             <!-- profile end -->
@@ -274,4 +297,5 @@
                 </div><!-- End .dashboard -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
+       
         <%- include('../user/layouts/footer.ejs') %>

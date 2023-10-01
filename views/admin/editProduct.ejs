@@ -31,12 +31,15 @@
                     <div class="col-sm-12">
                       <label class="col-sm-3 col-form-label">Frame Shap</label>
                       <select name="frame_shape"  class="form-control text-light" required>
-                        <option value="" disabled selected>Select Category</option>
-                        <option>Round</option>
-                        <option>Rectangle</option>
-                        <option>Square</option>
-                        <option>Wayfarer</option>
-                        <option>Cat Eye</option>
+                        <!-- <option value="<%= product.frame_shape %>" selected><%= product.frame_shape %></option> -->
+                        <!-- <option <% if(product.frame_shape=="Round"){%>selected<%}%> >Round</option> -->
+                        <% for(i in categories){%>
+                          <option <% if(product.frame_shape==categories[i].category_name ){%>selected<%}%>
+                            <% if(categories[i].block==1) {%>
+                              disabled
+                            <%}%>
+                              ><%= categories[i].category_name %></option>
+                        <%}%>
                       </select>
                     </div>
                   </div>
@@ -46,10 +49,9 @@
                     <div class="col-sm-12">
                       <label class="col-sm-3 col-form-label">Gender</label>
                       <select name="gender" class="form-control text-light" required>
-                        <option value="" disabled selected>Select Gender</option>
-                        <option>Male</option>
-                        <option>Women</option>
-                        <option>Unisex</option>
+                        <option  <% if(product.gender=="male"){%>selected<%}%> >Male</option>
+                        <option <% if(product.gender=="Women"){%>selected<%}%> >Women</option>
+                        <option <% if(product.gender=="Unisex"){%>selected<%}%> >Unisex</option>
                       </select>
                     </div>
                   </div>
@@ -85,7 +87,7 @@
                             src="/products/images/<%= product.images.image1 %>"
                             alt="Preview" />
                         </div>
-                        <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput" required>
+                        <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput" >
                       </label>
                     </div>
 
@@ -96,7 +98,7 @@
                             src="/products/images/<%= product.images.image2 %>"
                             alt="Preview" />
                         </div>
-                        <input name="image2" type="file" accept="image/*" id="imageInput2" class="imageInput" required>
+                        <input name="image2" type="file" accept="image/*" id="imageInput2" class="imageInput" >
                       </label>
                     </div>
 
@@ -107,7 +109,7 @@
                             src="/products/images/<%= product.images.image3 %>"
                             alt="Preview" />
                         </div>
-                        <input name="image3" type="file" accept="image/*" id="imageInput3" class="imageInput" required>
+                        <input name="image3" type="file" accept="image/*" id="imageInput3" class="imageInput" >
                       </label>
                     </div>
 
@@ -118,7 +120,7 @@
                             src="/products/images/<%= product.images.image4 %>"
                             alt="Preview" />
                         </div>
-                        <input name="image4" type="file" accept="image/*" id="imageInput4" class="imageInput" required>
+                        <input name="image4" type="file" accept="image/*" id="imageInput4" class="imageInput" >
                       </label>
                     </div>
 
@@ -130,7 +132,7 @@
                 </div>
 
 
-                <button type="submit" class="btn btn-lg btn-primary mr-2 mt-5">Edit product</button>
+                <button type="submit" class="btn btn-lg btn-primary mr-2 mt-5">Update product</button>
             </form>
           </div>
         </div>

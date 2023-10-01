@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Corona Admin</title>
-    <!-- plugins:css -->
-    <link rel="stylesheet" href="/admin/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="/admin/vendors/css/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
-    <link rel="stylesheet" href="/admin/css/style.css">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="/admin/images/favicon.png" />
-  </head>
-  <body>
 
-<div class="container-scroller">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Admin Login</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/admin/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/admin/vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <!-- endinject -->
+
+  <!-- Layout styles -->
+  <link rel="stylesheet" href="/admin/css/style.css">
+  <!-- End layout styles -->
+  <link rel="shortcut icon" href="/admin/images/favicon.ico" />
+    
+</head>
+
+<body>
+
+  <div class="container-scroller">
     <div class="container-fluid page-body-wrapper full-page-wrapper">
       <div class="row w-100 m-0">
         <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
@@ -51,4 +56,20 @@
     </div>
     <!-- page-body-wrapper ends -->
   </div>
-<%- include('../admin/layouts/footer.ejs') %>
+  <% if(adminloginErr===1){ %>
+    <div id="myAlert" data-aos="fade-down"
+      class="alert alert-secondary alert-dismissible fade show fs-6 fixed-top alt text-center text-danger" role="alert">
+      <strong>Uh-oh!</strong> invalid User-Name or Password.
+
+      <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+      <% }%>
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+          AOS.init();
+          setTimeout(function () {
+            document.getElementById('myAlert').style.display = 'none';
+          }, 5000);
+
+        </script>
+
+        <%- include('../admin/layouts/footer.ejs') %>

@@ -32,11 +32,9 @@
                       <label class="col-sm-3 col-form-label">Frame Shap</label>
                       <select name="frame_shape" class="form-control text-light" required>
                         <option value="" disabled selected>Select Category</option>
-                        <option>Round</option>
-                        <option>Rectangle</option>
-                        <option>Square</option>
-                        <option>Wayfarer</option>
-                        <option>Cat Eye</option>
+                        <% for(i in categories){%>
+                          <option <% if(categories[i].block==1){ %>disabled<%}%> ><%= categories[i].category_name %></option>
+                        <%}%>
                       </select>
                     </div>
                   </div>

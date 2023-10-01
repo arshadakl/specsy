@@ -32,7 +32,11 @@
               <h4 class="font-monospace text-danger">The OTP has expired</h4>
               <p class="font-monospace  text-center">OTPs are typically valid for a short period, and you might need to request a new one.</p>
               <a href="/reotp?id=<%- userId %>" class="btn btn-dark">request again</a>
-              
+              <%}else if(wrong==2){%>
+                <h1><i class="fa-regular fa-circle-xmark" style="color: #e81717;"></i></h1>
+              <h4 class="font-monospace text-danger">The OTP you entered is incorrect</h4>
+              <p class="font-monospace  text-center">Please request a new OTP to proceed.</p>
+              <a href="/reotp?id=<%- userId %>" class="btn btn-dark">Request again</a>
               <% }else{ %>
                 <h1><i class="fa-regular fa-circle-check" style="color: #6be109;"></i></h1>
               <h4 class="font-monospace text-success">Verification Successful</h4>

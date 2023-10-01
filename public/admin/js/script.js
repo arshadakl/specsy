@@ -8,9 +8,7 @@
         var reader = new FileReader();
 
         reader.onload = function(e) {
-          // Set the src attribute of the image element to the selected image
           imagePreview.src = e.target.result;
-          // Show the image element
           $(imagePreview).show();
         };
 

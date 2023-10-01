@@ -23,7 +23,9 @@
           <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
             <div class="card-body p-5 text-center shadow">
               <h4>Verify</h4>
-              <p>Your code was sent to you via email</p>
+              <p>Your code was sent to you via email <br>Check your email at <b><span id="maskedEmail"></span></b> for the OTP:</p>
+              <p></p>
+
             <form action="/otp?id=<%- userId %>" method="post">
               <div class="otp-field mb-4">
                 <input name="a" type="number" />
@@ -39,14 +41,37 @@
               </button>
             </form>
             <p>Time left: <span class="text-danger" id="timer">02:00</span></p>
-              <p class="resend text-muted mb-0">
+              <!-- <p class="resend text-muted mb-0">
                 Didn't receive code? <a href="">Request again</a>
-              </p>
+              </p> -->
             </div>
           </div>
         </div>
       </div>
-  
+
+      <script>
+        function redirectToPage() {
+        setTimeout(function () {
+          window.location.href = '/expire?userId=<%- userId %>';
+        }, 123000); 
+      }
+      
+      redirectToPage();
+      
+      </script>
+      <script>
+        // Replace 'test@gmail.com' with the actual email address
+        const email = '<%= email %>';
+
+        // Display the masked email in the <span> element
+        const maskedEmail = email.substr(0, 3) + '****' + email.substr(-9);
+        document.getElementById('maskedEmail').textContent = maskedEmail;
+
+        function submitOTP() {
+            const enteredOTP = document.getElementById('otpInput').value;
+            // Validate the OTP and continue with your logic
+        }
+    </script>
       <script src="/user/main.js"></script>
   </body>
 </html>
