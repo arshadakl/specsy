@@ -372,16 +372,63 @@ const otpValid = async (req, res) => {
   }
 };
 
+// const profilePageLoad = async (req, res) => {
+//   try {
+//     userData = await takeUserData(req.session.user_id);
+//     req.session.updatePassErr = 1
+//     req.session.updatePass = 
+//     res.render("userProfile", { 
+//       user: userData ,
+//       updatePassErr:req.session.updatePassErr,
+//       updatePass:req.session.updatePass
+//     },
+//     (err,html)=>{
+//       if(!err){
+//         req.session.updatePassErr = false
+//         req.session.updatePass = false
+//         res.send(html);
+//       }
+//     }
+//     )
+
+
+//     // res.render("userProfile", { user: userData ,});
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+
 const profilePageLoad = async (req, res) => {
   try {
-    // const userIpAddress = req.ip || req.connection.remoteAddress;
-    // console.log(userIpAddress);
-    userData = await takeUserData(req.session.user_id);
-    res.render("userProfile", { user: userData });
+    // Assuming 'takeUserData' is an asynchronous function
+    const userData = await takeUserData(req.session.user_id);
+
+    // Render the "userProfile" view with user data and session variables
+    res.render("userProfile", {
+      user: userData,
+      updatePassErr: req.session.updatePassErr,
+      updatePass: req.session.updatePass,
+    }, (err, html) => {
+      if (!err) {
+        // Reset session variables after rendering
+        req.session.updatePassErr = false;
+        req.session.updatePass = false;
+        res.send(html);
+      } else {
+        console.log(err.message);
+        // Handle rendering error here, if necessary
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
   } catch (error) {
     console.log(error.message);
+    // Handle the error gracefully, e.g., send an error response
+    res.status(500).send("Internal Server Error");
   }
 };
+
+
 
 const verifyPageLoad = async (req, res) => {
   try {
@@ -452,11 +499,14 @@ const changepassword = async(req,res)=>{
         let newSecurePassword = await bcrypt.hash(req.body.newPassword,10)
         let change = await User.updateOne({_id:userDetails._id},{$set:{password:newSecurePassword}})
         console.log(change);
+        req.session.updatePass = 1
         res.redirect('/profile')
         console.log("password changed...");
 
       }else{
         console.log("wrong old password");
+        req.session.updatePassErr = 1
+        res.redirect('/profile')
       }
     })
   } catch (error) {

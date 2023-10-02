@@ -34,15 +34,17 @@
                                     <!-- <li class="nav-item">
                                     <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Downloads</a>
                                 </li> -->
-                               
+
                                     <li class="nav-item">
                                         <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account"
                                             role="tab" aria-controls="tab-account" aria-selected="false">Edit
                                             Details</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Change Password</a>
-                                    </li>
+                                    <!-- <li class="nav-item">
+                                        <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address"
+                                            role="tab" aria-controls="tab-address" aria-selected="false">Change
+                                            Password</a>
+                                    </li> -->
                                     <li class="nav-item">
                                         <a class="nav-link" href="/logout">Sign Out</a>
                                     </li>
@@ -53,7 +55,8 @@
                                 <div class="tab-content">
                                     <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel"
                                         aria-labelledby="tab-dashboard-link">
-                                        <h6 class="text-center fs-1 font-monospace text-decoration-underline ">My Profile</h6>
+                                        <h6 class="text-center fs-1 font-monospace text-decoration-underline ">My
+                                            Profile</h6>
 
                                         <!-- display the user data on profile page -->
                                         <form action="#">
@@ -64,7 +67,7 @@
                                                 <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
                                                 <label class="image-label">
                                                     <div class="rounded-image-preview">
-                                                        <img  <% if(user.image){%>
+                                                        <img <% if(user.image){%>
                                                         src="user/images/userImages/<%= user.image %>"
                                                             <%}else{%>
                                                                 src="user/images/dummy-profile-pr.jpg"
@@ -138,60 +141,59 @@
                                     </div><!-- .End .tab-pane -->
 
                                     <!-- change password area -->
-                                    <div class="tab-pane fade" id="tab-address" role="tabpanel"
+                                    <!-- <div class="tab-pane fade" id="tab-address" role="tabpanel"
                                         aria-labelledby="tab-address-link">
-                                      
 
-                                    
+
+
                                         <h6 class=" fs-1 font-monospace  ">Change Password</h6>
 
-                                        <!-- display the user data on profile page -->
                                         <form action="/changepassword" method="post">
                                             <div class="form-group">
-                                                <!-- Hidden file input -->
 
 
-                                                <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
                                                 
 
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <label>Old Password </label>
-                                                    <input type="text" name="oldPassword" class="form-control" >
 
-                                                </div><!-- End .col-sm-6 -->
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label>Old Password </label>
+                                                        <input type="text" name="oldPassword" class="form-control">
 
-                                                <div class="col-sm-6">
-                                                    <label>Create New Password </label>
-                                                    <input type="text" name="newPassword" class="form-control">
-                                                </div><!-- End .col-sm-6 -->
-                                            </div><!-- End .row -->
+                                                    </div>
 
-                                            <button type="submit" class="btn btn-outline-primary-2">
-                                                <span>CHANGE PASSWORD</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </button>
+                                                    <div class="col-sm-6">
+                                                        <label>Create New Password </label>
+                                                        <input type="text" name="newPassword" class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-outline-primary-2">
+                                                    <span>CHANGE PASSWORD</span>
+                                                    <i class="icon-long-arrow-right"></i>
+                                                </button>
 
 
 
 
                                         </form>
-                                    </div><!-- .End .tab-pane -->
+                                    </div> -->
 
                                     <!-- account tab details -->
                                     <div class="tab-pane fade" id="tab-account" role="tabpanel"
                                         aria-labelledby="tab-account-link">
-                                        <h6 class="text-center fs-1 font-monospace text-decoration-underline ">Edit Details</h6>
+                                        <h6 class="text-center fs-1 font-monospace text-decoration-underline ">Edit
+                                            Details</h6>
                                         <!-- <form action="/updatePhoto" method="post" enctype="multipart/form-data"> -->
 
-                                            <!-- user profile  -->
-                                            <!-- <div class="form-group"> -->
-                                                <!-- Hidden file input -->
-                                                <!-- <input type="file" class="form-control-file" name="image"
+                                        <!-- user profile  -->
+                                        <!-- <div class="form-group"> -->
+                                        <!-- Hidden file input -->
+                                        <!-- <input type="file" class="form-control-file" name="image"
                                                     id="imageUpload" accept="image/*" style="display: none;"> -->
 
-                                                <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
-                                                <!-- <label for="imageUpload" class="image-label">
+                                        <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
+                                        <!-- <label for="imageUpload" class="image-label">
                                                     <div class="rounded-image-preview">
                                                         <img id="imagePreview" <% if(user.image){%>
                                                         src="user/images/userImages/<%= user.image %>"
@@ -208,31 +210,34 @@
                                                     </div>
                                                 </label> -->
 
-                                            <!-- </div> -->
+                                        <!-- </div> -->
                                         <!-- </form> -->
                                         <form action="/updatePhoto" method="post" enctype="multipart/form-data">
                                             <!-- user profile -->
                                             <div class="form-group">
                                                 <!-- Hidden file input -->
-                                                <input type="file" class="form-control-file" name="image" id="imageUpload" accept="image/*" style="display: none;">
-                                        
+                                                <input type="file" class="form-control-file" name="image"
+                                                    id="imageUpload" accept="image/*" style="display: none;">
+
                                                 <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
                                                 <label for="imageUpload" class="image-label">
                                                     <div class="rounded-image-preview">
                                                         <img id="imagePreview" <% if (user.image) { %>
-                                                            src="user/images/userImages/<%= user.image %>"
-                                                        <% } else { %>
-                                                            src="user/images/dummy-profile.jpg"
-                                                        <% } %>
-                                                        alt="Preview" />
+                                                        src="user/images/userImages/<%= user.image %>"
+                                                            <% } else { %>
+                                                                src="user/images/dummy-profile.jpg"
+                                                                <% } %>
+                                                                    alt="Preview" />
                                                     </div>
                                                     <div>
-                                                        <button type="submit" id="updateAvatarButton" class="btn btn-outline-dark" disabled>click to update Avatar</button>
+                                                        <button type="submit" id="updateAvatarButton"
+                                                            class="btn btn-outline-dark" disabled>click to update
+                                                            Avatar</button>
                                                     </div>
                                                 </label>
                                             </div>
                                         </form>
-                                        
+
                                         <form action="/updateUser" method="post">
 
                                             <!-- profile end -->
@@ -294,7 +299,42 @@
                                                 <i class="icon-long-arrow-right"></i>
                                             </button>
                                         </form>
+                                        <hr>
+                                        <h6 class=" fs-1 font-monospace  ">Change Password</h6>
+
+                                        <!-- display the user data on profile page -->
+                                        <form action="/changepassword" method="post">
+                                            <div class="form-group">
+                                                <!-- Hidden file input -->
+
+
+                                                <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
+
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label>Current Password </label>
+                                                        <input type="text" name="oldPassword" class="form-control">
+
+                                                    </div><!-- End .col-sm-6 -->
+
+                                                    <div class="col-sm-6">
+                                                        <label>Create New Password </label>
+                                                        <input type="text" name="newPassword" class="form-control">
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+
+                                                <button type="submit" class="btn btn-outline-primary-2">
+                                                    <span>CHANGE PASSWORD</span>
+                                                    <i class="icon-long-arrow-right"></i>
+                                                </button>
+
+
+
+
+                                        </form>
                                     </div><!-- .End .tab-pane -->
+                                    
                                 </div>
                             </div><!-- End .col-lg-9 -->
                         </div><!-- End .row -->
@@ -302,12 +342,25 @@
                 </div><!-- End .dashboard -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
-       
+        
+
         <%- include('../user/layouts/footer.ejs') %>
 
-        <!-- <div class="alert alert-success fixed-top" role="alert">
+            <!-- <div class="alert alert-success fixed-top" role="alert">
             <h4 class="alert-heading">Well done!</h4>
             <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
             <hr>
             <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
           </div> -->
+          
+<%if(updatePass==1){%>
+          <div id="myAlert" data-aos="fade-down" class="alert alert-success col-3 fixed-top " style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9;"   role="alert">
+            <h6 class="alert-heading">Password Successfully Updated</h6>
+            <p class="fs-6 form-text text-white">Your password has been successfully updated.</p>
+          </div>
+<%}else if(updatePassErr==1){%>
+    <div id="myAlert" data-aos="fade-down" class="alert alert-danger col-3 fixed-top " style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9;"   role="alert">
+        <h6 class="alert-heading">Password not match</h6>
+        <p class="fs-6 form-text text-white">Please enter your Correct password.</p>
+      </div>
+<%}%>
