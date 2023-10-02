@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const ProductDB = require("../models/productsModel").product;
 const bcrypt = require("bcrypt");
 const nodemiler = require("nodemailer");
+require('dotenv').config()
 let otp = null;
 
 const passwordEncrypt = async (password) => {
@@ -30,7 +31,7 @@ const sentVerifyMail = async (name, email, userId) => {
       requireTLS: true,
       auth: {
         user: "miraclexweb@gmail.com",
-        pass: "uzho cupm wiea xiwd",
+        pass: process.env.Mail_key,
       },
     });
     const mailOptions = {
@@ -48,8 +49,7 @@ const sentVerifyMail = async (name, email, userId) => {
               <p style="font-size:0.9em;">Regards,<br />Specsy</p>
               <hr style="border:none;border-top:1px solid #eee" />
               <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
-                <p>specsy</p>
-                <p>Kerala</p>
+                <p>Project by Arshad</p>
               </div>
             </div>
           </div>`,
@@ -78,13 +78,45 @@ const homePageLoad = async (req, res) => {
   }
 };
 
+// const loadSignup = async (req, res) => {
+//   try {
+//     res.render("signup",
+//      {
+//        user: false ,
+//        emailExistErr:req.session.emailExistErr,
+//        userNameExistErr:req.session.userNameExistErr
+//       }),(err,html)=>{
+//         req.session.emailExistErr = false;
+//         req.session.userNameExistErr = false;
+//   }
+//   } catch (error) {
+//     res.send(error.message);
+//   }
+// };
+
 const loadSignup = async (req, res) => {
   try {
-    res.render("signup", { user: false });
+    res.render("signup", {
+      user: false,
+      emailExistErr: req.session.emailExistErr,
+      userNameExistErr: req.session.userNameExistErr,
+    }, (err, html) => {
+      if (!err) {
+        // Set session variables to false after rendering
+        req.session.emailExistErr = false;
+        req.session.userNameExistErr = false;
+
+        res.send(html); // Send the rendered HTML to the client
+      } else {
+        console.log(err.message);
+      }
+    });
   } catch (error) {
     res.send(error.message);
   }
 };
+
+
 // const loginPageLoad = async (req,res)=>{
 //     try {
 //         let user = req.session.user
@@ -101,10 +133,6 @@ const loadSignup = async (req, res) => {
 
 const loginPageLoad = async (req, res) => {
   try {
-    // let user = req.session.user_id;
-    // user ? res.redirect('/') :
-    // req.session.loginErr ? console.log("login error und") : null;
-    // verifyId = req.session.verifyErr ? req.session.verifyId : 0
     res.render(
       "login",
       {
@@ -124,8 +152,7 @@ const loginPageLoad = async (req, res) => {
         } else {
           console.log(err.message);
         }
-        // console.log("veryfi :" + req.session.verifyErr);
-        // console.log("block :" + req.session.blockErr);
+       
       }
     );
   } catch (error) {
@@ -211,24 +238,59 @@ const doLogout = async (req, res) => {
 
 const inserUser = async (req, res) => {
   try {
-    let currentDate = new Date();
-    let SecurePassword = await passwordEncrypt(req.body.password);
-    const user = new User({
-      userName: req.body.userName,
-      fullName: req.body.fullName,
-      email: req.body.email,
-      password: SecurePassword,
-      verified: 0,
-      accountOpenAt: currentDate.toLocaleString(),
-      block: 0,
+    User.findOne({ email: req.body.email }).then((mail) => {
+      if (mail) {
+        // email exist
+        req.session.emailExistErr = 1
+        res.redirect('/signup')
+      } else {
+        User.findOne({ userName: req.body.userName }).then(async (exUser) => {
+          if (exUser) {
+            // username not available
+            req.session.userNameExistErr = 1
+            res.redirect('/signup')
+
+          } else {
+            let currentDate = new Date();
+            let SecurePassword = await passwordEncrypt(req.body.password);
+            const user = new User({
+              userName: req.body.userName,
+              fullName: req.body.fullName,
+              email: req.body.email,
+              password: SecurePassword,
+              verified: 0,
+              accountOpenAt: currentDate.toLocaleString(),
+              block: 0,
+            });
+            const result = await user.save();
+            let otpVerify = await sentVerifyMail(
+              req.body.userName,
+              req.body.email,
+              result._id
+            );
+            res.render("otpValid", { userId: result._id, email: result.email });
+          }
+        });
+      }
     });
-    const result = await user.save();
-    let otpVerify = await sentVerifyMail(
-      req.body.userName,
-      req.body.email,
-      result._id
-    );
-    res.render("otpValid", { userId: result._id, email: result.email });
+    // let currentDate = new Date();
+    // let SecurePassword = await passwordEncrypt(req.body.password);
+    // const user = new User({
+    //   userName: req.body.userName,
+    //   fullName: req.body.fullName,
+    //   email: req.body.email,
+    //   password: SecurePassword,
+    //   verified: 0,
+    //   accountOpenAt: currentDate.toLocaleString(),
+    //   block: 0,
+    // });
+    // const result = await user.save();
+    // let otpVerify = await sentVerifyMail(
+    //   req.body.userName,
+    //   req.body.email,
+    //   result._id
+    // );
+    // res.render("otpValid", { userId: result._id, email: result.email });
   } catch (error) {
     res.send(error.message);
   }
@@ -259,7 +321,7 @@ const reVerifyUser = async (req, res) => {
       userData.email,
       userData._id
     );
-    res.render("otpValid", { userId: userData.id });
+    res.render("otpValid", { userId: userData.id,email:userData.email });
   } catch (error) {
     console.log(error.message);
   }

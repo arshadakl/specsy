@@ -4,6 +4,7 @@ const bodyParser = require("body-parser")
 const multer = require('multer')
 const path = require('path')
 const auth = require("../middleware/user")
+const fileUpload = require('../middleware/fileUpload')
 
 
 router.use(bodyParser.json())
@@ -16,17 +17,7 @@ router.set('views','./views/user/')
 const userController = require("../controllers/userController")
 const productController = require('../controllers/productsController')
 
-const storage = multer.diskStorage({
-    destination:function(req,file,callbacks){
-        callbacks(null,path.join(__dirname, '../public/user/images/userImages'))
-    },
-    filename:function(req,file,callbacks){
-        const  name = Date.now()+"-"+file.originalname;
-        callbacks(null,name)
-    }
-})
 
-const upload = multer({storage:storage})
 
 
 router.get('/',userController.homePageLoad)
@@ -49,7 +40,7 @@ router.get('/verifypage',userController.verifyPageLoad)
 
 router.get('/profile',auth.isLogin,userController.profilePageLoad)
 router.post('/updateUser',auth.isLogin,userController.updateUserData)
-router.post('/updatePhoto',auth.isLogin,upload.single("image"),userController.updatePhoto)
+router.post('/updatePhoto',auth.isLogin,fileUpload.upload.single("image"),userController.updatePhoto)
 
 
 router.get('/product',productController.singleProductLoad)

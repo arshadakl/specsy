@@ -69,3 +69,17 @@
    
 
 
+		<% if(userNameExistErr===1){ %>
+			<div id="myAlert" data-aos="fade-down"
+				class="alert alert-secondary alert-dismissible fade show fs-6 fixed-top alt text-center text-danger"
+				role="alert">
+				<strong>Uh-oh!</strong> Username already exists. Please choose a different username.
+
+				<!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+	    <% }else if(emailExistErr===1) {%>
+			  <div id="myAlert1" data-aos="fade-down"
+						class="alert alert-secondary  py-4	 fade show fs-5 fixed-top alt text-center text-danger"
+				role="alert">
+				<strong>Uh-oh!</strong> This email address is already in use. Please select another email address.
+
+		<%}%>

@@ -310,6 +310,7 @@ $(document).ready(function () {
 
         // Open popup - product images
         $('#btn-product-gallery').on('click', function (e) {
+            console.log("popup clicked...");
             if ( $.fn.magnificPopup ) {
                 $.magnificPopup.open({
                     items: ez.getGalleryList(),
