@@ -167,7 +167,7 @@ const doLogin = async (req, res) => {
     //     let verified = user.verified===0 ? true : false
     //     let blockStatus = user.block===0 ? false : true
     // }
-    console.log(user);
+    // console.log(user);
     if (user) {
       let verified = user.verified === 1 ? true : false;
       let blockStatus = user.block === 0 ? false : true;
@@ -374,14 +374,15 @@ const otpValid = async (req, res) => {
 
 const profilePageLoad = async (req, res) => {
   try {
-    const userIpAddress = req.ip || req.connection.remoteAddress;
-    console.log(userIpAddress);
+    // const userIpAddress = req.ip || req.connection.remoteAddress;
+    // console.log(userIpAddress);
     userData = await takeUserData(req.session.user_id);
     res.render("userProfile", { user: userData });
   } catch (error) {
     console.log(error.message);
   }
 };
+
 const verifyPageLoad = async (req, res) => {
   try {
     res.render("verifyNotfy");
@@ -440,6 +441,29 @@ const updateUserData = async (req, res) => {
   }
 };
 
+const changepassword = async(req,res)=>{
+  try {
+    console.log(req.body.newPassword);
+    let userDetails = await User.findOne({_id:req.session.user_id})
+    // console.log(userDetails.password);
+    // console.log(req.body.oldPassword);
+    bcrypt.compare(req.body.oldPassword,userDetails.password).then(async(status)=>{
+      if(status){
+        let newSecurePassword = await bcrypt.hash(req.body.newPassword,10)
+        let change = await User.updateOne({_id:userDetails._id},{$set:{password:newSecurePassword}})
+        console.log(change);
+        res.redirect('/profile')
+        console.log("password changed...");
+
+      }else{
+        console.log("wrong old password");
+      }
+    })
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 module.exports = {
   inserUser,
   loadSignup,
@@ -454,4 +478,5 @@ module.exports = {
   reVerifyUser,
   updateUserData,
   updatePhoto,
+  changepassword
 };

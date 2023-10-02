@@ -29,6 +29,7 @@ router.get('/login',auth.isLogout,userController.loginPageLoad)
 router.post('/login',auth.isLogout,userController.doLogin)
 router.get('/logout',userController.doLogout)
 
+router.post('/changepassword',userController.changepassword)
 
 router.get('/otp',userController.optPageLoad)
 router.post('/otp',userController.otpValid)
