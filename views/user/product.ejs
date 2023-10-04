@@ -52,7 +52,7 @@
                     <div class="col-md-6">
                         <div class="product-details">
                             <h1 class="product-title"><%= product[0].product_name %></h1><!-- End .product-title -->
-
+                            
                             <div class="ratings-container">
                                 <div class="ratings">
                                     <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
@@ -69,7 +69,7 @@
                             </div><!-- End .product-content -->
 
                             <div class="details-filter-row details-row-size">
-                                <span >Frame Shape  : <b><%= product[0].frame_shape %></b></span>
+                                <span >Frame Shape  : <b><%= product[0].frame_shape %> </b></span>
 
                                 <div class="product-nav product-nav-thumbs">
                                     <p></p>
@@ -81,7 +81,7 @@
                             
 
                             <div class="product-details-action">
-                                <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                <button onclick="addCart('<%= product[0]._id %>','<%= user %>')" class="btn-product btn-cart"><span>add to cart</span></button>
 
                                 <div class="details-action-wrapper">
                                     <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
@@ -184,3 +184,10 @@
 
 
 <%- include('../user/layouts/footer.ejs') %>
+ <div id="" data-aos="fade-down" class="alert alert-dark col-3 fixed-top "
+                style="left: 40%; top:50px; border-radius: 7px; opacity: 0.9;" role="alert">
+                <h6 class="alert-heading">
+                    
+                    Product Added to Your Cart</h6>
+                <p class="fs-6 form-text text-white">Your password has been successfully updated.</p>
+            </div>

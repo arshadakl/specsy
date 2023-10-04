@@ -3,9 +3,9 @@
 
 
         <main class="main">
-            <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+            <div class="page-header text-center " style="background-image: url('user/images/page-header-bg.jpg')"   >
                 <div class="container">
-                    <h1 class="page-title">My Account<span>Shop</span></h1>
+                    <h1 class="page-title text-white">My Account</h1>
                 </div><!-- End .container -->
             </div><!-- End .page-header -->
             <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
@@ -229,6 +229,9 @@
                                                                 <% } %>
                                                                     alt="Preview" />
                                                     </div>
+                                                    
+                                                      
+
                                                     <div>
                                                         <button type="submit" id="updateAvatarButton"
                                                             class="btn btn-outline-dark" disabled>click to update
@@ -294,7 +297,7 @@
                                                              <label>Confirm new password</label>
                                                              <input type="password" class="form-control mb-2"> -->
 
-                                            <button type="submit" class="btn btn-outline-primary-2">
+                                            <button type="submit" class="btn btn-outline-primary-login">
                                                 <span>SAVE CHANGES</span>
                                                 <i class="icon-long-arrow-right"></i>
                                             </button>
@@ -314,17 +317,17 @@
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <label>Current Password </label>
-                                                        <input type="text" name="oldPassword" class="form-control">
+                                                        <input type="text" name="oldPassword" class="form-control" required>
 
                                                     </div><!-- End .col-sm-6 -->
 
                                                     <div class="col-sm-6">
                                                         <label>Create New Password </label>
-                                                        <input type="text" name="newPassword" class="form-control">
+                                                        <input type="text" name="newPassword" class="form-control" required>
                                                     </div><!-- End .col-sm-6 -->
                                                 </div><!-- End .row -->
 
-                                                <button type="submit" class="btn btn-outline-primary-2">
+                                                <button type="submit" class="btn btn-outline-primary-login">
                                                     <span>CHANGE PASSWORD</span>
                                                     <i class="icon-long-arrow-right"></i>
                                                 </button>
@@ -334,7 +337,7 @@
 
                                         </form>
                                     </div><!-- .End .tab-pane -->
-                                    
+
                                 </div>
                             </div><!-- End .col-lg-9 -->
                         </div><!-- End .row -->
@@ -342,7 +345,7 @@
                 </div><!-- End .dashboard -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
-        
+
 
         <%- include('../user/layouts/footer.ejs') %>
 
@@ -352,15 +355,17 @@
             <hr>
             <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
           </div> -->
-          
-<%if(updatePass==1){%>
-          <div id="myAlert" data-aos="fade-down" class="alert alert-success col-3 fixed-top " style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9;"   role="alert">
-            <h6 class="alert-heading">Password Successfully Updated</h6>
-            <p class="fs-6 form-text text-white">Your password has been successfully updated.</p>
-          </div>
-<%}else if(updatePassErr==1){%>
-    <div id="myAlert" data-aos="fade-down" class="alert alert-danger col-3 fixed-top " style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9;"   role="alert">
-        <h6 class="alert-heading">Password not match</h6>
-        <p class="fs-6 form-text text-white">Please enter your Correct password.</p>
-      </div>
-<%}%>
+
+            <%if(updatePass==1){%>
+                <div id="myAlert" data-aos="fade-down" class="alert alert-success col-3 fixed-top "
+                    style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9;" role="alert">
+                    <h6 class="alert-heading">Password Successfully Updated</h6>
+                    <p class="fs-6 form-text text-white">Your password has been successfully updated.</p>
+                </div>
+                <%}else if(updatePassErr==1){%>
+                    <div id="myAlert" data-aos="fade-down" class="alert alert-danger col-3 fixed-top "
+                        style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9;" role="alert">
+                        <h6 class="alert-heading">Password not match</h6>
+                        <p class="fs-6 form-text text-white">Please enter your Correct password.</p>
+                    </div>
+                    <%}%>

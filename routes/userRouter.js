@@ -43,7 +43,13 @@ router.get('/profile',auth.isLogin,userController.profilePageLoad)
 router.post('/updateUser',auth.isLogin,userController.updateUserData)
 router.post('/updatePhoto',auth.isLogin,fileUpload.upload.single("image"),userController.updatePhoto)
 
+router.get('/cart',auth.isLogin,userController.cartPageLoad)
 
+router.post('/addtocart',auth.isLogin,userController.addtoCart)
+router.post('/changeqty',auth.isLogin,userController.productQuantityHandlling)
+router.delete('/removecartproduct',userController.removeCartItem)
+
+// product related routers
 router.get('/product',productController.singleProductLoad)
 
 

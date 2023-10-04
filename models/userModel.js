@@ -44,6 +44,46 @@ const userSchema = mongoose.Schema({
     }
 });
 
+
+const cartSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // Reference to the User model for associating the cart with a user
+        required: true
+    },
+    products: [
+        {
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'product', // Reference to the Product model for associating products with the cart
+                required: true
+            },
+            quantity: {
+                type: Number,
+                default: 1,
+                min: 1,
+                max: 5
+            }
+        }
+    ],
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        required: true
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+        required: true
+    }
+});
+
+
+
+const Cart = mongoose.model('Cart',cartSchema)
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+module.exports = {
+    User,
+    Cart
+};

@@ -1,72 +1,150 @@
-
-   
 <%- include('../user/layouts/header.ejs') %>
-        <main class="main">
-            
 
-            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('user/images/backgrounds/login-bg1.jpg')">
-            	<div class="container">
-            		<div class="form-box">
-            			<div class="form-tab">
-	            			<ul class="nav nav-pills nav-fill" role="tablist">
-							   
-							    <li class="nav-item">
-							        <a class="nav-link active" id="register-tab-2" data-toggle="tab" href="#register-2" role="tab" aria-controls="register-2" aria-selected="true">Register</a>
-							    </li>
-							</ul>
-							<div class="tab-content">
-							   
-							    <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
-                                    
-							    	<form action="signup" method="post">
-							    		<div class="form-group">
-							    			<label for="register-email-2">User Name *</label>
-							    			<input type="text" class="form-control" id="" name="userName" required>
-							    		</div>
-                                        <div class="form-group">
-							    			<label for="register-email-2">Full Name *</label>
-							    			<input type="text" class="form-control" id="" name="fullName" required>
-							    		</div>
+	<main class="main">
 
-                                        <div class="form-group">
-							    			<label for="register-email-2">Your email address *</label>
-							    			<input type="email" class="form-control" id="register-email-2" name="email" required>
-							    		</div><!-- End .form-group -->
-                                        
 
-							    		<div class="form-group">
+		<div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
+			style="background-image: url('user/images/backgrounds/login-bg1.jpg'); ">
+			<div class="container">
+				<div class="form-box">
+					<div class="form-tab">
+						<ul class="nav nav-pills nav-fill" role="tablist">
+
+							<li class="nav-item">
+								<a class="nav-link active" id="register-tab-2" data-toggle="tab" 
+									role="tab" aria-controls="register-2" aria-selected="true">Register</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+
+							<div class="tab-pane fade show active" id="register-2" role="tabpanel"
+								aria-labelledby="register-tab-2">
+
+								<form action="signup" method="post">
+									<div class="form-group">
+										<label for="register-email-2">User Name *</label>
+										<input type="text" class="form-control" id="" name="userName" required>
+									</div>
+									<div class="form-group">
+										<label for="register-email-2">Full Name *</label>
+										<input type="text" class="form-control" id="" name="fullName" required>
+									</div>
+
+									<div class="form-group">
+										<label for="register-email-2">Your email address *</label>
+										<input type="email" class="form-control" id="register-email-2" name="email"
+											required>
+									</div><!-- End .form-group -->
+
+
+									<!-- <div class="form-group">
 							    			<label for="register-password-2">Password *</label>
 							    			<input type="password" class="form-control" id="register-password-2" name="password" required>
 							    		</div>
-                                         <!-- <div class="form-group">
+										<div class="form-group">
+							    			<label for="register-password-2">Confirm password *</label>
+							    			<input type="password" class="form-control" id="register-password-2" name="ConfirmPassword" required>
+							    		</div> -->
+									<!-- test -->
+									<!-- <div class="form-group">
+											<label for="register-password">Password *</label>
+											<input type="password" class="form-control" id="register-password" name="password" required>
+										</div>
+										
+										<div class="form-group">
+											<label for="register-confirm-password">Confirm password *</label>
+											<p id="password-match-error" style="color: red; font-size: 10px;"></p>
+											<input type="password" class="form-control" id="register-confirm-password"  required>
+										</div> -->
+
+
+
+
+									<div class="form-group">
+										<label for="register-password">Password *</label>
+										<input type="password" class="form-control" id="register-password"
+											name="password" required>
+									</div>
+
+									<div class="form-group">
+										<label for="register-confirm-password">Confirm password *</label>
+										<input type="password" class="form-control" id="register-confirm-password"
+											 required>
+										<p id="password-match-error" style="color: red; font-size: 12px;"></p>
+									</div>
+									<!-- test end -->
+									<!-- <div class="form-group">
 							    			<label for="register-password-2">Confirm password *</label>
 							    			<input type="password" class="form-control" id="register-password-2" name="register-password" required>
 							    		</div>  -->
 
-							    		<div class="form-footer">
-							    			<button type="submit" class="btn btn-outline-primary-2 w-100">
-			                					<span>SIGN UP</span>
-			            						<i class="icon-long-arrow-right"></i>
-			                				</button>
+									<div class="form-footer">
+										<button type="submit" class="btn btn-outline-primary-login py-4 w-100">
+											<span>SIGN UP</span>
+											<i class="icon-long-arrow-right"></i>
+										</button>
 
-			                				
-							    		</div><!-- End .form-footer -->
-							    	</form>
-									<div class="text-center">
-										<a href="/login" >Already have an account? login</a>
-									</div>
-							    	
-							    </div><!-- .End .tab-pane -->
-							</div><!-- End .tab-content -->
-						</div><!-- End .form-tab -->
-            		</div><!-- End .form-box -->
-            	</div><!-- End .container -->
-            </div><!-- End .login-page section-bg -->
-        </main><!-- End .main -->
 
-		<%- include('../user/layouts/footer.ejs') %>
+									</div><!-- End .form-footer -->
+								</form>
+								<div class="text-center">
+									<a href="/login">Already have an account? login</a>
+								</div>
 
-   
+							</div><!-- .End .tab-pane -->
+						</div><!-- End .tab-content -->
+					</div><!-- End .form-tab -->
+				</div><!-- End .form-box -->
+			</div><!-- End .container -->
+		</div><!-- End .login-page section-bg -->
+	</main><!-- End .main -->
+	<script>
+		// // Get references to the password and confirm password fields
+		// const passwordField = document.getElementById("register-password");
+		// const confirmPasswordField = document.getElementById("register-confirm-password");
+		// const passwordMatchError = document.getElementById("password-match-error");
+
+		// // Function to check if passwords match
+		// function checkPasswordsMatch() {
+		// 	const password = passwordField.value;
+		// 	const confirmPassword = confirmPasswordField.value;
+
+		// 	if (password === confirmPassword) {
+		// 		passwordMatchError.textContent = ""; // Passwords match, clear the error message
+		// 	} else {
+		// 		passwordMatchError.textContent = "Passwords do not match!";
+		// 	}
+		// }
+
+		// // Add an event listener to the confirm password field to check for matching passwords
+		// confirmPasswordField.addEventListener("keyup", checkPasswordsMatch);
+
+
+		// Get references to the password and confirm password fields
+		const passwordField = document.getElementById("register-password");
+		const confirmPasswordField = document.getElementById("register-confirm-password");
+		const passwordMatchError = document.getElementById("password-match-error");
+
+		// Function to check if passwords match and apply/remove the red border
+		function checkPasswordsMatch() {
+			const password = passwordField.value;
+			const confirmPassword = confirmPasswordField.value;
+
+			if (password === confirmPassword) {
+				passwordMatchError.textContent = ""; // Passwords match, clear the error message
+				confirmPasswordField.style.border = "1px solid #ced4da"; // Remove red border
+			} else {
+				passwordMatchError.textContent = "Passwords do not match!";
+				confirmPasswordField.style.border = "1px solid red"; // Apply red border
+			}
+		}
+
+		// Add an event listener to the confirm password field to check for matching passwords
+		confirmPasswordField.addEventListener("keyup", checkPasswordsMatch)
+	</script>
+	<%- include('../user/layouts/footer.ejs') %>
+
+
 
 
 		<% if(userNameExistErr===1){ %>
@@ -76,10 +154,11 @@
 				<strong>Uh-oh!</strong> Username already exists. Please choose a different username.
 
 				<!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
-	    <% }else if(emailExistErr===1) {%>
-			  <div id="myAlert1" data-aos="fade-down"
+				<% }else if(emailExistErr===1) {%>
+					<div id="myAlert1" data-aos="fade-down"
 						class="alert alert-secondary  py-4	 fade show fs-5 fixed-top alt text-center text-danger"
-				role="alert">
-				<strong>Uh-oh!</strong> This email address is already in use. Please select another email address.
+						role="alert">
+						<strong>Uh-oh!</strong> This email address is already in use. Please select another email
+						address.
 
-		<%}%>
+						<%}%>

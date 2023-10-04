@@ -1,4 +1,4 @@
-const UserDB = require('../models/userModel')
+const UserDB = require('../models/userModel').User
 const AdminDB = require('../models/adminModel')
 const ProductDB = require('../models/productsModel').product
 const CategoryDB = require('../models/productsModel').category

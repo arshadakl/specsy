@@ -36,32 +36,37 @@
                         <div class="menu">
 
                             <li>
-                                <a href="#" class=""><i class="icon-heart-o "> </i>My Wishlist</a>
+                                <a href="#" class=""><i class="icon-heart-o" style="font-size: 18px;" > </i>My Wishlist</a>
+                            </li>
+                            
+
+                        </div>
+                    </div>
+                    <div class="main-nav">
+                        <div class="menu">
+
+                            <li>
+                                <a href="/cart" class=""><i class="icon-shopping-cart" style="font-size: 21px;"> </i>Cart</a>
                             </li>
                             
 
                         </div>
                     </div>
                     
-                    <div class="dropdown cart-dropdown">
+                    <!-- <div class="dropdown cart-dropdown">
                         <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                             <i class="icon-shopping-cart"></i>
                             <a href="#" class="fw-bold text-dark"></i>Cart</a>
-
-                            <!-- <span class="cart-count"></span> -->
-                            
                         </a>
-                        
+                    </div> -->
 
-                       
-                    </div><!-- End .cart-dropdown -->
                     <div class="main-nav">
                         <div class="menu">
 
                             <% if(user) {%>
                                 <!-- <a href="/account"><p><i class="icon-heart-o"> </i> <i class="icon-user"></i>account</p></a> -->
                                 <li>
-                                    <a href="#" class="sf-with-ul"><i class="icon-user"></i>my Account</a>
+                                    <a href="#" class="sf-with-ul"><i class="icon-user" style="font-size: 17px;"></i>my Account</a>
 
                                     <ul>
                                         <li><a href="/profile">My Profile</a></li>
@@ -70,7 +75,7 @@
                                 </li>
                             <% }else{ %>
                                 <li>
-                                    <a href="/login" class=""><i class="icon-user"></i> </i>Login</a>
+                                    <a href="/login" class=""><i class="icon-user" style="font-size: 17px;" ></i> </i>Login</a>
                                 </li>
                             <% } %>
                         </div>
