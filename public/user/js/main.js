@@ -794,6 +794,9 @@ setTimeout(function() {
 setTimeout(function() {
     document.getElementById('myAlert2').style.display = 'none';
 }, 5000);
+// setTimeout(function() {
+//     document.getElementById('cartAlert').style.display = 'none';
+// }, 2800);
 
 // user profile 
 

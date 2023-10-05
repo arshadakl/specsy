@@ -1,4 +1,26 @@
 function addCart(id,user) {
+    function showAlertBox() {
+        console.log("alert fun called...");
+        $("#cartAlert").fadeIn();
+    
+        // Hide the alert box after 5 seconds
+        setTimeout(function () {
+            $("#cartAlert").fadeOut();
+        }, 3000);
+    }
+
+    function showAlertBoxAlready() {
+        console.log("alert fun called...");
+        $("#cartAlertAlready").fadeIn();
+    
+        // Hide the alert box after 5 seconds
+        setTimeout(function () {
+            $("#cartAlertAlready").fadeOut();
+        }, 3000);
+    }
+
+
+
     // Send an AJAX request to update the user's block status
     if(user){
         $.ajax({
@@ -7,6 +29,12 @@ function addCart(id,user) {
             data: { id: id,user:user },
             success: function (response) {
                 console.log(response);
+                if(response.cart==1){
+                    showAlertBox()
+                }
+                if(response.cart==2){
+                    showAlertBoxAlready()
+                }
                 // let users = response.users;
                 // let targetUser = users.find((user) => {
                 //     return user._id === id;

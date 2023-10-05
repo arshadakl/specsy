@@ -79,8 +79,6 @@ const homePageLoad = async (req, res) => {
   }
 };
 
-
-
 const loadSignup = async (req, res) => {
   try {
     res.render(
@@ -548,8 +546,8 @@ const cartPageLoad = async (req, res) => {
       let total = await calculateTotalPrice(req.session.user_id);
       console.log("total price : " + total);
       res.render("cart", { user: userData, cartItems: cartDetails, total });
-    }else{
-      res.render("cart", { user: userData, cartItems: 0, total:0 });
+    } else {
+      res.render("cart", { user: userData, cartItems: 0, total: 0 });
     }
     // console.log(cartDetails.products);
 
@@ -583,6 +581,7 @@ const addtoCart = async (req, res) => {
 
       let result = await cart.save();
       console.log(result);
+      res.json({ cart: 1 });
     } else {
       const productInCart = existingCart.products.find(
         (item) => item.product.toString() === req.body.id.toString()
@@ -590,17 +589,22 @@ const addtoCart = async (req, res) => {
 
       if (productInCart) {
         // If the product is already in the cart, increase the quantity
-        productInCart.quantity += 1;
+        // productInCart.quantity += 1;
+        res.json({ cart: 2 });
       } else {
         existingCart.products.push({
           product: req.body.id,
           quantity: 1,
         });
+        res.json({ cart: 1 });
       }
       const result = await existingCart.save();
       console.log("Product added to cart:", result);
+      // cart res 1 for added item
+      // cart res 2 for already item in product
     }
 
+    res.json();
     console.log(result);
   } catch (error) {
     console.log(error.message);
@@ -748,25 +752,23 @@ const productQuantityHandlling = async (req, res) => {
   }
 };
 
-
 // remove cart item
 // ------------------------
-const removeCartItem =async(req,res)=>{
+const removeCartItem = async (req, res) => {
   try {
-    const {user,product} = req.body
-    const cart = await CartDB.findOne({user:user})
+    const { user, product } = req.body;
+    const cart = await CartDB.findOne({ user: user });
     cart.products = cart.products.filter(
       (cartProduct) => cartProduct.product.toString() !== product.toString()
     );
-    let remove = await cart.save()
+    let remove = await cart.save();
     console.log(remove);
     console.log("Porduct removed");
-    res.json({remove:1})
+    res.json({ remove: 1 });
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 // exporting
 // ---------------------------
@@ -788,5 +790,5 @@ module.exports = {
   cartPageLoad,
   addtoCart,
   productQuantityHandlling,
-  removeCartItem
+  removeCartItem,
 };
