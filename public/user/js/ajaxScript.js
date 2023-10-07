@@ -21,7 +21,7 @@ function addCart(id,user) {
 
 
 
-    // Send an AJAX request to update the user's block status
+ 
     if(user){
         $.ajax({
             url: '/addtocart',
@@ -35,17 +35,7 @@ function addCart(id,user) {
                 if(response.cart==2){
                     showAlertBoxAlready()
                 }
-                // let users = response.users;
-                // let targetUser = users.find((user) => {
-                //     return user._id === id;
-                // });
-    
-                // // Update the button class and text based on the user's block status
-                // if (targetUser.block == 0) {
-                //     $(`button[data-id="${id}"]`).removeClass('btn-inverse-danger').addClass('btn-inverse-success').text('block');
-                // } else {
-                //     $(`button[data-id="${id}"]`).removeClass('btn-inverse-success').addClass('btn-inverse-danger').text('unBlock');
-                // }
+               
             },
             error: function (error) {
                 console.error("Error:", error);

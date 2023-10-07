@@ -21139,7 +21139,7 @@ div.tagsinput {
 }
 
 /* add product image preview */
-.image-container {
+/* .image-container {
   display: flex;
   justify-content: space-between;
   gap: 20px;
@@ -21161,8 +21161,44 @@ div.tagsinput {
   border-radius: 7px;
   overflow: hidden;
   position: relative;
-  /* background-color: #0068a7; */
+} */
+
+.image-container {
+  display: flex;
+  flex-direction: column; /* Stack the label, image, and button vertically */
+  align-items: center; /* Center-align the content */
 }
+
+.image-label {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  text-align: center; /* Center-align the label text */
+}
+
+.imageInput {
+  display: none;
+}
+
+.rounded-image-preview {
+  width: 200px;
+  height: 200px;
+  border-radius: 7px;
+  overflow: hidden;
+  position: relative;
+  text-align: center; /* Center-align the image */
+}
+
+.remove-button {
+  margin-top: 10px; /* Add some space between the image and the button */
+  background-color: #ff0000; /* Optional: Change the button's background color */
+  color: #ffffff; /* Optional: Change the button's text color */
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
 
 img {
   width: 100%;

@@ -26,7 +26,12 @@
               <p>Your code was sent to you via email <br>Check your email at <b><span id="maskedEmail"></span></b> for the OTP:</p>
               <p></p>
 
+              <% if(forget===1){%>
+            <form action="/forgetotp?id=<%=userId%>" method="post">
+              <% }else{%>
             <form action="/otp?id=<%- userId %>" method="post">
+              <%}%>
+
               <div class="otp-field mb-4">
                 <input name="a" type="number" />
                 <input name="b" type="number" disabled />
@@ -48,17 +53,26 @@
           </div>
         </div>
       </div>
-
-      <script>
-        function redirectToPage() {
-        setTimeout(function () {
-          window.location.href = '/expire?userId=<%- userId %>';
-        }, 123000); 
-      }
+      <% if(forget===1){%>
+        <script>
+          function redirectToPage() {
+          setTimeout(function () {
+            window.location.href = '/expire?forget=xyzdczdfvzv';
+          }, 123000); 
+        }
+        redirectToPage();
+        </script>
+          <% }else{%>
+            <script>
+              function redirectToPage() {
+              setTimeout(function () {
+                window.location.href = '/expire?userId=<%- userId %>';
+              }, 123000); 
+            }
+            redirectToPage();
+            </script>
+          <%}%>
       
-      redirectToPage();
-      
-      </script>
       <script>
         // Replace 'test@gmail.com' with the actual email address
         const email = '<%= email %>';

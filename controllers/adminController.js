@@ -4,6 +4,8 @@ const ProductDB = require('../models/productsModel').product
 const CategoryDB = require('../models/productsModel').category
 const bcrypt = require('bcrypt')
 
+// admin home page loading function 
+// ---------------------------------------
 const adminPageLoad = async(req,res)=>{
     try {
         let users = await getAlluserData()
@@ -13,6 +15,9 @@ const adminPageLoad = async(req,res)=>{
         console.log(error.message);
     }
 }
+
+// this function use to take all user Data
+// ---------------------------------------
 const getAlluserData = ()=>{
     return new Promise(async(resolve,reject)=>{
        let userData = await UserDB.find({})
@@ -20,6 +25,8 @@ const getAlluserData = ()=>{
     })
 }
 
+// This used to Take a single product Data useing Product Id
+// ---------------------------------------
 const getProductDetails = async(id)=>{
     try {
         let product = await ProductDB.find({_id:id})
@@ -28,6 +35,9 @@ const getProductDetails = async(id)=>{
         console.log(error.message);
     }
 }
+
+// This used to Block user , this function working with Ajax 
+// ---------------------------------------
 
 const userBlock = async(req,res)=>{
     try {
@@ -47,6 +57,8 @@ const userBlock = async(req,res)=>{
     }
 }
 
+// This used to User edit page Load to Frendend
+// ---------------------------------------
 const editUserPageLoad = async(req,res)=>{
     try {
         // console.log(req.query.id);
@@ -58,6 +70,8 @@ const editUserPageLoad = async(req,res)=>{
     }
 }
 
+// This Function help to get Single User data with matching User Id
+// ---------------------------------------
 const takeOneUserData = async(userId)=>{
     try {
         let userDetails = await UserDB.find({_id:userId})
@@ -67,13 +81,11 @@ const takeOneUserData = async(userId)=>{
     }
 }
 
-
+// This function Handille user data Updating
+// ---------------------------------------
 const updateUserData = async (req, res) => {
     try {
         let userData = req.body;
-        // console.log(req.query.id);
-        // console.log(userData);
-        // console.log(req.session.user_id);
         let updateUser = await UserDB.updateOne({_id:req.query.id},{$set:{
                     userName: userData.userName,
                     fullName: userData.fullName,
@@ -88,6 +100,9 @@ const updateUserData = async (req, res) => {
         console.log(error.message);
     }
 }
+
+// This function used to working Search process for users, return searched users
+// ---------------------------------------
 const searchUsersByKey = async(key)=>{
     try {
         let userDetails = await UserDB.find({
@@ -104,6 +119,8 @@ const searchUsersByKey = async(key)=>{
     }
 }
 
+// This function used to products Searching for listing, return searched products
+// ---------------------------------------
 const productSearchByKey = async(key)=>{
     try {
         console.log("search api called...");
@@ -122,6 +139,8 @@ const productSearchByKey = async(key)=>{
     }
 }
 
+// handdille search users
+// ---------------------------------------
 const searchUsers = async(req,res)=>{
     try {
         console.log(req.query.key);
@@ -132,20 +151,8 @@ const searchUsers = async(req,res)=>{
     }
 }
 
-// const loginPageLoad = async (req, res) => {
-//     try {
-//         res.render('login', {
-//             adminloginErr: req.session.adminloginErr
-//         });
-
-//         // Set req.session.adminloginErr to 0 after rendering the page
-//         req.session.adminloginErr = 0;
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
-
-
+// Admin login page loading
+// ---------------------------------------
 const loginPageLoad = async (req, res) => {
     try {
       res.render(
@@ -169,7 +176,7 @@ const loginPageLoad = async (req, res) => {
     }
   };
   
-
+// This user to Testing.....
 // const insertAdmin = async(req,res)=>{
 //     try {
 //         let securePass = await bcrypt.hash(req.body.password,10)
@@ -188,6 +195,9 @@ const loginPageLoad = async (req, res) => {
 //     }
 // }
 
+
+// Admin login handilling
+// ---------------------------------------
 const doLogin = async(req,res)=>{
     try {
         let admin = await AdminDB.findOne({userName:req.body.userName})
@@ -218,6 +228,8 @@ const doLogin = async(req,res)=>{
     }
 }
 
+// Admin Logout Function
+// ---------------------------------------
 const adminLogOut = async(req,res)=>{
     try {
         req.session.adminloggedIn = false;
@@ -229,6 +241,8 @@ const adminLogOut = async(req,res)=>{
     }
 }
 
+// products listing page loading
+// ---------------------------------------
 const productPageLoad = async(req,res)=>{
     try {
         let products = await ProductDB.find({})
@@ -239,6 +253,8 @@ const productPageLoad = async(req,res)=>{
     }
 }
 
+// This load Product adding page
+// ---------------------------------------
 const addproductPageLoad = async(req,res)=>{
     try {
         let categories = await CategoryDB.find({})
@@ -248,6 +264,8 @@ const addproductPageLoad = async(req,res)=>{
     }
 }
 
+// This handilling Add products , with imagess
+// ---------------------------------------
 const addProduct = async(req,res)=>{
     try {
        let details = req.body
@@ -276,6 +294,8 @@ const addProduct = async(req,res)=>{
     }
 }
 
+// Product edit page Load..
+// ---------------------------------------
 const productEditPageLoad = async(req,res)=>{
     try {
         
@@ -287,6 +307,8 @@ const productEditPageLoad = async(req,res)=>{
     }
 }
 
+// This Handdil to Search Product
+// ---------------------------------------
 const searchproduct = async(req,res)=>{
     try {
         // console.log(req.query.key);  
@@ -298,8 +320,8 @@ const searchproduct = async(req,res)=>{
     }
 }
 
-
-
+// This Function used to Update Product , includuing Image Managment..
+// ---------------------------------------
 const updateProduct = async (req, res) => {
     try {
       let details = req.body;
@@ -339,6 +361,8 @@ const updateProduct = async (req, res) => {
     }
   };
   
+//   This used to Delete Product 
+// ---------------------------------------
   const deleteproduct = async(req,res)=>{
     try {
         console.log(req.query.id);
@@ -350,6 +374,8 @@ const updateProduct = async (req, res) => {
     }
   }
 
+//   Category Page loadSignup... 
+// ---------------------------------------
 const categoryPageLoad = async(req,res)=>{
     try {
         let categories = await CategoryDB.find({})
@@ -360,6 +386,8 @@ const categoryPageLoad = async(req,res)=>{
     }
 }
 
+// This used to Add New category
+// ---------------------------------------
 const addCategory = async(req,res)=>{
     try {
         console.log(req.body);
@@ -381,7 +409,8 @@ const addCategory = async(req,res)=>{
     }
 }
 
-
+// Function Used to Delete Category
+// ---------------------------------------
 const deleteCategory = async(req,res)=>{
     try {
         let deleteItem = await CategoryDB.deleteOne({_id:req.query.id})
@@ -392,6 +421,8 @@ const deleteCategory = async(req,res)=>{
     }
 }
 
+// This working For Search Categorys
+// ---------------------------------------
 const searchCategory = async(req,res)=>{
     try {
         let categories = await CategoryDB.find({category_name:{$regex:req.query.key, $options: 'i'}})
@@ -402,7 +433,9 @@ const searchCategory = async(req,res)=>{
     }
 }
 
-
+// This Working For Block Category items, 
+// this working with Ajax
+// ---------------------------------------
 const categoryBlock = async(req,res)=>{
     try {
         // console.log("back end called........");
@@ -424,7 +457,8 @@ const categoryBlock = async(req,res)=>{
 }
 
 
-
+// exportings
+// =========================
 module.exports={
     adminPageLoad,
     userBlock,

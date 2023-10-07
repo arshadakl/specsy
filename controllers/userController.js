@@ -6,6 +6,8 @@ const nodemiler = require("nodemailer");
 require("dotenv").config();
 let otp = null;
 
+// This Function Used to Encrypt Password to hash format to store DataBase
+// ---------------------------------------
 const passwordEncrypt = async (password) => {
   try {
     let hashedPass = await bcrypt.hash(password, 10);
@@ -14,14 +16,17 @@ const passwordEncrypt = async (password) => {
     console.log(error.message);
   }
 };
-// send mail
+
+// This function used to Create 6 Digit OTP number
+// ---------------------------------------
 const generateOTP = (length = 6) => {
   return [...new Array(length)].reduce(function (a) {
     return a + Math.floor(Math.random() * 10);
   }, "");
 };
 
-// send mail
+// This used to Send Email OTP
+// ---------------------------------------
 const sentVerifyMail = async (name, email, userId) => {
   try {
     otp = generateOTP();
@@ -67,6 +72,57 @@ const sentVerifyMail = async (name, email, userId) => {
   }
 };
 
+// user forgetPassword manage verify send Email
+// -------------------------------------------------
+const sentVerifyMailForForgetPass = async (name, email) => {
+  try {
+    otp = generateOTP();
+    const transporter = nodemiler.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: "miraclexweb@gmail.com",
+        pass: process.env.Mail_key,
+      },
+    });
+    const mailOptions = {
+      from: "miraclexweb@gmail.com",
+      to: email,
+      subject: "For veryfication email",
+      html: `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+              <div style="border-bottom:1px solid #eee">
+                <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Specsy</a>
+              </div>
+              <p style="font-size:1.1em">Hi, ${name}</p>
+              <p>Forgot your password?</p>
+              <p>We received a request to reset the password for your account.</p>
+              <p>Use the following OTP to complete your reset password. OTP is valid for 2 minutes</p>
+              <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
+              <p style="font-size:0.9em;">Regards,<br />Specsy</p>
+              <hr style="border:none;border-top:1px solid #eee" />
+              <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                <p>Project by Arshad</p>
+              </div>
+            </div>
+          </div>`,
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email ented ", info.response);
+      }
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// Home page load..
+// ---------------------------------------
 const homePageLoad = async (req, res) => {
   try {
     let product = await ProductDB.find({});
@@ -79,6 +135,8 @@ const homePageLoad = async (req, res) => {
   }
 };
 
+// signup Page Loading
+// ---------------------------------------
 const loadSignup = async (req, res) => {
   try {
     res.render(
@@ -105,20 +163,8 @@ const loadSignup = async (req, res) => {
   }
 };
 
-// const loginPageLoad = async (req,res)=>{
-//     try {
-//         let user = req.session.user
-//         user ? res.redirect('/') :
-//         req.session.loginErr ? console.log("login error und") : null
-//         res.render('login',{
-//             loginErr:req.session.loginErr
-//         })
-//         req.session.loginErr=false
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
-
+// login page loading handll
+// ---------------------------------
 const loginPageLoad = async (req, res) => {
   try {
     res.render(
@@ -129,13 +175,16 @@ const loginPageLoad = async (req, res) => {
         verifyErr: req.session.verifyErr,
         blockErr: req.session.blockErr,
         verifyId: req.session.verifyErr ? req.session.verifyId : 0,
+        updatePass : req.session.updatePass
       },
       (err, html) => {
         if (!err) {
           req.session.loginErr = false; // Set loginErr to false after rendering
           req.session.verifyErr = false;
           req.session.blockErr = false;
-          req.session.verifyId = 0;
+          req.session.verifyId = 0;    
+          req.session.updatePass = 0;
+
           res.send(html); // Send the rendered HTML to the client
         } else {
           console.log(err.message);
@@ -147,14 +196,13 @@ const loginPageLoad = async (req, res) => {
   }
 };
 
+// login function handille here...
+// ---------------------------------
+
 const doLogin = async (req, res) => {
   try {
     let user = await User.findOne({ userName: req.body.userName });
-    // if(user){
-    //     let verified = user.verified===0 ? true : false
-    //     let blockStatus = user.block===0 ? false : true
-    // }
-    // console.log(user);
+
     if (user) {
       let verified = user.verified === 1 ? true : false;
       let blockStatus = user.block === 0 ? false : true;
@@ -189,30 +237,13 @@ const doLogin = async (req, res) => {
       console.log("login failed");
       res.redirect("/login");
     }
-    //
-    // if(user){
-    //     bcrypt.compare(req.body.password,user.password).then((status)=>{
-    //         if(status){
-    //             console.log("login success");
-    //             req.session.loggedIn = true;
-    //             req.session.user_id=user._id
-    //             res.redirect('/')
-
-    //         }else{
-    //             req.session.loginErr = 1;
-    //             res.redirect("/login");
-    //             console.log("login failed");
-    //         }
-    //     })
-    // }else{
-    //     req.session.loginErr = 1;
-    //     console.log("login failed");
-    //     res.redirect("/login");
-    // }
   } catch (error) {
     console.log(error.message);
   }
 };
+
+// logout function handlling here..
+// ---------------------------------
 
 const doLogout = async (req, res) => {
   try {
@@ -222,6 +253,9 @@ const doLogout = async (req, res) => {
     console.log(error.message);
   }
 };
+
+// when tha user signup data added functions handille here..
+// ---------------------------------
 
 const inserUser = async (req, res) => {
   try {
@@ -254,50 +288,34 @@ const inserUser = async (req, res) => {
               req.body.email,
               result._id
             );
-            res.render("otpValid", { userId: result._id, email: result.email });
+            res.render("otpValid", {
+              userId: result._id,
+              email: result.email,
+              forget: 0,
+            });
           }
         });
       }
     });
-    // let currentDate = new Date();
-    // let SecurePassword = await passwordEncrypt(req.body.password);
-    // const user = new User({
-    //   userName: req.body.userName,
-    //   fullName: req.body.fullName,
-    //   email: req.body.email,
-    //   password: SecurePassword,
-    //   verified: 0,
-    //   accountOpenAt: currentDate.toLocaleString(),
-    //   block: 0,
-    // });
-    // const result = await user.save();
-    // let otpVerify = await sentVerifyMail(
-    //   req.body.userName,
-    //   req.body.email,
-    //   result._id
-    // );
-    // res.render("otpValid", { userId: result._id, email: result.email });
   } catch (error) {
     res.send(error.message);
   }
 };
 
-// const productPageLoad = async(req,res)=>{
-//     try {
-//         res.render('product',{user:req.session.user_id})
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
+// OTP entering page load :get
+// ---------------------------------
 
 const optPageLoad = async (req, res) => {
   try {
     console.log("otpPage called");
-    res.render("otpValid");
+    res.render("otpValid", { forget: 0 });
   } catch (error) {
     console.log(error.message);
   }
 };
+
+// OTp reVerification  Handille here..
+// ---------------------------------
 
 const reVerifyUser = async (req, res) => {
   try {
@@ -307,19 +325,31 @@ const reVerifyUser = async (req, res) => {
       userData.email,
       userData._id
     );
-    res.render("otpValid", { userId: userData.id, email: userData.email });
+    res.render("otpValid", {
+      userId: userData.id,
+      email: userData.email,
+      forget: 0,
+    });
   } catch (error) {
     console.log(error.message);
   }
 };
+
+// otp validation process functions handille here..
+// ---------------------------------
 
 const otpValid = async (req, res) => {
   try {
     console.log(req.query.id);
     let num = req.body;
     if (req.query.userId) {
+
       console.log("expire called....");
       res.render("verifyNotfy", { wrong: 1, userId: req.query.userId });
+      console.log("otp expired..");
+    }else if(req.query.forget){
+      console.log("expire called....");
+      res.render("verifyNotfy", { wrong: 3, userId: 0 });
       console.log("otp expired..");
     } else {
       enterdOtp = "" + num.a + num.b + num.c + num.d + num.e + num.f;
@@ -341,37 +371,12 @@ const otpValid = async (req, res) => {
   }
 };
 
-// const profilePageLoad = async (req, res) => {
-//   try {
-//     userData = await takeUserData(req.session.user_id);
-//     req.session.updatePassErr = 1
-//     req.session.updatePass =
-//     res.render("userProfile", {
-//       user: userData ,
-//       updatePassErr:req.session.updatePassErr,
-//       updatePass:req.session.updatePass
-//     },
-//     (err,html)=>{
-//       if(!err){
-//         req.session.updatePassErr = false
-//         req.session.updatePass = false
-//         res.send(html);
-//       }
-//     }
-//     )
-
-//     // res.render("userProfile", { user: userData ,});
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
+// user Profile page load function
+// ---------------------------------
 
 const profilePageLoad = async (req, res) => {
   try {
-    // Assuming 'takeUserData' is an asynchronous function
     const userData = await takeUserData(req.session.user_id);
-
-    // Render the "userProfile" view with user data and session variables
     res.render(
       "userProfile",
       {
@@ -394,7 +399,6 @@ const profilePageLoad = async (req, res) => {
     );
   } catch (error) {
     console.log(error.message);
-    // Handle the error gracefully, e.g., send an error response
     res.status(500).send("Internal Server Error");
   }
 };
@@ -407,6 +411,8 @@ const verifyPageLoad = async (req, res) => {
   }
 };
 
+// this function use to collect user Data
+// -----------------------------------------
 const takeUserData = async (userId) => {
   try {
     return new Promise((resolve, reject) => {
@@ -418,6 +424,8 @@ const takeUserData = async (userId) => {
     console.log(error.message);
   }
 };
+
+//this use to update user Profile avatar Photo
 const updatePhoto = async (req, res) => {
   try {
     let updatePhoto = await User.updateOne(
@@ -451,6 +459,10 @@ const updatePhoto = async (req, res) => {
     console.log(error.message);
   }
 };
+
+// this function used to edit user data handlling
+// -----------------------------------------
+
 const updateUserData = async (req, res) => {
   try {
     let userData = req.body;
@@ -549,12 +561,6 @@ const cartPageLoad = async (req, res) => {
     } else {
       res.render("cart", { user: userData, cartItems: 0, total: 0 });
     }
-    // console.log(cartDetails.products);
-
-    // const userData = await takeUserData(req.session.user_id);
-    // let total = await calculateTotalPrice(req.session.user_id);
-    // console.log("total price : " + total);
-    // res.render("cart", { user: userData, cartItems: cartDetails,total });
   } catch (error) {
     console.log(error.message);
   }
@@ -662,16 +668,9 @@ const changeProductQuantity = async (userId, productId, newQuantityChange) => {
       return;
     }
 
-    // Debug: Print current values
     const currentQuantity = productInCart.quantity;
-    // console.log('Current Quantity:', currentQuantity);
-    // console.log('New Quantity Change:', newQuantityChange);
 
-    // Calculate the new quantity based on the change
     const newQuantity = currentQuantity + newQuantityChange;
-
-    // Debug: Print new quantity
-    // console.log('New Quantity:', newQuantity);
 
     if (newQuantity < 1) {
       console.log("Quantity cannot be less than 1.");
@@ -693,42 +692,8 @@ const changeProductQuantity = async (userId, productId, newQuantityChange) => {
   }
 };
 
-// const changeProductQuantity = async (userId, productId, newQuantity) => {
-//   try {
-//     console.log("userId :"+userId);
-//     console.log("productId :"+productId);
-//     console.log("newQuantity :"+newQuantity);
-
-//     // Find the user's cart based on the user's ID
-//     const cart = await CartDB.findOne({ user: userId });
-
-//     if (!cart) {
-//       console.log('User does not have a cart.');
-//       return;
-//     }
-
-//     // Locate the specific product within the cart by its ID
-//     const productInCart = cart.products.find(
-//       (cartProduct) => cartProduct.product.toString() === productId.toString()
-//     );
-
-//     if (!productInCart) {
-//       console.log('Product not found in the cart.');
-//       return;
-//     }
-
-//     // Update the quantity of the product
-//     productInCart.quantity = newQuantity;
-
-//     // Save the updated cart back to the database
-//     let result = await cart.save();
-//     console.log('Product quantity updated successfully.');
-//     return result
-
-//   } catch (error) {
-//     console.error('Error updating product quantity:', error.message);
-//   }
-// };
+// cart product qty changing and handill function
+// -----------------------------------------
 
 const productQuantityHandlling = async (req, res) => {
   try {
@@ -770,6 +735,82 @@ const removeCartItem = async (req, res) => {
   }
 };
 
+// forgetpassword
+// ------------------
+const forgetpasswordPageLoad = async (req, res) => {
+  try {
+    res.render("forgotpass",{wrong:0});
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// manage forgetpassword
+// -------------------------
+const manageForgetPassword = async (req, res) => {
+  try {
+    console.log(req.body.email);
+    let existUser = await User.findOne({ email: req.body.email });
+    if (existUser) {
+      console.log(existUser.userName);
+      let sendMail = await sentVerifyMailForForgetPass(
+        existUser.userName,
+        existUser.email
+      );
+      console.log(sendMail);
+      res.render("otpValid", {
+        forget: 1,
+        userId: existUser._id,
+        email: existUser.email,
+      });
+    } else {
+      console.log("This Email not exist");
+      res.render("forgotpass",{wrong:1});
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const forgetOTPpageLoad = async (req, res) => {
+  try {
+    // console.log(req.body);
+    num = req.body;
+    enterdOtp = "" + num.a + num.b + num.c + num.d + num.e + num.f;
+    if(otp==enterdOtp){
+      console.log("otp is correct");
+      res.render('newpassword',{userId:req.query.id})
+    }else{
+      console.log("otp is incorrect");
+      res.render("verifyNotfy", { userId: 0, wrong: 2.5 });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+// set new user passs
+// ------------------
+const createNewpassword = async(req,res)=>{
+  try {
+    console.log(req.body.password);
+    let SecurePassword = await bcrypt.hash(req.body.password,10)
+    let updatePass = await User.updateOne({_id:req.query.id},{$set:{password:SecurePassword}})
+    console.log(updatePass);
+    req.session.updatePass = 1;
+    res.redirect('/login')
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
+
+
+
+
+// ===============================
 // exporting
 // ---------------------------
 module.exports = {
@@ -791,4 +832,8 @@ module.exports = {
   addtoCart,
   productQuantityHandlling,
   removeCartItem,
+  forgetpasswordPageLoad,
+  manageForgetPassword,
+  forgetOTPpageLoad,
+  createNewpassword
 };

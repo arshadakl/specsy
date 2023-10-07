@@ -32,16 +32,32 @@
               <h4 class="font-monospace text-danger">The OTP has expired</h4>
               <p class="font-monospace  text-center">OTPs are typically valid for a short period, and you might need to request a new one.</p>
               <a href="/reotp?id=<%- userId %>" class="btn btn-dark">request again</a>
+
               <%}else if(wrong==2){%>
+
                 <h1><i class="fa-regular fa-circle-xmark" style="color: #e81717;"></i></h1>
               <h4 class="font-monospace text-danger">The OTP you entered is incorrect</h4>
               <p class="font-monospace  text-center">Please request a new OTP to proceed.</p>
               <a href="/reotp?id=<%- userId %>" class="btn btn-dark">Request again</a>
-              <% }else{ %>
+              <%}else if(wrong==2.5){%>
+
+                <h1><i class="fa-regular fa-circle-xmark" style="color: #e81717;"></i></h1>
+              <h4 class="font-monospace text-danger">The OTP you entered is incorrect</h4>
+              <a href="/" class="btn btn-dark">Home</a>
+
+              <% }else if(wrong==3){ %>
+
+                <h1><i class="fa-regular fa-circle-xmark" style="color: #e81717;"></i></h1>
+              <h4 class="font-monospace text-danger">The OTP has expired</h4>
+              <p class="font-monospace  text-center">OTPs are typically valid for a short period</p>
+              <a href="/" class="btn btn-dark">Go Home</a>
+
+              <%} else{ %>
+
                 <h1><i class="fa-regular fa-circle-check" style="color: #6be109;"></i></h1>
               <h4 class="font-monospace text-success">Verification Successful</h4>
               <p class="font-monospace  text-center">Your account has been successfully verified. You can now access all the features and services associated with your account.</p>
-              <a href="/" class="btn btn-outline-dark">Home page</a>
+              <a href="/login" class="btn btn-outline-dark">Login Now</a>
               <% } %>  
                 
 

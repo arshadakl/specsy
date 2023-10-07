@@ -22,6 +22,7 @@ const productController = require('../controllers/productsController')
 
 router.get('/',userController.homePageLoad)
 
+// auth related 
 router.get('/signup',auth.isLogout,userController.loadSignup)
 router.post("/signup",auth.isLogout,userController.inserUser)
 
@@ -29,8 +30,15 @@ router.get('/login',auth.isLogout,userController.loginPageLoad)
 router.post('/login',auth.isLogout,userController.doLogin)
 router.get('/logout',userController.doLogout)
 
+// passsword manage related routers
 router.post('/changepassword',userController.changepassword)
 
+router.get('/forgetpassword',userController.forgetpasswordPageLoad)
+router.post('/forgetpassword',userController.manageForgetPassword)
+router.post('/forgetotp',userController.forgetOTPpageLoad)
+router.post('/createnewpass',userController.createNewpassword)
+
+// otp related routers
 router.get('/otp',userController.optPageLoad)
 router.post('/otp',userController.otpValid)
 router.get('/expire',userController.otpValid)
@@ -38,16 +46,16 @@ router.get('/expire',userController.otpValid)
 router.get('/reotp',userController.reVerifyUser)
 router.get('/verifypage',userController.verifyPageLoad)
 
-
+// user profile related routers
 router.get('/profile',auth.isLogin,userController.profilePageLoad)
 router.post('/updateUser',auth.isLogin,userController.updateUserData)
 router.post('/updatePhoto',auth.isLogin,fileUpload.upload.single("image"),userController.updatePhoto)
 
+// user cart related routers
 router.get('/cart',auth.isLogin,userController.cartPageLoad)
-
 router.post('/addtocart',auth.isLogin,userController.addtoCart)
 router.post('/changeqty',auth.isLogin,userController.productQuantityHandlling)
-router.delete('/removecartproduct',userController.removeCartItem)
+router.delete('/removecartproduct',auth.isLogin,userController.removeCartItem)
 
 // product related routers
 router.get('/product',productController.singleProductLoad)
