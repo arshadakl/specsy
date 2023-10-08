@@ -16,6 +16,7 @@ router.set('views','./views/user/')
 
 const userController = require("../controllers/userController")
 const productController = require('../controllers/productsController')
+const orderController = require('../controllers/orderController')
 
 
 
@@ -59,6 +60,12 @@ router.delete('/removecartproduct',auth.isLogin,userController.removeCartItem)
 
 // product related routers
 router.get('/product',productController.singleProductLoad)
+
+// order related routers
+router.get('/checkout',auth.isLogin,orderController.checkoutPageLoad)
+
+//add address 
+router.post('/shippingaddress',userController.addShippingAddress)
 
 
 

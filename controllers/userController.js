@@ -1,6 +1,7 @@
 const User = require("../models/userModel").User;
 const ProductDB = require("../models/productsModel").product;
 const CartDB = require("../models/userModel").Cart;
+const addressDB = require("../models/userModel").UserAddress;
 const bcrypt = require("bcrypt");
 const nodemiler = require("nodemailer");
 require("dotenv").config();
@@ -175,14 +176,14 @@ const loginPageLoad = async (req, res) => {
         verifyErr: req.session.verifyErr,
         blockErr: req.session.blockErr,
         verifyId: req.session.verifyErr ? req.session.verifyId : 0,
-        updatePass : req.session.updatePass
+        updatePass: req.session.updatePass,
       },
       (err, html) => {
         if (!err) {
           req.session.loginErr = false; // Set loginErr to false after rendering
           req.session.verifyErr = false;
           req.session.blockErr = false;
-          req.session.verifyId = 0;    
+          req.session.verifyId = 0;
           req.session.updatePass = 0;
 
           res.send(html); // Send the rendered HTML to the client
@@ -213,20 +214,20 @@ const doLogin = async (req, res) => {
             req.session.verifyErr = 1;
             req.session.verifyId = user._id;
             console.log("veryfy Error");
-            res.redirect("/login");
+            return res.redirect("/login");
           } else if (blockStatus) {
             req.session.blockErr = 1;
             console.log("block Error");
-            res.redirect("/login");
+            return res.redirect("/login");
           } else {
             console.log("login success");
             req.session.loggedIn = true;
             req.session.user_id = user._id;
-            res.redirect("/");
+            return res.redirect("/");
           }
         } else {
           req.session.loginErr = 1;
-          res.redirect("/login");
+          return res.redirect("/login");
           console.log("login failed");
         }
       });
@@ -235,7 +236,7 @@ const doLogin = async (req, res) => {
     } else {
       req.session.loginErr = 1;
       console.log("login failed");
-      res.redirect("/login");
+      return res.redirect("/login");
     }
   } catch (error) {
     console.log(error.message);
@@ -343,11 +344,10 @@ const otpValid = async (req, res) => {
     console.log(req.query.id);
     let num = req.body;
     if (req.query.userId) {
-
       console.log("expire called....");
       res.render("verifyNotfy", { wrong: 1, userId: req.query.userId });
       console.log("otp expired..");
-    }else if(req.query.forget){
+    } else if (req.query.forget) {
       console.log("expire called....");
       res.render("verifyNotfy", { wrong: 3, userId: 0 });
       console.log("otp expired..");
@@ -553,13 +553,17 @@ const cartPageLoad = async (req, res) => {
 
     // console.log(cartDetails.products[0].product.product_name);
     if (cartDetails) {
-      console.log(cartDetails.products);
+      // console.log(cartDetails.products);
 
       let total = await calculateTotalPrice(req.session.user_id);
-      console.log("total price : " + total);
-      res.render("cart", { user: userData, cartItems: cartDetails, total });
+      // console.log("total price : " + total);
+      return res.render("cart", {
+        user: userData,
+        cartItems: cartDetails,
+        total,
+      });
     } else {
-      res.render("cart", { user: userData, cartItems: 0, total: 0 });
+      return res.render("cart", { user: userData, cartItems: 0, total: 0 });
     }
   } catch (error) {
     console.log(error.message);
@@ -739,7 +743,7 @@ const removeCartItem = async (req, res) => {
 // ------------------
 const forgetpasswordPageLoad = async (req, res) => {
   try {
-    res.render("forgotpass",{wrong:0});
+    res.render("forgotpass", { wrong: 0 });
   } catch (error) {
     console.log(error.message);
   }
@@ -765,7 +769,7 @@ const manageForgetPassword = async (req, res) => {
       });
     } else {
       console.log("This Email not exist");
-      res.render("forgotpass",{wrong:1});
+      res.render("forgotpass", { wrong: 1 });
     }
   } catch (error) {
     console.log(error.message);
@@ -777,10 +781,10 @@ const forgetOTPpageLoad = async (req, res) => {
     // console.log(req.body);
     num = req.body;
     enterdOtp = "" + num.a + num.b + num.c + num.d + num.e + num.f;
-    if(otp==enterdOtp){
+    if (otp == enterdOtp) {
       console.log("otp is correct");
-      res.render('newpassword',{userId:req.query.id})
-    }else{
+      res.render("newpassword", { userId: req.query.id });
+    } else {
       console.log("otp is incorrect");
       res.render("verifyNotfy", { userId: 0, wrong: 2.5 });
     }
@@ -790,25 +794,75 @@ const forgetOTPpageLoad = async (req, res) => {
 };
 // set new user passs
 // ------------------
-const createNewpassword = async(req,res)=>{
+const createNewpassword = async (req, res) => {
   try {
     console.log(req.body.password);
-    let SecurePassword = await bcrypt.hash(req.body.password,10)
-    let updatePass = await User.updateOne({_id:req.query.id},{$set:{password:SecurePassword}})
+    let SecurePassword = await bcrypt.hash(req.body.password, 10);
+    let updatePass = await User.updateOne(
+      { _id: req.query.id },
+      { $set: { password: SecurePassword } }
+    );
     console.log(updatePass);
     req.session.updatePass = 1;
-    res.redirect('/login')
-
+    res.redirect("/login");
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
+// insert user shipping address
+// ------------------------------------
+const addShippingAddress = async (req, res) => {
+  try {
+    let addrData = req.body
+    let userAddress = await addressDB.findOne({ userId: req.session.user_id });
+    if (!userAddress) {
+      userAddress = new addressDB({
+        userId: req.session.user_id,
+        addresses: [
+          {
+            country: addrData.country,
+            fullName: addrData.fullName,
+            mobileNumber: addrData.mobileNumber,
+            city: addrData.city,
+            state: addrData.state,
+            pincode: addrData.pincode,
+          },
+        ],
+      });
+    } else {
+      // If the user's address document already exists, add a new address to the array
+      userAddress.addresses.push({
+        country: addrData.country,
+        fullName: addrData.fullName,
+        mobileNumber: addrData.mobileNumber,
+        city: addrData.city,
+        state: addrData.state,
+        pincode: addrData.pincode,
+      });
+    }
 
-
-
-
-
+    // Save the updated userAddress document
+    let result = await userAddress.save();
+    // let addr = req.body;
+    // const address = new addressDB({
+    //   userId:req.session.user_id,
+    //   country: addr.country,
+    //   fullName: addr.fullName,
+    //   mobileNumber: addr.mobileNumber,
+    //   city: addr.city,
+    //   state: addr.state,
+    //   pincode: addr.pincode,
+    // });
+    // let result  = await address.save()
+    console.log(result);
+    let total = await calculateTotalPrice(req.session.user_id);
+    // res.render("checkout", { user: req.session.user_id, total });
+    res.redirect('/checkout')
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 // ===============================
 // exporting
@@ -835,5 +889,6 @@ module.exports = {
   forgetpasswordPageLoad,
   manageForgetPassword,
   forgetOTPpageLoad,
-  createNewpassword
+  createNewpassword,
+  addShippingAddress,
 };
