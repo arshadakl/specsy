@@ -14,7 +14,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/">Home</a></li>
                         <li class="breadcrumb-item " aria-current="page">Shopping Cart</li>
-                        <li class="breadcrumb-item active" aria-current="page">Delivery address</li>
+                        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
 
                     </ol>
                 </div><!-- End .container -->
@@ -27,28 +27,58 @@
                             <div class="col-lg-9 cart-item-box">
                                 <h5 class="text-dark mb-3">1. &nbsp; Select a delivery address</h5>
 
-                               <% if(address!=0){%>
-                               <% for(i=address.length-1;i>=0;i--) {%>
-                                <label class="p-3 border rounded-4 m-2 custom-label">
-                                    <div class="form-check d-flex align-items-center mx-4">
-                                        <input class="form-check-input " type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault1" <% if(i==address.length-1){ %> checked <%}%> >
-                                        <div class="mx-5">
-                                            <p class="text-dark"><b><%=address[i].fullName%></b> , <%=address[i].city%>, <%=address[i].state%>. Contanct Number:
-                                                 <b style="color: #043a6c;">
-                                                     <span class="material-symbols-outlined" style="font-size: 13px;">smartphone</span>
-                                                     <%=address[i].mobileNumber%></b></p>
-                                            <p><%=address[i].pincode%>, <%=address[i].country%></p>
-                                        </div>
-                                    </div>
-                                </label>
-                                <%}%>
-                                <%}else{%>
-                                    <h5>add new address the select</h5>
-                                <%}%>
-                                
+                                <% if(address!=0){%>
+                                    <form action="/checkout" method="post" id="addressForm">
+                                    <% for(i=address.length-1;i>=0;i--) {%>
 
-                                <!-- <label class="p-2 border rounded-4 m-2 custom-label">
+                                            <label class="p-3 border rounded-4 m-2 custom-label">
+                                                <div class="form-check d-flex align-items-center mx-4">
+                                                    <input class="form-check-input " type="radio" value="<%=address[i]._id %>"
+                                                        name="address" id="Radio<%=address[i]._id %>" <%
+                                                        if(i==address.length-1){ %> checked <%}%>
+                                                        >
+                                                        <div class="mx-5">
+                                                            <p class="text-dark"><b>
+                                                                    <%=address[i].fullName%>
+                                                                </b> , <%=address[i].city%>, <%=address[i].state%>.
+                                                                        Contanct
+                                                                        Number:
+                                                                        <b style="color: #043a6c;">
+                                                                            <span class="material-symbols-outlined"
+                                                                                style="font-size: 13px;">smartphone</span>
+                                                                            <%=address[i].mobileNumber%>
+                                                                        </b></p>
+                                                            <p>
+                                                                <%=address[i].pincode%>, <%=address[i].country%>
+                                                            </p>
+                                                        </div>
+                                                </div>
+                                            </label>
+                                            
+                                            
+                                            <%}%>
+                                        </form>
+                                        
+                                            <%}else{%>
+                                                <div class=" text-center w-100 card">
+                                                    <h6 class="mt-2 ">You have no shipping Address</h6>
+                                                    <p class="">Kindly add a shipping address to proceed.</p>
+                                                    <button type="button"
+                                                        class="btn btn-outline-primary-2 mx-auto  mt-1 "
+                                                        data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                        style="border-radius: 0px; font-size: 13px; width: 30rem;"> +
+                                                        Add a new
+                                                        address</button>
+                                                </div>
+                                                <%}%>
+                                                <%if(address!=0){%>
+                                                <button type="button" class="btn btn-outline-primary-2 mt-3"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                style="border-radius: 0px; font-size: 13px;"> + Add a new
+                                                address</button>
+                                                <%}%>
+
+                                                    <!-- <label class="p-2 border rounded-4 m-2 custom-label">
                                     <div class="form-check d-flex align-items-center mx-4">
                                         <input class="form-check-input" type="radio" name="flexRadioDefault"
                                             id="flexRadioDefault2">
@@ -59,34 +89,38 @@
                                     </div>
                                 </label> -->
 
-                                <button type="button" class="btn btn-outline-primary-2 mt-3" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal" style="border-radius: 0px;">Add a new
-                                    address</button>
+                                                    <!-- <button type="button" class="btn btn-outline-primary-2 mt-3" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal" style="border-radius: 0px; font-size: 13px;"> + Add a new
+                                    address</button> -->
 
 
 
 
-                                <hr>
+                                                    <hr>
 
-                                <div class=" py-4  mt-2  " style="border-radius: 10px; background: #F3F3F9;">
-                                    <div class="form-check d-flex align-items-center mx-4 ">
-                                        <h5>2. Payment method</h5>
-                                    </div>
-                                </div>
-                                <div class=" py-4  mt-1  " style="border-radius: 10px; background: #F3F3F9;">
-                                    <div class="form-check d-flex align-items-center mx-4 ">
-                                        <h5>3. Items and delivery</h5>
-                                    </div>
-                                </div>
+                                                    <div class=" py-4  mt-2  "
+                                                        style="border-radius: 10px; background: #F3F3F9;">
+                                                        <div class="form-check d-flex align-items-center mx-4 ">
+                                                            <h5>2. Payment method</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class=" py-4  mt-1  "
+                                                        style="border-radius: 10px; background: #F3F3F9;">
+                                                        <div class="form-check d-flex align-items-center mx-4 ">
+                                                            <h5>3. Items and delivery</h5>
+                                                        </div>
+                                                    </div>
 
                             </div><!-- End .col-lg-9 -->
                             <aside class="col-lg-3">
                                 <div class="summary summary-cart">
-                                    <button class="btn btn-outline-primary-2  btn-block py-3"
+                                    <% if(address!=0){%>
+                                    <button id="addressSubmitBtn" class="btn btn-outline-primary-2  btn-block py-3"
                                         style="background-color: #000; color: #fff; "
                                         onMouseOver="this.style.background='#575757'"
                                         onMouseOut="this.style.background='#000'">Use This
                                         Address</button>
+                                        <%}%>
                                     <h3 class="summary-title"></h3>
 
                                     <table class="table table-summary">
@@ -156,20 +190,20 @@
                                     name)
                                 </label>
                                 <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="fullName"  required>
+                                    name="fullName" required>
                             </div>
                             <div class="mb-1">
                                 <label for="exampleFormControlInput1" class="form-label m-0">Mobile number
                                 </label>
                                 <input type="number" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="mobileNumber"  required>
+                                    name="mobileNumber" required>
                             </div>
                             <div class="mb-1">
                                 <label for="exampleFormControlInput1" class="form-label m-0">Area, Street, Sector,
                                     Village
                                 </label>
                                 <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="city"  required>
+                                    name="city" required>
                             </div>
 
                             <div class=" row ">
@@ -177,7 +211,7 @@
                                     <label for="exampleFormControlInput1" class="form-label m-0">State
                                     </label>
                                     <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                        name="state"  required>
+                                        name="state" required>
                                 </div>
                                 <div class=" col-6">
                                     <label for="exampleFormControlInput1" class="form-label m-0">Pincode
@@ -212,6 +246,11 @@
                 // Add the "checked" class to the clicked label
                 $(this).addClass("checked");
             });
+
+            // form submit handil
+            document.getElementById("addressSubmitBtn").addEventListener("click",function(){
+                document.getElementById("addressForm").submit();
+            })
         </script>
 
         <%- include('../user/layouts/footer.ejs') %>

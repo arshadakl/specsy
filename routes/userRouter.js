@@ -63,9 +63,12 @@ router.get('/product',productController.singleProductLoad)
 
 // order related routers
 router.get('/checkout',auth.isLogin,orderController.checkoutPageLoad)
-
+router.post('/checkout',auth.isLogin,orderController.reciveShippingAddress)
+router.post('/checkout/paymentselection',auth.isLogin,orderController.paymentSelectionManage)
+router.get('/checkout/proceed')
 //add address 
 router.post('/shippingaddress',userController.addShippingAddress)
+
 
 
 

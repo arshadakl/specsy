@@ -1,0 +1,184 @@
+<%- include('../user/layouts/header.ejs') %>
+    <%- include('../user/layouts/navbar.ejs') %>
+
+
+        <main class="main">
+            <div class="page-header text-center" style="background-image: url('/user/images/page-header-bg.jpg')">
+                <div class="container">
+                    <h1 class="page-title text-white">Checkout</h1>
+                </div><!-- End .container -->
+            </div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item " aria-current="page">Shopping Cart</li>
+                        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="page-content ">
+                <div class="cart mb-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-9 cart-item-box">
+
+                                <div class=" py-4   mb-2 " style="border-radius: 10px; background: #F3F3F9;">
+                                    <div class="form-check d-flex align-items-start flex-column mx-4 py-3">
+                                        <div>
+                                            <h6>1. Delivery Address</h6>
+
+                                        </div>
+                                        <div class="form-check d-flex align-items-center flex-column co mx-4">
+
+                                            <div class="">
+                                                <p class="text-dark"><b>
+                                                        <%= address.fullName %>
+                                                    </b> , <%= address.city %>, <%= address.state %>.
+                                                            Contanct
+                                                            Number:
+                                                            <b style="color: #043a6c;">
+                                                                <span class="material-symbols-outlined"
+                                                                    style="font-size: 13px;">smartphone</span>
+                                                                <%= address.mobileNumber %>
+                                                            </b>
+                                                </p>
+                                                <p>
+                                                    <%= address.pincode %>, <%= address.country %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" py-4    " style="border-radius: 10px; background: #F3F3F9;">
+                                    <div class="form-check d-flex align-items-center mx-4 ">
+                                        <h6 class="pt-2">2. <b><%= payment %></b> Payment method choosed</h6>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class=" py-4  mt-1  " style="border-radius: 10px; background: #F3F3F9;">
+                                    <div class="form-check d-flex  flex-column mx-4 ">
+                                        <h5 class="mt-3">3. Items and delivery</h5><br>
+                                        <!-- <hr> -->
+
+
+                                        <div class="col-12 row d-flex justify-content-center">
+                                            <% for(i=0;i<cartItems.products.length;i++){ %>
+                                            <div class="card   col-4 m-1 p-2 d-flex flex-column" style="border-radius: 7px; ">
+                                                <div class="row g-0 ">
+                                                    <div class="col-12 d-flex align-items-center">
+                                                        <img style="width: 150px; height: 150px; border-radius: 17px;"
+                                                            src="/products/images/<%= cartItems.products[i].product.images.image1%>"
+                                                            class="card-img-start" alt="...">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="card-body">
+                                                            <h6 class="card-title">
+                                                                <%= cartItems.products[i].product.product_name %>
+                                                            </h6>
+                                                            <p class="card-text">₹<%= cartItems.products[i].product.price %>
+                                                            </p>
+                                                            <p class="card-text"><small class="text-body-secondary">
+                                                               qty: <%= cartItems.products[i].quantity %>
+                                                                </small></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <%}%>
+
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div><!-- End .col-lg-9 -->
+                            <aside class="col-lg-3">
+                                <div class="summary summary-cart">
+
+                                    <button class="btn btn-outline-primary-2  btn-block py-3"
+                                        style="background-color: #000; color: #fff; "
+                                        onMouseOver="this.style.background='#575757'"
+                                        onMouseOut="this.style.background='#000'" id="paymentBtn" disabled>Proceed to
+                                        Checkout</button>
+
+                                    <h3 class="summary-title"></h3>
+
+                                    <table class="table table-summary">
+                                        <tbody>
+
+                                            <tr class="summary-subtotal">
+                                                <td>Subtotal:</td>
+                                                <td>₹<span id="subTotalDisplay">
+                                                        <%= total%>
+                                                    </span></td>
+                                            </tr><!-- End .summary-subtotal -->
+
+
+
+
+                                            <tr class="summary-shipping-row">
+                                                <td>
+                                                    <label class="" for="standart-shipping">Discount:</label>
+                                                </td>
+                                                <td>0.00</td>
+                                            </tr><!-- End .summary-shipping-row -->
+
+
+
+
+
+                                            <tr class="summary-total">
+                                                <td>Total:</td>
+                                                <td>₹<span id="totalDisplay">
+                                                        <%=total%>
+                                                    </span></td>
+                                            </tr><!-- End .summary-total -->
+                                        </tbody>
+                                    </table><!-- End .table table-summary -->
+
+                                    <!-- <button class="btn btn-outline-primary-2 btn-order btn-block ">Use This
+                                    Address</button> -->
+                                </div><!-- End .summary -->
+                            </aside><!-- End .col-lg-3 -->
+                        </div><!-- End .row -->
+                    </div><!-- End .container -->
+                </div><!-- End .cart -->
+            </div><!-- End .page-content -->
+        </main><!-- End .main -->
+
+
+        <script>
+            // form submit handil
+            document.getElementById("paymentBtn").addEventListener("click", function () {
+                document.getElementById("paymentForm").submit();
+            })
+        </script>
+        <script>
+            // Get references to the radio buttons and the submit button
+            const codRadio = document.getElementById('codRadio');
+            const onlineRadio = document.getElementById('onlineRadio');
+            const paymentBtn = document.getElementById('paymentBtn');
+
+            // Add event listeners to the radio buttons
+            codRadio.addEventListener('change', toggleButtonState);
+            onlineRadio.addEventListener('change', toggleButtonState);
+
+            // Function to toggle the button state based on the radio button selection
+            function toggleButtonState() {
+                if (codRadio.checked || onlineRadio.checked) {
+                    paymentBtn.disabled = false; // Enable the button if a radio button is selected
+                } else {
+                    paymentBtn.disabled = true; // Disable the button if no radio button is selected
+                }
+            }
+
+        </script>
+
+        <%- include('../user/layouts/footer.ejs') %>

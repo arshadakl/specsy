@@ -4,7 +4,7 @@ const isLogin = async(req,res,next)=>{
     try {
         if(req.session.user_id){}
         else{
-            res.redirect('/login')
+           return res.redirect('/login')
         }
         next()
 
@@ -17,7 +17,7 @@ const isLogin = async(req,res,next)=>{
 const isLogout = async(req,res,next)=>{
     try {
         if(req.session.user_id){
-            res.redirect('/')
+           return res.redirect('/')
         }
         next()
     } catch (error) {

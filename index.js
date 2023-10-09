@@ -23,7 +23,7 @@ app.use(nocache());
 app.use('/',userRouter)
 app.use('/admin',adminRouter)
 
-app.use((req, res, next) => {
+app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'views', '404.html'))
   })
 

@@ -855,7 +855,7 @@ const addShippingAddress = async (req, res) => {
     //   pincode: addr.pincode,
     // });
     // let result  = await address.save()
-    console.log(result);
+    // console.log(result);
     let total = await calculateTotalPrice(req.session.user_id);
     // res.render("checkout", { user: req.session.user_id, total });
     res.redirect('/checkout')
