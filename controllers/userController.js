@@ -864,6 +864,17 @@ const addShippingAddress = async (req, res) => {
   }
 };
 
+
+
+
+const testLoad = async(req,res)=>{
+  try {
+    res.render('orderStatus',{user:0})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 // ===============================
 // exporting
 // ---------------------------
@@ -891,4 +902,5 @@ module.exports = {
   forgetOTPpageLoad,
   createNewpassword,
   addShippingAddress,
+  testLoad
 };

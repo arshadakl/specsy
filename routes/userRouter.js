@@ -65,11 +65,11 @@ router.get('/product',productController.singleProductLoad)
 router.get('/checkout',auth.isLogin,orderController.checkoutPageLoad)
 router.post('/checkout',auth.isLogin,orderController.reciveShippingAddress)
 router.post('/checkout/paymentselection',auth.isLogin,orderController.paymentSelectionManage)
-router.get('/checkout/proceed')
+router.post('/checkout/placeorder',auth.isLogin,orderController.placeOrderManage)
 //add address 
 router.post('/shippingaddress',userController.addShippingAddress)
 
 
-
+router.get('/test',userController.testLoad)
 
 module.exports = router

@@ -56,44 +56,91 @@
 
                                 <div class=" py-4    " style="border-radius: 10px; background: #F3F3F9;">
                                     <div class="form-check d-flex align-items-center mx-4 ">
-                                        <h6 class="pt-2">2. <b><%= payment %></b> Payment method choosed</h6>
+                                        <h6 class="pt-2">2. <b>
+                                                <%= payment %>
+                                            </b> Payment method choosed</h6>
                                     </div>
                                 </div>
                                 <hr>
                                 <div class=" py-4  mt-1  " style="border-radius: 10px; background: #F3F3F9;">
                                     <div class="form-check d-flex  flex-column mx-4 ">
-                                        <h5 class="mt-3">3. Items and delivery</h5><br>
                                         <!-- <hr> -->
 
 
-                                        <div class="col-12 row d-flex justify-content-center">
+                                        <div class="col-12 row d-flex justify-content-end ">
+                                            <div class="col-12">
+                                                <h5 class="mt-3">3. Items and delivery</h5>
+                                                <hr>
+                                            </div>
                                             <% for(i=0;i<cartItems.products.length;i++){ %>
-                                            <div class="card   col-4 m-1 p-2 d-flex flex-column" style="border-radius: 7px; ">
-                                                <div class="row g-0 ">
-                                                    <div class="col-12 d-flex align-items-center">
-                                                        <img style="width: 150px; height: 150px; border-radius: 17px;"
-                                                            src="/products/images/<%= cartItems.products[i].product.images.image1%>"
-                                                            class="card-img-start" alt="...">
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <div class="card-body">
-                                                            <h6 class="card-title">
-                                                                <%= cartItems.products[i].product.product_name %>
-                                                            </h6>
-                                                            <p class="card-text">₹<%= cartItems.products[i].product.price %>
-                                                            </p>
-                                                            <p class="card-text"><small class="text-body-secondary">
-                                                               qty: <%= cartItems.products[i].quantity %>
-                                                                </small></p>
+                                                <div class="card col-9 m-1 p-2 d-flex bg-light"
+                                                    style="border-radius: 7px; ">
+                                                    <div class="row g-0 ">
+                                                        <div class="col-4 d-flex align-items-center px-5">
+                                                            <img style="width: 15rem;  border-radius: 17px;"
+                                                                src="/products/images/<%= cartItems.products[i].product.images.image1%>"
+                                                                class="card-img-start" alt="...">
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title pt-2">
+                                                                    <%= cartItems.products[i].product.product_name %>
+                                                                </h6>
+                                                                <p class="card-text fs-1">₹<%=
+                                                                        cartItems.products[i].product.price %>
+                                                                </p>
+                                                                <% const
+                                                                    description=cartItems.products[i].product.description.split(' ').slice(0, 10).join(' ');
+                                                                     %> <p class="card-text" id="productDescription"><%= description %>...</p>
+                                                                <p class="card-text">
+                                                                    Qty: <%= cartItems.products[i].quantity %>
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <%}%>
+                                                <%}%>
+                                                <div class="col-12">
+                                                    <hr>
+                                                    <h5 class="mt-3">Order Summary</h5>
+                                                    <p class="mt-1">Delivery Expect on  <b class="text-success"><%= deliveryDate %></b></p>
+                                                    <table class="table table-summary">
+                                                        <tbody>
+
+                                                            <tr class="summary-subtotal">
+                                                                <td>Subtotal:</td>
+                                                                <td>₹<span id="subTotalDisplay">
+                                                                        <%= total%>
+                                                                    </span></td>
+                                                            </tr>
+
+                                                            <tr class="summary-shipping-row">
+                                                                <td>
+                                                                    <label class=""
+                                                                        for="standart-shipping">Discount:</label>
+                                                                </td>
+                                                                <td>0.00</td>
+                                                            </tr>
+
+                                                            <tr class="summary-total">
+                                                                <td>Total:</td>
+                                                                <td>₹<span id="totalDisplay">
+                                                                        <%=total%>
+                                                                    </span></td>
+                                                            </tr><!-- End .summary-total -->
+                                                        </tbody>
+                                                    </table><!-- End .table table-summary -->
+                                                    <hr>
+                                                    <button class="btn btn-outline-primary-2 mb-4 btn-block py-4 "
+                                        style="background-color: #000; color: #fff; border-radius: 10px; font-size: 18px;"
+                                        onMouseOver="this.style.background=' #575757'"
+                                        onMouseOut="this.style.background='#000'" id="addressBtn"
+                                        >Place Order</button>
+
+                                                </div>
 
 
                                         </div>
-
 
                                     </div>
                                 </div>
@@ -102,63 +149,77 @@
                             <aside class="col-lg-3">
                                 <div class="summary summary-cart">
 
-                                    <button class="btn btn-outline-primary-2  btn-block py-3"
+                                    <!-- <button class="btn btn-outline-primary-2  btn-block py-3 "
                                         style="background-color: #000; color: #fff; "
-                                        onMouseOver="this.style.background='#575757'"
-                                        onMouseOut="this.style.background='#000'" id="paymentBtn" disabled>Proceed to
-                                        Checkout</button>
+                                        onMouseOver="this.style.background=' #575757'"
+                                        onMouseOut="this.style.background='#000'" id="addressBtn2"
+                                        >Place Order</button> -->
 
-                                    <h3 class="summary-title"></h3>
+                                                                    <!-- <h3 class="summary-title"></h3> -->
 
-                                    <table class="table table-summary">
-                                        <tbody>
+                                                                    <table class="table table-summary">
+                                                                        <tbody>
 
-                                            <tr class="summary-subtotal">
-                                                <td>Subtotal:</td>
-                                                <td>₹<span id="subTotalDisplay">
-                                                        <%= total%>
-                                                    </span></td>
-                                            </tr><!-- End .summary-subtotal -->
-
-
-
-
-                                            <tr class="summary-shipping-row">
-                                                <td>
-                                                    <label class="" for="standart-shipping">Discount:</label>
-                                                </td>
-                                                <td>0.00</td>
-                                            </tr><!-- End .summary-shipping-row -->
+                                                                            <tr class="summary-subtotal">
+                                                                                <td>Subtotal:</td>
+                                                                                <td>₹<span id="subTotalDisplay">
+                                                                                        <%= total%>
+                                                                                    </span></td>
+                                                                            </tr><!-- End .summary-subtotal -->
 
 
 
 
+                                                                            <tr class="summary-shipping-row">
+                                                                                <td>
+                                                                                    <label class=""
+                                                                                        for="standart-shipping">Discount:</label>
+                                                                                </td>
+                                                                                <td>0.00</td>
+                                                                            </tr><!-- End .summary-shipping-row -->
 
-                                            <tr class="summary-total">
-                                                <td>Total:</td>
-                                                <td>₹<span id="totalDisplay">
-                                                        <%=total%>
-                                                    </span></td>
-                                            </tr><!-- End .summary-total -->
-                                        </tbody>
-                                    </table><!-- End .table table-summary -->
 
-                                    <!-- <button class="btn btn-outline-primary-2 btn-order btn-block ">Use This
+
+
+
+                                                                            <tr class="summary-total">
+                                                                                <td>Total:</td>
+                                                                                <td>₹<span id="totalDisplay">
+                                                                                        <%=total%>
+                                                                                    </span></td>
+                                                                            </tr><!-- End .summary-total -->
+                                                                        </tbody>
+                                                                    </table><!-- End .table table-summary -->
+
+                                                                    <!-- <button class="btn btn-outline-primary-2 btn-order btn-block ">Use This
                                     Address</button> -->
-                                </div><!-- End .summary -->
-                            </aside><!-- End .col-lg-3 -->
-                        </div><!-- End .row -->
-                    </div><!-- End .container -->
-                </div><!-- End .cart -->
-            </div><!-- End .page-content -->
+                                    <dotlottie-player > </dotlottie-player>
+                                                            </div><!-- End .summary -->
+                                                            </aside><!-- End .col-lg-3 -->
+                                                        </div><!-- End .row -->
+                                                    </div><!-- End .container -->
+                                                </div><!-- End .cart -->
+                                        </div><!-- End .page-content -->
+                                        <form action="/checkout/placeorder" method="post" id="addressForm">
+                                            <input type="text" name="address" value="<%= address._id %>" id="addressInput" hidden>
+                                            <input type="text" name="payment" value="<%=payment%>">
+                                        </form>
         </main><!-- End .main -->
 
 
         <script>
             // form submit handil
-            document.getElementById("paymentBtn").addEventListener("click", function () {
-                document.getElementById("paymentForm").submit();
+            document.getElementById("addressBtn").addEventListener("click", function () {
+                console.log("adress BTn clicked...");
+                document.getElementById("addressForm").submit();
+                // document.querySelectorAll(".addressBtn")
             })
+            document.getElementById("addressBtn2").addEventListener("click", function () {
+                console.log("adress BTn clicked...");
+                document.getElementById("addressForm").submit();
+                // document.querySelectorAll(".addressBtn")
+            })
+            
         </script>
         <script>
             // Get references to the radio buttons and the submit button
@@ -180,5 +241,6 @@
             }
 
         </script>
+
 
         <%- include('../user/layouts/footer.ejs') %>

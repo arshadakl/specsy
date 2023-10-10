@@ -7160,8 +7160,8 @@ p {
 .btn-dark:not(:disabled):not(.disabled).active,
 .show>.btn-dark.dropdown-toggle {
     color: #fff;
-    background-color: #c96;
-    border-color: #c96;
+    background-color: rgb(100, 100, 100);
+    border-color: rgb(53, 53, 53);
     box-shadow: none
 }
 
@@ -7295,7 +7295,7 @@ p {
 .btn-outline-light.disabled,
 .btn-outline-light:disabled {
     color: #fff;
-    background-color: transparent
+    background-color: transparent#
 }
 
 .btn-outline-dark {
@@ -7312,9 +7312,9 @@ p {
 .btn-outline-dark:not(:disabled):not(.disabled):active,
 .btn-outline-dark:not(:disabled):not(.disabled).active,
 .show>.btn-outline-dark.dropdown-toggle {
-    color: #c96;
-    background-color: transparent;
-    border-color: #ebebeb;
+    color: #fff;
+    background-color: #000;
+    border-color: #000;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05)
 }
 
