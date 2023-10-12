@@ -2,6 +2,7 @@ const User = require("../models/userModel").User;
 const ProductDB = require("../models/productsModel").product;
 const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
+const OrderDB = require("../models/orderModel").Order;
 const bcrypt = require("bcrypt");
 const nodemiler = require("nodemailer");
 require("dotenv").config();
@@ -17,6 +18,48 @@ const passwordEncrypt = async (password) => {
     console.log(error.message);
   }
 };
+
+
+const daliveryDateCalculate = async (dateValue) => {
+  try {
+    // Get the current date
+    const currentDate = dateValue
+
+    // Add two days to the current date
+    const twoDaysLater = new Date(currentDate);
+    twoDaysLater.setDate(currentDate.getDate() + 2);
+
+    // Create an array of day names
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+
+    // Get the day name for the date two days later
+    const dayName = dayNames[twoDaysLater.getDay()];
+
+    // Get the formatted date string
+    const formattedDate = `${dayName}, ${twoDaysLater.getDate()} ${twoDaysLater.toLocaleString(
+      "en-US",
+      { month: "long" }
+    )} ${twoDaysLater.getFullYear()}`;
+
+    return formattedDate;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+// This Function used to formmate date from new Date() function
+// ==============================================================
+function formatDate(date) {
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
+}
 
 // This function used to Create 6 Digit OTP number
 // ---------------------------------------
@@ -814,7 +857,7 @@ const createNewpassword = async (req, res) => {
 // ------------------------------------
 const addShippingAddress = async (req, res) => {
   try {
-    let addrData = req.body
+    let addrData = req.body;
     let userAddress = await addressDB.findOne({ userId: req.session.user_id });
     if (!userAddress) {
       userAddress = new addressDB({
@@ -858,22 +901,175 @@ const addShippingAddress = async (req, res) => {
     // console.log(result);
     let total = await calculateTotalPrice(req.session.user_id);
     // res.render("checkout", { user: req.session.user_id, total });
-    res.redirect('/checkout')
+    res.redirect("/checkout");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// all orders page load
+// ---------------------------
+const allOrdersPageLoad = async (req, res) => {
+  try {
+    // testing++++++++++++++++==============
+    const userId = req.session.user_id;
+
+    // Find all orders for the user based on their user ID
+    const userOrders = await OrderDB.find({ userId: userId });
+
+    if (userOrders.length === 0) {
+      console.log("No orders found for the user.");
+      return res.render('allorders', { user: userId, productWiseOrders: [] });
+    }
+
+    // Create an array to hold product-wise order details
+    const productWiseOrders = [];
+
+    // Iterate through each order
+    for (const order of userOrders) {
+      // Iterate through each product in the order
+      for (const product of order.products) {
+        const productId = product.productId;
+        const quantity = product.quantity;
+        const placeDate = formatDate(order.orderDate)
+        // Retrieve additional product details using the productId
+        const productDetails = await ProductDB.findById(productId,{images:1,product_name:1,frame_shape:1,price:1});
+
+        // Retrieve the address associated with the order
+        let DeliveryexpectedDate = await daliveryDateCalculate(order.orderDate)
+        // Create a product-wise order data object
+        const productWiseOrder = {
+          orderId: order._id,
+          placeOrderDate: placeDate,
+          paymentMethod: order.paymentMethod,
+          productDetails, // Contains the product's details
+          quantity,
+          address:order.shippingAddress, 
+          deliveryDate:DeliveryexpectedDate,
+          OrderStatus:order.OrderStatus
+        };
+
+        // Push the product-wise order data into the productWiseOrders array
+        productWiseOrders.push(productWiseOrder);
+      }
+    }
+    //  testing END+++++++++====================
+    console.log(productWiseOrders);
+    res.render("allorders", { user: req.session.user_id,products:productWiseOrders });
   } catch (error) {
     console.log(error.message);
   }
 };
 
 
-
-
-const testLoad = async(req,res)=>{
+// load user address on profile
+// ================================
+const loadShippingAddressPage = async(req,res)=>{
   try {
-    res.render('orderStatus',{user:0})
+    let userAddress = await addressDB.findOne({ userId: req.session.user_id });
+    // console.log(userAddress);
+    res.render("address", { user: req.session.user_id,address: userAddress.addresses });
+
+  } catch (error) {
+    console.log(error.message);
+  }
+} 
+
+
+// this used to add shipping address from user profile
+// -----------------------------------------------------------
+const addShippingAddressFromProfile = async(req,res)=>{
+  try {
+    let addrData = req.body;
+    let userAddress = await addressDB.findOne({ userId: req.session.user_id });
+    if (!userAddress) {
+      userAddress = new addressDB({
+        userId: req.session.user_id,
+        addresses: [
+          {
+            country: addrData.country,
+            fullName: addrData.fullName,
+            mobileNumber: addrData.mobileNumber,
+            city: addrData.city,
+            state: addrData.state,
+            pincode: addrData.pincode,
+          },
+        ],
+      });
+    } else {
+      // If the user's address document already exists, add a new address to the array
+      userAddress.addresses.push({
+        country: addrData.country,
+        fullName: addrData.fullName,
+        mobileNumber: addrData.mobileNumber,
+        city: addrData.city,
+        state: addrData.state,
+        pincode: addrData.pincode,
+      });
+    }
+    console.log(req.body);
+    let result = await userAddress.save();
+    res.redirect('/profile/user_address')
+
+
   } catch (error) {
     console.log(error.message);
   }
 }
+
+
+// update user shipping Adrress from profile area
+// -------------------------------------------------
+const updateShippingAddress = async(req,res)=>{
+  try {
+    // console.log(req.body);
+    let Addres = req.body
+    let userAddress = await addressDB.findOne({userId:req.session.user_id})
+    const selectedAddress = userAddress.addresses.find((address) => address.id === req.body.adressId);
+
+    selectedAddress.country = Addres.country;
+    selectedAddress.fullName = Addres.fullName;
+    selectedAddress.mobileNumber = Addres.mobileNumber;
+    selectedAddress.pincode = Addres.pincode;
+    selectedAddress.city = Addres.city;
+    selectedAddress.state = Addres.state;
+    await userAddress.save()
+    
+    res.redirect('/profile/user_address')
+    // console.log(selectedAddress);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const deleteShippingAddress = async(req,res)=>{
+  try {
+    console.log(req.body.id);
+    let userAddress = await addressDB.findOne({userId:req.session.user_id})
+    const addressToDeleteIndex = userAddress.addresses.findIndex((address) => address.id === req.body.id);
+    if (addressToDeleteIndex === -1) {
+      return res.status(404).json({ remove: 0 });
+    }
+    userAddress.addresses.splice(addressToDeleteIndex, 1);
+    await userAddress.save();
+    return res.json({remove:1})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+// +++++++++++++++++++++++++++++++
+// for testing purpose
+// ----------------------------
+
+const testLoad = async (req, res) => {
+  try {
+    res.render("address", { user: 0 });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 // ===============================
 // exporting
@@ -902,5 +1098,10 @@ module.exports = {
   forgetOTPpageLoad,
   createNewpassword,
   addShippingAddress,
-  testLoad
+  testLoad,
+  allOrdersPageLoad,
+  loadShippingAddressPage,
+  addShippingAddressFromProfile,
+  updateShippingAddress,
+  deleteShippingAddress
 };

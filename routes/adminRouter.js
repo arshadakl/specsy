@@ -49,6 +49,12 @@ router.get('/category/delete',auth.isLogin,adminController.deleteCategory)
 router.get('/category/search',auth.isLogin,adminController.searchCategory)
 router.post('/category/block',auth.isLogin,adminController.categoryBlock)
 
+
+//orders related routers
+router.get('/orders',adminController.orderPageLoad)
+router.get('/orders/manage',adminController.orderMangePageLoad)
+
+//exporting
 module.exports = router
 
 

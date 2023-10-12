@@ -178,7 +178,15 @@ const placeOrderManage = async (req, res) => {
     // console.log(req.body.address);
     let addressId = req.body.address;
     let paymentType = req.body.payment;
-    const cartDetails = await CartDB.findOne({ user: req.session.user_id })
+    const cartDetails = await CartDB.findOne({ user: req.session.user_id });
+    
+    let userAddrs = await addressDB.findOne({ userId: req.session.user_id });
+    const shipAddress = userAddrs.addresses.find((address) => {
+      return address._id.toString() === addressId.toString();
+    });
+    let {country,fullName,mobileNumber,pincode,city,state} = shipAddress
+    console.log(state);
+
     const cartProducts = cartDetails.products.map((productItem) => ({
       productId: productItem.product,
       quantity: productItem.quantity,
@@ -186,28 +194,58 @@ const placeOrderManage = async (req, res) => {
     let total = await calculateTotalPrice(req.session.user_id);
 
     console.log(cartProducts);
-    // console.log(paymentType);
-
-    
-
     const order = new OrderDB({
       userId: req.session.user_id,
-      shippingAddressId: addressId,
-      products:cartProducts,
-      totalAmount: total,
-      OrderStatus:"pending",
-      paymentMethod:paymentType,
-      paymentStatus:"pending"
-      // Add more fields as needed
-    });
-    const placeorder = await order.save()
-    console.log(placeorder);
+      "shippingAddress.country": country,
+      "shippingAddress.fullName": fullName,
+      "shippingAddress.mobileNumber": mobileNumber,
+      "shippingAddress.pincode": pincode,
+      "shippingAddress.city": city,
+      "shippingAddress.state": state,
 
+      products: cartProducts,
+      totalAmount: total,
+      OrderStatus: "pending",
+      paymentMethod: paymentType,
+      paymentStatus: "pending",
+    });
+
+    // const order = new OrderDB({
+    //   userId: req.session.user_id,
+    //   shippingAddressId: addressId,
+    //   products: cartProducts,
+    //   totalAmount: total,
+    //   OrderStatus: "pending",
+    //   paymentMethod: paymentType,
+    //   paymentStatus: "pending",
+    // });
+    const placeorder = await order.save();
+
+
+    if (paymentType !== "Online") {
+      console.log(placeorder._id);
+      let changeOrderStatus = await OrderDB.updateOne(
+        { _id: placeorder._id },
+        { $set: { OrderStatus: "success" } }
+      );
+      console.log(changeOrderStatus);
+      await CartDB.deleteOne({user:req.session.user_id})
+      return res.render("orderStatus", {
+        success: 1,
+        user: req.session.user_id
+      });
+    } else {
+      return res.render("orderStatus", {
+        success: 0,
+        user: req.session.user_id
+      });
+    }
   } catch (error) {
     console.log(error.message);
   }
 };
 
+// =============+++++++++++++++=======================
 // exportings
 // ====================
 module.exports = {

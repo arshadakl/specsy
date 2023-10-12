@@ -1,0 +1,66 @@
+<%- include('../user/layouts/header.ejs') %>
+    <%- include('../user/layouts/navbar.ejs') %>
+
+        <main class="main">
+            <div class="page-header text-center " style="background-image: url('/user/images/page-header-bg.jpg')">
+                <div class="container">
+                    <h1 class="page-title text-white">My Account</h1>
+                </div><!-- End .container -->
+            </div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a>Your Account</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">all Orders</li>
+
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="container-fluid d-flex flex-column justify-content-center py-5">
+
+                <%for(i=0;i<products.length;i++){%>
+                <div class="card  col-md-6 col-10 my-3 mx-auto p-3" style="border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;" >
+                    <div class="card-header d-flex justify-content-between w-100">
+                        <dir class="d-flex flex-column">
+                            <p>ORDER PLACED</p>
+                            <p><%= products[i].placeOrderDate%></p>
+
+                        </dir>
+                        
+                        
+                    </div>
+                    <hr class="m-0 mb-1">
+                    <div>
+                         <h6 class="mx-5 mb-2">Delivery Expect on : <b><%= products[i].deliveryDate %></b></h6>
+                    </div>
+                    <div class="card-body row col-12 d-flex ">
+                        <div class="col-4 ">
+                            <img src="/products/images/<%= products[i].productDetails.images.image1 %>" style="width: 150px;" alt="">
+                            <p class="card-text">
+                            </p>
+                            <!-- <a href="#" class="btn btn-dark">Go somewhere</a> -->
+                        </div>
+                        <div class="col-7">
+                            <h5 class="card-title"><%= products[i].productDetails.product_name %></h5>
+                            <p class="card-text"><p>Quantity : <b><%=products[i].quantity %></b></p><i class="fa-solid fa-file-invoice-dollar"></i> <%=products[i].paymentMethod %>
+                            </p>
+                            <h5 class="card-title mb-2">₹ <%= products[i].productDetails.price %></h5>
+
+                            <div class="col-12 row d-flex justify-content-around">
+                                <a href="#" class="btn btn-dark col-2 mb-1">Track your Order</a>
+                                <a href="#" class="btn btn-dark col-2 mb-1">Cancel Order </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%}%>
+
+            </div>
+
+
+        </main>
+
+
+        <%- include('../user/layouts/footer.ejs') %>

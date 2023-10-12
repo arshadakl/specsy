@@ -95,7 +95,7 @@ const userAddressSchema = new mongoose.Schema({
           required: true,
         },
         mobileNumber: {
-          type: String,
+          type: Number,
           required: true,
         },
         pincode: {
