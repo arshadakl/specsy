@@ -3,6 +3,7 @@ const AdminDB = require("../models/adminModel");
 const ProductDB = require("../models/productsModel").product;
 const CategoryDB = require("../models/productsModel").category;
 const OrderDB = require("../models/orderModel").Order;
+const path = require("path");
 const bcrypt = require("bcrypt");
 
 // admin home page loading function
@@ -20,9 +21,14 @@ const adminPageLoad = async (req, res) => {
 // This Function used to formmate date from new Date() function
 // ==============================================================
 function formatDate(date) {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
-  }
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return date.toLocaleDateString("en-US", options);
+}
 
 // this function use to take all user Data
 // ---------------------------------------
@@ -493,7 +499,6 @@ const categoryBlock = async (req, res) => {
 // ----------------------
 const orderPageLoad = async (req, res) => {
   try {
-
     const orders = await OrderDB.find();
 
     // Initialize an array to store product-wise orders
@@ -505,57 +510,148 @@ const orderPageLoad = async (req, res) => {
         const productId = productInfo.productId;
 
         // Use Mongoose's populate method to fetch product details
-        const product = await ProductDB.findById(productId).select('product_name images price');
-        const userDetails = await UserDB.findById(order.userId).select('userName')
+        const product = await ProductDB.findById(productId).select(
+          "product_name images price"
+        );
+        const userDetails = await UserDB.findById(order.userId).select(
+          "userName"
+        );
         // console.log(userDetails);
         if (product) {
           // Push the order details with product details into the array
-          orderDate = await formatDate(order.orderDate)
+          orderDate = await formatDate(order.orderDate);
           productWiseOrdersArray.push({
-            user:userDetails,
+            user: userDetails,
             product: product,
             orderDetails: {
               _id: order._id,
               userId: order.userId,
               shippingAddress: order.shippingAddress,
               orderDate: orderDate,
-              totalAmount: (productInfo.quantity*product.price),
-              OrderStatus: order.OrderStatus,
+              totalAmount: productInfo.quantity * product.price,
+              OrderStatus: productInfo.OrderStatus,
               paymentMethod: order.paymentMethod,
               paymentStatus: order.paymentStatus,
-              quantity: productInfo.quantity
+              quantity: productInfo.quantity,
             },
           });
         }
       }
     }
 
-
     // for(i=0;i<productWiseOrdersArray.length;i++){
-        console.log(productWiseOrdersArray);
+    console.log(productWiseOrdersArray);
     // }
-    res.render("orders",{orders:productWiseOrdersArray});
+    res.render("orders", { orders: productWiseOrdersArray });
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
-// order management page load 
+// order management page load
 // ------------------------------
-const orderMangePageLoad = async(req,res)=>{
-    try {
-        res.render('orderManagment')
-    } catch (error) {
-        console.log(error.message);
+const orderMangePageLoad = async (req, res) => {
+  try {
+    const { orderId, productId } = req.query;
+    // console.log(orderId, productId);
+    const order = await OrderDB.findById(orderId);
+
+    if (!order) {
+      return res
+        .status(404)
+        .sendFile(path.dirname(__dirname, "views", "404.html"));
     }
-}
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    const product = await ProductDB.findById(productId).select(
+      "product_name images "
+    );
+    let orderDate = formatDate(order.orderDate);
+    const productOrder = {
+      orderId: order._id,
+      product: product,
+      orderDetails: {
+        _id: order._id,
+        userId: order.userId,
+        shippingAddress: order.shippingAddress,
+        orderDate,
+        totalAmount: order.totalAmount,
+        OrderStatus: productInfo.OrderStatus,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.paymentStatus,
+        quantity: productInfo.quantity,
+      },
+    };
+    // console.log(productOrder);
+    // console.log();
+    res.render("orderManagment", { product: productOrder, orderId, productId });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
+// order cancel
+// -----------------------
+const cancelOrder = async (req, res) => {
+  try {
+    // console.log(req.query.productId);
+    // const order = await OrderDB.findById(orderId);
+    // console.log(order);
+    // const productInfo = order.products.find((product) => product.productId.toString() === productId);
+    // productInfo.OrderStatus="cancel"
+    // let result = await order.save()
+    // console.log(result);
 
+    const { oderId, productId } = req.body;
+    // orderId = orderId.toString
+    console.log(oderId);
 
+    const order = await OrderDB.findById(oderId);
 
+    console.log(order);
 
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
 
+    // Find the product within the order by its ID (using .toString() for comparison)
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    console.log(productInfo);
+
+    // if (!productInfo) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "Product not found in the order." });
+    // }
+
+    // Update the OrderStatus for the specific product to "canceled"
+    productInfo.OrderStatus = "canceled";
+
+    // Save the updated order
+    const result = await order.save();
+    // console.log(req.body);
+    // const order = await OrderDB.findOne(orderId);
+    // // console.log();
+    // const productInfo = order.products.find(
+    //   (product) => product.productId.toString() === productId.toString()
+    // );
+
+    // // console.log(order);
+    // console.log(productInfo);
+
+    // // productInfo.OrderStatus = "canceled";
+
+    // // let result  = await order.save();
+
+    console.log(result);
+    res.json({cancel:1})
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 // exportings
 // =========================
@@ -581,5 +677,6 @@ module.exports = {
   searchCategory,
   categoryBlock,
   orderPageLoad,
-  orderMangePageLoad
+  orderMangePageLoad,
+  cancelOrder,
 };

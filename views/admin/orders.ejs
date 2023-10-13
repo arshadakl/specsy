@@ -30,11 +30,12 @@
                                             <th> Quantity</th>
                                             <th> Price</th>
                                             <th> Pyament Status</th>
+                                            <th> Order Status</th>
                                             <th> Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <%for(i=0;i<orders.length;i++){%>
+                                        <%for(i=orders.length-1;i>=0;i--){%>
                                             <tr>
                                                 <!-- list -->
                                                 <td>
@@ -73,7 +74,27 @@
                                                 </td>
 
                                                 <td>
-                                                    <a href="/admin/orders/manage" class="btn btn-inverse-info">Manage</a>
+                                                    <button 
+                                                    <%if( orders[i].orderDetails.paymentStatus == "Delivered"){%>
+                                                    class="btn-inverse-warning" 
+                                                    <%}else if(orders[i].orderDetails.OrderStatus == "pending"){%>
+                                                        class="btn-inverse-warning" 
+                                                    <%}else if(orders[i].orderDetails.OrderStatus == "placed"){%>
+                                                        class="btn-inverse-primary" 
+                                                    <%}else if(orders[i].orderDetails.OrderStatus == "Shipped"){%>
+                                                        class="btn-inverse-info" 
+                                                    <%}else if(orders[i].orderDetails.OrderStatus == "delivered"){%>
+                                                        class="btn-inverse-success" 
+                                                    <%}else if(orders[i].orderDetails.OrderStatus == "canceled"){%>
+                                                        class="btn-inverse-danger" 
+                                                    <%}%>  
+
+                                                    ><%= orders[i].orderDetails.OrderStatus %>
+                                                </button>
+                                                </td>
+
+                                                <td>
+                                                    <a href="/admin/orders/manage?orderId=<%=orders[i].orderDetails._id%>&productId=<%=orders[i].product._id%>" class="btn btn-inverse-info">Manage</a>
                                                 </td>
                                             </tr>
                                             <%}%>

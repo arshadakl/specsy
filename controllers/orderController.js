@@ -190,6 +190,8 @@ const placeOrderManage = async (req, res) => {
     const cartProducts = cartDetails.products.map((productItem) => ({
       productId: productItem.product,
       quantity: productItem.quantity,
+      OrderStatus: "pending"
+
     }));
     let total = await calculateTotalPrice(req.session.user_id);
 
@@ -202,10 +204,8 @@ const placeOrderManage = async (req, res) => {
       "shippingAddress.pincode": pincode,
       "shippingAddress.city": city,
       "shippingAddress.state": state,
-
       products: cartProducts,
       totalAmount: total,
-      OrderStatus: "pending",
       paymentMethod: paymentType,
       paymentStatus: "pending",
     });

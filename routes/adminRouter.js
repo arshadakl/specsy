@@ -53,6 +53,8 @@ router.post('/category/block',auth.isLogin,adminController.categoryBlock)
 //orders related routers
 router.get('/orders',adminController.orderPageLoad)
 router.get('/orders/manage',adminController.orderMangePageLoad)
+router.post('/orders/manage/cancel',adminController.cancelOrder)
+
 
 //exporting
 module.exports = router

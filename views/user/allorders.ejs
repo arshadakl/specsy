@@ -17,8 +17,8 @@
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
 
+            <%if(products){%>
             <div class="container-fluid d-flex flex-column justify-content-center py-5">
-
                 <%for(i=0;i<products.length;i++){%>
                 <div class="card  col-md-6 col-10 my-3 mx-auto p-3" style="border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;" >
                     <div class="card-header d-flex justify-content-between w-100">
@@ -58,6 +58,19 @@
                 <%}%>
 
             </div>
+            <%}else{%>
+                <div class="container-fluid d-flex flex-column justify-content-center py-5">
+                    
+                    <div class="card  col-md-6 col-10 my-3 mx-auto p-3" style="border: 1px solid #e2e2e2; border-radius: 7px; background: #F3F3F9;" >
+                        
+                        <div class="card-body row col-12 d-flex justify-content-center py-5">
+                             <h4 class="text-center text-light">You have No orders</h4>
+                        </div>
+                    </div>
+                   
+    
+                </div>
+            <%}%>
 
 
         </main>

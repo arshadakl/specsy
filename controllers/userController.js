@@ -403,6 +403,8 @@ const otpValid = async (req, res) => {
           { $set: { verified: 1 } }
         );
         console.log(updatInfo);
+        req.session.loggedIn = true;
+        req.session.user_id = req.query.id;
         res.render("verifyNotfy", { wrong: 0 });
       } else {
         res.render("verifyNotfy", { userId: req.query.id, wrong: 2 });
@@ -641,8 +643,6 @@ const addtoCart = async (req, res) => {
       );
 
       if (productInCart) {
-        // If the product is already in the cart, increase the quantity
-        // productInCart.quantity += 1;
         res.json({ cart: 2 });
       } else {
         existingCart.products.push({
@@ -919,7 +919,7 @@ const allOrdersPageLoad = async (req, res) => {
 
     if (userOrders.length === 0) {
       console.log("No orders found for the user.");
-      return res.render('allorders', { user: userId, productWiseOrders: [] });
+      return res.render('allorders', { user: userId, products:false });
     }
 
     // Create an array to hold product-wise order details
@@ -932,6 +932,7 @@ const allOrdersPageLoad = async (req, res) => {
         const productId = product.productId;
         const quantity = product.quantity;
         const placeDate = formatDate(order.orderDate)
+        const OrderStatus = product.OrderStatus
         // Retrieve additional product details using the productId
         const productDetails = await ProductDB.findById(productId,{images:1,product_name:1,frame_shape:1,price:1});
 
@@ -946,7 +947,7 @@ const allOrdersPageLoad = async (req, res) => {
           quantity,
           address:order.shippingAddress, 
           deliveryDate:DeliveryexpectedDate,
-          OrderStatus:order.OrderStatus
+          OrderStatus
         };
 
         // Push the product-wise order data into the productWiseOrders array
