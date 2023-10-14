@@ -83,11 +83,13 @@
                                                         class="btn-inverse-primary" 
                                                     <%}else if(orders[i].orderDetails.OrderStatus == "Shipped"){%>
                                                         class="btn-inverse-info" 
-                                                    <%}else if(orders[i].orderDetails.OrderStatus == "delivered"){%>
+                                                    <%}else if(orders[i].orderDetails.OrderStatus == "Delivered"){%>
                                                         class="btn-inverse-success" 
                                                     <%}else if(orders[i].orderDetails.OrderStatus == "canceled"){%>
                                                         class="btn-inverse-danger" 
-                                                    <%}%>  
+                                                    <%}else if(orders[i].orderDetails.OrderStatus == "OutforDelivery"){%>
+                                                        class="btn-warning btn-sm" 
+                                                    <%}%> 
 
                                                     ><%= orders[i].orderDetails.OrderStatus %>
                                                 </button>

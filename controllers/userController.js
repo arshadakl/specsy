@@ -19,11 +19,10 @@ const passwordEncrypt = async (password) => {
   }
 };
 
-
 const daliveryDateCalculate = async (dateValue) => {
   try {
     // Get the current date
-    const currentDate = dateValue
+    const currentDate = dateValue;
 
     // Add two days to the current date
     const twoDaysLater = new Date(currentDate);
@@ -57,8 +56,13 @@ const daliveryDateCalculate = async (dateValue) => {
 // This Function used to formmate date from new Date() function
 // ==============================================================
 function formatDate(date) {
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString('en-US', options);
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return date.toLocaleDateString("en-US", options);
 }
 
 // This function used to Create 6 Digit OTP number
@@ -919,7 +923,7 @@ const allOrdersPageLoad = async (req, res) => {
 
     if (userOrders.length === 0) {
       console.log("No orders found for the user.");
-      return res.render('allorders', { user: userId, products:false });
+      return res.render("allorders", { user: userId, products: false });
     }
 
     // Create an array to hold product-wise order details
@@ -931,13 +935,18 @@ const allOrdersPageLoad = async (req, res) => {
       for (const product of order.products) {
         const productId = product.productId;
         const quantity = product.quantity;
-        const placeDate = formatDate(order.orderDate)
-        const OrderStatus = product.OrderStatus
+        const placeDate = formatDate(order.orderDate);
+        const OrderStatus = product.OrderStatus;
         // Retrieve additional product details using the productId
-        const productDetails = await ProductDB.findById(productId,{images:1,product_name:1,frame_shape:1,price:1});
+        const productDetails = await ProductDB.findById(productId, {
+          images: 1,
+          product_name: 1,
+          frame_shape: 1,
+          price: 1,
+        });
 
         // Retrieve the address associated with the order
-        let DeliveryexpectedDate = await daliveryDateCalculate(order.orderDate)
+        let DeliveryexpectedDate = await daliveryDateCalculate(order.orderDate);
         // Create a product-wise order data object
         const productWiseOrder = {
           orderId: order._id,
@@ -945,9 +954,9 @@ const allOrdersPageLoad = async (req, res) => {
           paymentMethod: order.paymentMethod,
           productDetails, // Contains the product's details
           quantity,
-          address:order.shippingAddress, 
-          deliveryDate:DeliveryexpectedDate,
-          OrderStatus
+          address: order.shippingAddress,
+          deliveryDate: DeliveryexpectedDate,
+          OrderStatus,
         };
 
         // Push the product-wise order data into the productWiseOrders array
@@ -956,30 +965,34 @@ const allOrdersPageLoad = async (req, res) => {
     }
     //  testing END+++++++++====================
     console.log(productWiseOrders);
-    res.render("allorders", { user: req.session.user_id,products:productWiseOrders });
+    console.log(productWiseOrders);
+    res.render("allorders", {
+      user: req.session.user_id,
+      products: productWiseOrders,
+    });
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
 // load user address on profile
 // ================================
-const loadShippingAddressPage = async(req,res)=>{
+const loadShippingAddressPage = async (req, res) => {
   try {
     let userAddress = await addressDB.findOne({ userId: req.session.user_id });
     // console.log(userAddress);
-    res.render("address", { user: req.session.user_id,address: userAddress.addresses });
-
+    res.render("address", {
+      user: req.session.user_id,
+      address: userAddress.addresses,
+    });
   } catch (error) {
     console.log(error.message);
   }
-} 
-
+};
 
 // this used to add shipping address from user profile
 // -----------------------------------------------------------
-const addShippingAddressFromProfile = async(req,res)=>{
+const addShippingAddressFromProfile = async (req, res) => {
   try {
     let addrData = req.body;
     let userAddress = await addressDB.findOne({ userId: req.session.user_id });
@@ -1010,23 +1023,22 @@ const addShippingAddressFromProfile = async(req,res)=>{
     }
     console.log(req.body);
     let result = await userAddress.save();
-    res.redirect('/profile/user_address')
-
-
+    res.redirect("/profile/user_address");
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 // update user shipping Adrress from profile area
 // -------------------------------------------------
-const updateShippingAddress = async(req,res)=>{
+const updateShippingAddress = async (req, res) => {
   try {
     // console.log(req.body);
-    let Addres = req.body
-    let userAddress = await addressDB.findOne({userId:req.session.user_id})
-    const selectedAddress = userAddress.addresses.find((address) => address.id === req.body.adressId);
+    let Addres = req.body;
+    let userAddress = await addressDB.findOne({ userId: req.session.user_id });
+    const selectedAddress = userAddress.addresses.find(
+      (address) => address.id === req.body.adressId
+    );
 
     selectedAddress.country = Addres.country;
     selectedAddress.fullName = Addres.fullName;
@@ -1034,31 +1046,32 @@ const updateShippingAddress = async(req,res)=>{
     selectedAddress.pincode = Addres.pincode;
     selectedAddress.city = Addres.city;
     selectedAddress.state = Addres.state;
-    await userAddress.save()
-    
-    res.redirect('/profile/user_address')
+    await userAddress.save();
+
+    res.redirect("/profile/user_address");
     // console.log(selectedAddress);
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
-const deleteShippingAddress = async(req,res)=>{
+const deleteShippingAddress = async (req, res) => {
   try {
     console.log(req.body.id);
-    let userAddress = await addressDB.findOne({userId:req.session.user_id})
-    const addressToDeleteIndex = userAddress.addresses.findIndex((address) => address.id === req.body.id);
+    let userAddress = await addressDB.findOne({ userId: req.session.user_id });
+    const addressToDeleteIndex = userAddress.addresses.findIndex(
+      (address) => address.id === req.body.id
+    );
     if (addressToDeleteIndex === -1) {
       return res.status(404).json({ remove: 0 });
     }
     userAddress.addresses.splice(addressToDeleteIndex, 1);
     await userAddress.save();
-    return res.json({remove:1})
+    return res.json({ remove: 1 });
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 // +++++++++++++++++++++++++++++++
 // for testing purpose
@@ -1067,6 +1080,35 @@ const deleteShippingAddress = async(req,res)=>{
 const testLoad = async (req, res) => {
   try {
     res.render("address", { user: 0 });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// order cancel
+// ---------------
+const cancelOrder = async (req, res) => {
+  try {
+    const { oderId, productId } = req.body;
+    const order = await OrderDB.findById(oderId);
+
+    console.log(order);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    // Find the product within the order by its ID (using .toString() for comparison)
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    console.log(productInfo);
+    // Update the OrderStatus for the specific product to "canceled"
+    productInfo.OrderStatus = "canceled";
+    // Save the updated order
+    const result = await order.save();
+    console.log(result);
+    res.json({cancel:1})
   } catch (error) {
     console.log(error.message);
   }
@@ -1104,5 +1146,6 @@ module.exports = {
   loadShippingAddressPage,
   addShippingAddressFromProfile,
   updateShippingAddress,
-  deleteShippingAddress
+  deleteShippingAddress,
+  cancelOrder,
 };

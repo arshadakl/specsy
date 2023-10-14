@@ -76,6 +76,7 @@ router.delete('/profile/user_address/delete',auth.isLogin,userController.deleteS
 // view orders related 
 // -------------------------
 router.get('/profile/orders',auth.isLogin,userController.allOrdersPageLoad)
+router.post('/profile/orders/cancel',userController.cancelOrder)
 
 
 router.get('/test',userController.testLoad)

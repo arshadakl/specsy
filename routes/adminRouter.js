@@ -54,6 +54,7 @@ router.post('/category/block',auth.isLogin,adminController.categoryBlock)
 router.get('/orders',adminController.orderPageLoad)
 router.get('/orders/manage',adminController.orderMangePageLoad)
 router.post('/orders/manage/cancel',adminController.cancelOrder)
+router.post('/orders/manage/changestatus',adminController.changeOrderStatus)
 
 
 //exporting

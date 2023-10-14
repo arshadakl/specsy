@@ -595,13 +595,7 @@ const orderMangePageLoad = async (req, res) => {
 // -----------------------
 const cancelOrder = async (req, res) => {
   try {
-    // console.log(req.query.productId);
-    // const order = await OrderDB.findById(orderId);
-    // console.log(order);
-    // const productInfo = order.products.find((product) => product.productId.toString() === productId);
-    // productInfo.OrderStatus="cancel"
-    // let result = await order.save()
-    // console.log(result);
+   
 
     const { oderId, productId } = req.body;
     // orderId = orderId.toString
@@ -620,31 +614,8 @@ const cancelOrder = async (req, res) => {
       (product) => product.productId.toString() === productId
     );
     console.log(productInfo);
-
-    // if (!productInfo) {
-    //   return res
-    //     .status(404)
-    //     .json({ message: "Product not found in the order." });
-    // }
-
-    // Update the OrderStatus for the specific product to "canceled"
     productInfo.OrderStatus = "canceled";
-
-    // Save the updated order
     const result = await order.save();
-    // console.log(req.body);
-    // const order = await OrderDB.findOne(orderId);
-    // // console.log();
-    // const productInfo = order.products.find(
-    //   (product) => product.productId.toString() === productId.toString()
-    // );
-
-    // // console.log(order);
-    // console.log(productInfo);
-
-    // // productInfo.OrderStatus = "canceled";
-
-    // // let result  = await order.save();
 
     console.log(result);
     res.json({cancel:1})
@@ -652,6 +623,37 @@ const cancelOrder = async (req, res) => {
     console.log(error.message);
   }
 };
+
+// cange order status
+// -------------------------
+const changeOrderStatus = async(req,res)=>{
+  try {
+    const {status,orderId,productId} = req.body
+    const order = await OrderDB.findById(orderId);
+
+    console.log(order);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    // Find the product within the order by its ID (using .toString() for comparison)
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    console.log(productInfo);
+    productInfo.OrderStatus = status;
+    const result = await order.save();
+
+    console.log(result);
+    // console.log(req.body);
+      res.redirect(`/admin/orders/manage?orderId=${orderId}&productId=${productId}`)
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 
 // exportings
 // =========================
@@ -679,4 +681,5 @@ module.exports = {
   orderPageLoad,
   orderMangePageLoad,
   cancelOrder,
+  changeOrderStatus
 };
