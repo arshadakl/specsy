@@ -131,95 +131,106 @@
                                                         </tbody>
                                                     </table><!-- End .table table-summary -->
                                                     <hr>
-                                                    <button class="btn btn-outline-primary-2 mb-4 btn-block py-4 "
+                                                    <button onclick="placeOrder('<%= address._id %>','<%=payment%>')" class="btn btn-outline-primary-2 mb-4 btn-block py-4 "
                                         style="background-color: #000; color: #fff; border-radius: 10px; font-size: 18px;"
                                         onMouseOver="this.style.background=' #575757'"
-                                        onMouseOut="this.style.background='#000'" id="addressBtn"
-                                        >Place Order</button>
+                                                                    onMouseOut="this.style.background='#000'"
+                                                                    id="addressBtn">Place Order</button>
 
+                                                            </div>
+
+
+                                                        </div>
+
+                                                    </div>
                                                 </div>
 
+                                        </div><!-- End .col-lg-9 -->
+                                        <aside class="col-lg-3">
+                                            <div class="summary summary-cart">
 
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </div><!-- End .col-lg-9 -->
-                            <aside class="col-lg-3">
-                                <div class="summary summary-cart">
-
-                                    <!-- <button class="btn btn-outline-primary-2  btn-block py-3 "
+                                                <!-- <button class="btn btn-outline-primary-2  btn-block py-3 "
                                         style="background-color: #000; color: #fff; "
                                         onMouseOver="this.style.background=' #575757'"
                                         onMouseOut="this.style.background='#000'" id="addressBtn2"
                                         >Place Order</button> -->
 
-                                                                    <!-- <h3 class="summary-title"></h3> -->
+                                                <!-- <h3 class="summary-title"></h3> -->
 
-                                                                    <table class="table table-summary">
-                                                                        <tbody>
+                                                <table class="table table-summary">
+                                                    <tbody>
 
-                                                                            <tr class="summary-subtotal">
-                                                                                <td>Subtotal:</td>
-                                                                                <td>₹<span id="subTotalDisplay">
-                                                                                        <%= total%>
-                                                                                    </span></td>
-                                                                            </tr><!-- End .summary-subtotal -->
-
-
-
-
-                                                                            <tr class="summary-shipping-row">
-                                                                                <td>
-                                                                                    <label class=""
-                                                                                        for="standart-shipping">Discount:</label>
-                                                                                </td>
-                                                                                <td>0.00</td>
-                                                                            </tr><!-- End .summary-shipping-row -->
+                                                        <tr class="summary-subtotal">
+                                                            <td>Subtotal:</td>
+                                                            <td>₹<span id="subTotalDisplay">
+                                                                    <%= total%>
+                                                                </span></td>
+                                                        </tr><!-- End .summary-subtotal -->
 
 
 
 
+                                                        <tr class="summary-shipping-row">
+                                                            <td>
+                                                                <label class=""
+                                                                    for="standart-shipping">Discount:</label>
+                                                            </td>
+                                                            <td>0.00</td>
+                                                        </tr><!-- End .summary-shipping-row -->
 
-                                                                            <tr class="summary-total">
-                                                                                <td>Total:</td>
-                                                                                <td>₹<span id="totalDisplay">
-                                                                                        <%=total%>
-                                                                                    </span></td>
-                                                                            </tr><!-- End .summary-total -->
-                                                                        </tbody>
-                                                                    </table><!-- End .table table-summary -->
 
-                                                                    <!-- <button class="btn btn-outline-primary-2 btn-order btn-block ">Use This
+
+
+
+                                                        <tr class="summary-total">
+                                                            <td>Total:</td>
+                                                            <td>₹<span id="totalDisplay">
+                                                                    <%=total%>
+                                                                </span></td>
+                                                        </tr><!-- End .summary-total -->
+                                                    </tbody>
+                                                </table><!-- End .table table-summary -->
+
+                                                <!-- <button class="btn btn-outline-primary-2 btn-order btn-block ">Use This
                                     Address</button> -->
-                                    <dotlottie-player > </dotlottie-player>
-                                                            </div><!-- End .summary -->
-                                                            </aside><!-- End .col-lg-3 -->
-                                                        </div><!-- End .row -->
-                                                    </div><!-- End .container -->
-                                                </div><!-- End .cart -->
-                                        </div><!-- End .page-content -->
-                                        <form action="/checkout/placeorder" method="post" id="addressForm">
-                                            <input type="text" name="address" value="<%= address._id %>" id="addressInput" hidden>
-                                            <input type="text" name="payment" value="<%=payment%>" hidden>
-                                        </form>
+                                                <dotlottie-player> </dotlottie-player>
+                                            </div><!-- End .summary -->
+                                        </aside><!-- End .col-lg-3 -->
+                                    </div><!-- End .row -->
+                                </div><!-- End .container -->
+                            </div><!-- End .cart -->
+                        </div><!-- End .page-content -->
+                        <!-- <form action="/checkout/placeorder" method="post" id="addressForm">
+                            <input type="text" name="address" value="<%= address._id %>" id="addressInput" hidden>
+                            <input type="text" name="payment" value="<%=payment%>" hidden>
+                        </form> -->
         </main><!-- End .main -->
 
 
         <script>
+             function placeOrder(address,payment){
+                    $.ajax({
+                    url: '/checkout/placeorder',
+                    method: 'post',
+                    data: { address,payment },
+                    success: (response) => {
+                        console.log(response);
+                        if (response.remove == 1) {
+                            location.reload()
+                        }
+                    }
+                })
+                }
             // form submit handil
-            document.getElementById("addressBtn").addEventListener("click", function () {
-                console.log("adress BTn clicked...");
-                document.getElementById("addressForm").submit();
-                // document.querySelectorAll(".addressBtn")
-            })
-            document.getElementById("addressBtn2").addEventListener("click", function () {
-                console.log("adress BTn clicked...");
-                document.getElementById("addressForm").submit();
-                // document.querySelectorAll(".addressBtn")
-            })
-            
+            // document.getElementById("addressBtn").addEventListener("click", function () {
+            //     console.log("adress BTn clicked...");
+            //     // document.getElementById("addressForm").submit();
+
+               
+                
+
+            // })
+
         </script>
         <script>
             // Get references to the radio buttons and the submit button

@@ -3,6 +3,28 @@ const ProductDB = require("../models/productsModel").product;
 const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
+const Razorpay = require('razorpay');
+var instance = new Razorpay({
+    key_id: 'rzp_test_17MHXRPIopDJOu',
+    key_secret: '5Vd91ubM3TJQvfqdtpsDA12f',
+});
+
+
+//this used to genarate order in razorpay
+const genarateRazorpay = async(orderId,total)=>{
+  try {
+    var options = {
+      amount: total,  // amount in the smallest currency unit
+      currency: "INR",
+      receipt: orderId
+    };
+    instance.orders.create(options, function(err, order) {
+      return order
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 
 // This Function used to formmate date from new Date() function
@@ -251,10 +273,12 @@ const placeOrderManage = async (req, res) => {
         user: req.session.user_id
       });
     } else {
-      return res.render("orderStatus", {
-        success: 0,
-        user: req.session.user_id
-      });
+      let order = genarateRazorpay(placeorder._id,total)
+      // return res.render("orderStatus", {
+      //   success: 0,
+      //   user: req.session.user_id
+      // });
+      return res.json({})
     }
   } catch (error) {
     console.log(error.message);
