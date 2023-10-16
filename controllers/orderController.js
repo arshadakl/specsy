@@ -4,6 +4,27 @@ const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
 
+
+// This Function used to formmate date from new Date() function
+// ==============================================================
+function formatDate(date) {
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return date.toLocaleDateString("en-US", options);
+}
+
+// this function use to take all user Data
+// ---------------------------------------
+const getAlluserData = () => {
+  return new Promise(async (resolve, reject) => {
+    let userData = await UserDB.find({});
+    resolve(userData);
+  });
+};
 // cart total calculate
 // =============================
 const calculateTotalPrice = async (userId) => {
@@ -135,6 +156,7 @@ const reciveShippingAddress = async (req, res) => {
   }
 };
 
+// it used to select payment method 
 const paymentSelectionManage = async (req, res) => {
   try {
     console.log(req.body);
@@ -173,6 +195,7 @@ const paymentSelectionManage = async (req, res) => {
   }
 };
 
+//place order 
 const placeOrderManage = async (req, res) => {
   try {
     // console.log(req.body.address);
@@ -190,7 +213,8 @@ const placeOrderManage = async (req, res) => {
     const cartProducts = cartDetails.products.map((productItem) => ({
       productId: productItem.product,
       quantity: productItem.quantity,
-      OrderStatus: "pending"
+      OrderStatus: "pending",
+      StatusLevel:1
 
     }));
     let total = await calculateTotalPrice(req.session.user_id);
@@ -210,15 +234,7 @@ const placeOrderManage = async (req, res) => {
       paymentStatus: "pending",
     });
 
-    // const order = new OrderDB({
-    //   userId: req.session.user_id,
-    //   shippingAddressId: addressId,
-    //   products: cartProducts,
-    //   totalAmount: total,
-    //   OrderStatus: "pending",
-    //   paymentMethod: paymentType,
-    //   paymentStatus: "pending",
-    // });
+    
     const placeorder = await order.save();
 
 
@@ -245,6 +261,187 @@ const placeOrderManage = async (req, res) => {
   }
 };
 
+
+
+
+// orders page load
+// ----------------------
+const orderPageLoad = async (req, res) => {
+  try {
+    const orders = await OrderDB.find();
+
+    const productWiseOrdersArray = [];
+
+    for (const order of orders) {
+      for (const productInfo of order.products) {
+        const productId = productInfo.productId;
+
+        
+        const product = await ProductDB.findById(productId).select(
+          "product_name images price"
+        );
+        const userDetails = await UserDB.findById(order.userId).select(
+          "userName"
+        );
+        // console.log(userDetails);
+        if (product) {
+          // Push the order details with product details into the array
+          orderDate = await formatDate(order.orderDate);
+          productWiseOrdersArray.push({
+            user: userDetails,
+            product: product,
+            orderDetails: {
+              _id: order._id,
+              userId: order.userId,
+              shippingAddress: order.shippingAddress,
+              orderDate: orderDate,
+              totalAmount: productInfo.quantity * product.price,
+              OrderStatus: productInfo.OrderStatus,
+              StatusLevel: productInfo.StatusLevel,
+              paymentMethod: order.paymentMethod,
+              paymentStatus: order.paymentStatus,
+              quantity: productInfo.quantity,
+            },
+          });
+        }
+      }
+    }
+
+    // for(i=0;i<productWiseOrdersArray.length;i++){
+    console.log(productWiseOrdersArray);
+    // }
+    res.render("orders", { orders: productWiseOrdersArray });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// order management page load
+// ------------------------------
+const orderMangePageLoad = async (req, res) => {
+  try {
+    const { orderId, productId } = req.query;
+    // console.log(orderId, productId);
+    const order = await OrderDB.findById(orderId);
+
+    if (!order) {
+      return res
+        .status(404)
+        .sendFile(path.dirname(__dirname, "views", "404.html"));
+    }
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    const product = await ProductDB.findById(productId).select(
+      "product_name images "
+    );
+    let orderDate = formatDate(order.orderDate);
+    const productOrder = {
+      orderId: order._id,
+      product: product,
+      orderDetails: {
+        _id: order._id,
+        userId: order.userId,
+        shippingAddress: order.shippingAddress,
+        orderDate,
+        totalAmount: order.totalAmount,
+        OrderStatus: productInfo.OrderStatus,
+        StatusLevel: productInfo.StatusLevel,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.paymentStatus,
+        quantity: productInfo.quantity,
+      },
+    };
+    // console.log(productOrder);
+    // console.log();
+    res.render("orderManagment", { product: productOrder, orderId, productId });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// order cancel
+// -----------------------
+const cancelOrder = async (req, res) => {
+  try {
+   
+
+    const { oderId, productId } = req.body;
+    // orderId = orderId.toString
+    console.log(oderId);
+
+    const order = await OrderDB.findById(oderId);
+
+    console.log(order);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    // Find the product within the order by its ID (using .toString() for comparison)
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    console.log(productInfo);
+    productInfo.OrderStatus = "canceled";
+    const result = await order.save();
+
+    console.log(result);
+    res.json({cancel:1})
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// cange order status
+// -------------------------
+const changeOrderStatus = async(req,res)=>{
+  try {
+    const {status,orderId,productId} = req.body
+    const order = await OrderDB.findById(orderId);
+    // find status level
+
+    const statusMap = {
+      "Shipped": 2,
+      "OutforDelivery": 3,
+      "Delivered": 4
+    };
+    
+    const selectedStatus = status;
+    const statusLevel = statusMap[selectedStatus];
+    
+    console.log(statusLevel); 
+    // find status levelend
+
+
+    console.log(order);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    // Find the product within the order by its ID (using .toString() for comparison)
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    console.log(productInfo);
+    productInfo.OrderStatus = status;
+    productInfo.StatusLevel = statusLevel;
+
+    const result = await order.save();
+
+    console.log(result);
+    // console.log(req.body);
+      res.redirect(`/admin/orders/manage?orderId=${orderId}&productId=${productId}`)
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
+
+
 // =============+++++++++++++++=======================
 // exportings
 // ====================
@@ -253,4 +450,9 @@ module.exports = {
   reciveShippingAddress,
   paymentSelectionManage,
   placeOrderManage,
+  orderPageLoad,
+  orderMangePageLoad,
+  cancelOrder,
+  changeOrderStatus,
+
 };

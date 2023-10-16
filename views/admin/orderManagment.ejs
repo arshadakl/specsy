@@ -114,9 +114,10 @@
                                                 <div class="progress-track">
                                                     <ul id="progressbar">
                                                         <li class="step0 active " id="step1">Order placed</li>
-                                                        <li class="step0 <%if(product.orderDetails.OrderStatus!="canceled"){%> </li> text-center" id="step2">Shipped</li>
-                                                        <li class="step0  text-right" id="step3">Out for Delivery</li>
-                                                        <li class="step0 text-right" id="step4">Delivered</li>
+                                                        <li class="step0 text-center <%= product.orderDetails.StatusLevel >= 2 ? 'active' : '' %>" id="step2">Shipped</li>
+                                                        <li class="step0  text-right <%= product.orderDetails.StatusLevel >= 3 ? 'active' : '' %>" id="step3">Out for Delivery</li>
+                                                        <li class="step0 text-right <%= product.orderDetails.StatusLevel >= 4 ? 'active' : '' %>" id="step4">Delivered</li>
+                                                        
                                                     </ul>
                                                 </div>
 

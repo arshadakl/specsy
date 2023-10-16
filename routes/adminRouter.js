@@ -5,6 +5,9 @@ const multer = require('multer')
 const path = require('path')
 
 const adminController = require('../controllers/adminController')
+const productController = require('../controllers/productsController')
+const categoryController = require('../controllers/categoryController')
+const orderController = require('../controllers/orderController')
 
 //auth checking middleware
 const auth = require('../middleware/admin')
@@ -34,27 +37,27 @@ router.post('/login',auth.isLogout,adminController.doLogin)
 router.get('/logout',auth.isLogin,adminController.adminLogOut)
 
 //product management routers
-router.get('/products',auth.isLogin,adminController.productPageLoad)
-router.get('/products/searchproduct',auth.isLogin,adminController.searchproduct)
-router.get('/products/addproduct',auth.isLogin,adminController.addproductPageLoad)
-router.post('/products/addproduct',auth.isLogin,fileUpload.productImagesUpload,adminController.addProduct)
-router.get('/products/editproduct',auth.isLogin,adminController.productEditPageLoad)
-router.post('/products/editproduct',auth.isLogin,fileUpload.productImagesUpload,adminController.updateProduct)
-router.get('/products/deleteproduct',auth.isLogin,adminController.deleteproduct)
+router.get('/products',auth.isLogin,productController.productPageLoad)
+router.get('/products/searchproduct',auth.isLogin,productController.searchproduct)
+router.get('/products/addproduct',auth.isLogin,productController.addproductPageLoad)
+router.post('/products/addproduct',auth.isLogin,fileUpload.productImagesUpload,productController.addProduct)
+router.get('/products/editproduct',auth.isLogin,productController.productEditPageLoad)
+router.post('/products/editproduct',auth.isLogin,fileUpload.productImagesUpload,productController.updateProduct)
+router.get('/products/deleteproduct',auth.isLogin,productController.deleteproduct)
 
 // category related Routers
-router.get('/category',auth.isLogin,adminController.categoryPageLoad)
-router.post('/category',auth.isLogin,fileUpload.uploadCategory.single('icon'),adminController.addCategory)
-router.get('/category/delete',auth.isLogin,adminController.deleteCategory)
-router.get('/category/search',auth.isLogin,adminController.searchCategory)
-router.post('/category/block',auth.isLogin,adminController.categoryBlock)
+router.get('/category',auth.isLogin,categoryController.categoryPageLoad)
+router.post('/category',auth.isLogin,fileUpload.uploadCategory.single('icon'),categoryController.addCategory)
+router.get('/category/delete',auth.isLogin,categoryController.deleteCategory)
+router.get('/category/search',auth.isLogin,categoryController.searchCategory)
+router.post('/category/block',auth.isLogin,categoryController.categoryBlock)
 
 
 //orders related routers
-router.get('/orders',adminController.orderPageLoad)
-router.get('/orders/manage',adminController.orderMangePageLoad)
-router.post('/orders/manage/cancel',adminController.cancelOrder)
-router.post('/orders/manage/changestatus',adminController.changeOrderStatus)
+router.get('/orders',auth.isLogin,orderController.orderPageLoad)
+router.get('/orders/manage',auth.isLogin,orderController.orderMangePageLoad)
+router.post('/orders/manage/cancel',auth.isLogin,orderController.cancelOrder)
+router.post('/orders/manage/changestatus',auth.isLogin,orderController.changeOrderStatus)
 
 
 //exporting

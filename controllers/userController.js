@@ -937,6 +937,8 @@ const allOrdersPageLoad = async (req, res) => {
         const quantity = product.quantity;
         const placeDate = formatDate(order.orderDate);
         const OrderStatus = product.OrderStatus;
+        const StatusLevel = product.StatusLevel;
+
         // Retrieve additional product details using the productId
         const productDetails = await ProductDB.findById(productId, {
           images: 1,
@@ -957,6 +959,7 @@ const allOrdersPageLoad = async (req, res) => {
           address: order.shippingAddress,
           deliveryDate: DeliveryexpectedDate,
           OrderStatus,
+          StatusLevel
         };
 
         // Push the product-wise order data into the productWiseOrders array
@@ -981,10 +984,17 @@ const loadShippingAddressPage = async (req, res) => {
   try {
     let userAddress = await addressDB.findOne({ userId: req.session.user_id });
     // console.log(userAddress);
-    res.render("address", {
-      user: req.session.user_id,
-      address: userAddress.addresses,
-    });
+    if(!userAddress){
+      res.render("address", {
+        user: req.session.user_id,
+        address: 0,
+      });
+    }else{
+      res.render("address", {
+        user: req.session.user_id,
+        address: userAddress.addresses,
+      });
+    }
   } catch (error) {
     console.log(error.message);
   }

@@ -20115,7 +20115,7 @@ button:focus {
   
   #progressbar li.active:after,
   #progressbar li.active:before {
-    background: #949494
+    background: #000
   }
   
   #three {

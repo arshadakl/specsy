@@ -66,6 +66,7 @@ router.get('/checkout',auth.isLogin,orderController.checkoutPageLoad)
 router.post('/checkout',auth.isLogin,orderController.reciveShippingAddress)
 router.post('/checkout/paymentselection',auth.isLogin,orderController.paymentSelectionManage)
 router.post('/checkout/placeorder',auth.isLogin,orderController.placeOrderManage)
+
 //add address 
 router.post('/shippingaddress',userController.addShippingAddress)
 router.get('/profile/user_address',auth.isLogin,userController.loadShippingAddressPage)
@@ -79,6 +80,6 @@ router.get('/profile/orders',auth.isLogin,userController.allOrdersPageLoad)
 router.post('/profile/orders/cancel',userController.cancelOrder)
 
 
-router.get('/test',userController.testLoad)
+// router.get('/test',userController.testLoad)
 
 module.exports = router
