@@ -79,17 +79,17 @@ const sentVerifyMail = async (name, email, userId) => {
   try {
     otp = generateOTP();
     const transporter = nodemiler.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
+      host: process.env.otp_host,
+      port: process.env.mailPort,
       secure: false,
       requireTLS: true,
       auth: {
-        user: "miraclexweb@gmail.com",
+        user: process.env.mailUser,
         pass: process.env.Mail_key,
       },
     });
     const mailOptions = {
-      from: "miraclexweb@gmail.com",
+      from: process.env.mailUser,
       to: email,
       subject: "For veryfication email",
       html: `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">

@@ -131,9 +131,12 @@
                                                         </tbody>
                                                     </table><!-- End .table table-summary -->
                                                     <hr>
-                                                    <button onclick="placeOrder('<%= address._id %>','<%=payment%>')" class="btn btn-outline-primary-2 mb-4 btn-block py-4 "
-                                        style="background-color: #000; color: #fff; border-radius: 10px; font-size: 18px;"
-                                        onMouseOver="this.style.background=' #575757'"
+                                                    <button 
+                                                                        class="btn btn-outline-primary-2 mb-4 btn-block
+                                                                        py-4 "
+                                                                        style="background-color: #000; color: #fff;
+                                                                        border-radius: 10px; font-size: 18px;"
+                                                                        onMouseOver="this.style.background=' #575757'"
                                                                     onMouseOut="this.style.background='#000'"
                                                                     id="addressBtn">Place Order</button>
 
@@ -200,36 +203,91 @@
                                 </div><!-- End .container -->
                             </div><!-- End .cart -->
                         </div><!-- End .page-content -->
-                        <!-- <form action="/checkout/placeorder" method="post" id="addressForm">
+                        <form id="addressForm">
                             <input type="text" name="address" value="<%= address._id %>" id="addressInput" hidden>
                             <input type="text" name="payment" value="<%=payment%>" hidden>
-                        </form> -->
+                            <button id="submitForm" type="submit" hidden></button>
+                        </form>
         </main><!-- End .main -->
 
-
         <script>
-             function placeOrder(address,payment){
-                    $.ajax({
+            let addressBtn = document.getElementById('addressBtn')
+            addressBtn.addEventListener('click', () => {
+                submitForm.click()
+            })
+
+            $('#addressForm').submit((e) => {
+                e.preventDefault()
+                $.ajax({
                     url: '/checkout/placeorder',
                     method: 'post',
-                    data: { address,payment },
+                    data: $("#addressForm").serialize(),
                     success: (response) => {
                         console.log(response);
-                        if (response.remove == 1) {
-                            location.reload()
+                        if (response.cod) {
+                            location.href = `/checkout/placeorder?id=${response.orderId}`
+                        } else {
+                            payPayment(response.order,response.user)
                         }
+
                     }
                 })
-                }
-            // form submit handil
-            // document.getElementById("addressBtn").addEventListener("click", function () {
-            //     console.log("adress BTn clicked...");
-            //     // document.getElementById("addressForm").submit();
+            })
 
-               
-                
 
-            // })
+            function payPayment(order,user) {
+                console.log(order.amount);
+                var options = {
+                    "key": "rzp_test_17MHXRPIopDJOu", // Enter the Key ID generated from the Dashboard
+                    "amount":order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "INR",
+                    "name": "Specsy E-com",
+                    "description": "Test Transaction",
+                    "image": "/user/images/logo.png",
+                    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "handler": function (response) {
+                        alert(response.razorpay_payment_id);
+                        alert(response.razorpay_order_id);
+                        alert(response.razorpay_signature)
+                        verifyPayment(response, order)
+                    },
+                    "prefill": {
+                        "name": user.name,
+                        "email": user.email,
+                        "contact": user.mobile
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#000"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response) {
+                    alert(response.error.code);
+                    alert(response.error.description);
+                    alert(response.error.source);
+                    alert(response.error.step);
+                    alert(response.error.reason);
+                    alert(response.error.metadata.order_id);
+                    alert(response.error.metadata.payment_id);
+                });
+                rzp1.open();
+            }
+
+            function verifyPayment(payment, order) {
+                console.log("verify fun called...");
+                $.ajax({
+                    url: '/checkout/verify-payment',
+                    method: "post",
+                    data: { payment, order },
+                    success: (response) => {
+
+                    }
+                })
+            }
+
 
         </script>
         <script>

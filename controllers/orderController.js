@@ -3,29 +3,47 @@ const ProductDB = require("../models/productsModel").product;
 const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
-const Razorpay = require('razorpay');
+const Razorpay = require("razorpay");
+const mongoose = require("mongoose");
+const crypto = require('crypto');
+require("dotenv").config();
+
+
 var instance = new Razorpay({
-    key_id: 'rzp_test_17MHXRPIopDJOu',
-    key_secret: '5Vd91ubM3TJQvfqdtpsDA12f',
+  key_id: process.env.razorpay_key_id,
+  key_secret: process.env.razorpay_key_secret,
 });
 
-
 //this used to genarate order in razorpay
-const genarateRazorpay = async(orderId,total)=>{
-  try {
-    var options = {
-      amount: total,  // amount in the smallest currency unit
-      currency: "INR",
-      receipt: orderId
-    };
-    instance.orders.create(options, function(err, order) {
-      return order
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
-}
+// const genarateRazorpay = async(orderId,total)=>{
+//   try {
+//     var options = {
+//       amount: total,  // amount in the smallest currency unit
+//       currency: "INR",
+//       receipt: orderId
+//     };
+//     let details = instance.orders.create(options, function(err, order) {
+//       console.log(order);
+//       return order
+//     });
+//     return details
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
 
+const genarateRazorpay = (orderId, total) => {
+  return new Promise((resolve, reject) => {
+    var options = {
+      amount: total*100, // amount in the smallest currency unit
+      currency: "INR",
+      receipt: orderId,
+    };
+    instance.orders.create(options, function (err, order) {
+      resolve(order);
+    });
+  });
+};
 
 // This Function used to formmate date from new Date() function
 // ==============================================================
@@ -178,7 +196,7 @@ const reciveShippingAddress = async (req, res) => {
   }
 };
 
-// it used to select payment method 
+// it used to select payment method
 const paymentSelectionManage = async (req, res) => {
   try {
     console.log(req.body);
@@ -217,31 +235,43 @@ const paymentSelectionManage = async (req, res) => {
   }
 };
 
-//place order 
+//place order
 const placeOrderManage = async (req, res) => {
   try {
+    
     // console.log(req.body.address);
     let addressId = req.body.address;
+
     let paymentType = req.body.payment;
     const cartDetails = await CartDB.findOne({ user: req.session.user_id });
-    
+
     let userAddrs = await addressDB.findOne({ userId: req.session.user_id });
     const shipAddress = userAddrs.addresses.find((address) => {
       return address._id.toString() === addressId.toString();
     });
-    let {country,fullName,mobileNumber,pincode,city,state} = shipAddress
-    console.log(state);
+
+    
+    console.log("collected:", shipAddress);
+
+
+
+    if (!shipAddress) {
+      return res.status(400).json({ error: "Address not found" });
+    }
+    // console.log("collected :" + shipAddress);
+    const { country, fullName, mobileNumber, pincode, city, state } =
+      shipAddress;
+    // console.log(state);
 
     const cartProducts = cartDetails.products.map((productItem) => ({
       productId: productItem.product,
       quantity: productItem.quantity,
       OrderStatus: "pending",
-      StatusLevel:1
-
+      StatusLevel: 1,
     }));
     let total = await calculateTotalPrice(req.session.user_id);
 
-    console.log(cartProducts);
+    // console.log(cartProducts);
     const order = new OrderDB({
       userId: req.session.user_id,
       "shippingAddress.country": country,
@@ -256,35 +286,40 @@ const placeOrderManage = async (req, res) => {
       paymentStatus: "pending",
     });
 
-    
     const placeorder = await order.save();
-
-
+    console.log(placeorder._id);
     if (paymentType !== "Online") {
       console.log(placeorder._id);
       let changeOrderStatus = await OrderDB.updateOne(
         { _id: placeorder._id },
         { $set: { OrderStatus: "success" } }
       );
-      console.log(changeOrderStatus);
-      await CartDB.deleteOne({user:req.session.user_id})
-      return res.render("orderStatus", {
-        success: 1,
-        user: req.session.user_id
-      });
+      // console.log(changeOrderStatus);
+      await CartDB.deleteOne({ user: req.session.user_id });
+      // return res.render("orderStatus", {
+      //   success: 1,
+      //   user: req.session.user_id
+      // });
+      return res.json({ cod: true,orderId:placeorder._id });
     } else {
-      let order = genarateRazorpay(placeorder._id,total)
+      let order = await genarateRazorpay(placeorder._id, total);
+      // console.log(order);
       // return res.render("orderStatus", {
       //   success: 0,
       //   user: req.session.user_id
       // });
-      return res.json({})
+      let userData = await UserDB.findById(req.session.user_id)
+      let user={
+        name:fullName,
+        mobile:mobileNumber,
+        email:userData.email
+      }
+      return res.json({ order,user });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
-
 
 
 
@@ -300,7 +335,6 @@ const orderPageLoad = async (req, res) => {
       for (const productInfo of order.products) {
         const productId = productInfo.productId;
 
-        
         const product = await ProductDB.findById(productId).select(
           "product_name images price"
         );
@@ -388,8 +422,6 @@ const orderMangePageLoad = async (req, res) => {
 // -----------------------
 const cancelOrder = async (req, res) => {
   try {
-   
-
     const { oderId, productId } = req.body;
     // orderId = orderId.toString
     console.log(oderId);
@@ -411,7 +443,7 @@ const cancelOrder = async (req, res) => {
     const result = await order.save();
 
     console.log(result);
-    res.json({cancel:1})
+    res.json({ cancel: 1 });
   } catch (error) {
     console.log(error.message);
   }
@@ -419,24 +451,23 @@ const cancelOrder = async (req, res) => {
 
 // cange order status
 // -------------------------
-const changeOrderStatus = async(req,res)=>{
+const changeOrderStatus = async (req, res) => {
   try {
-    const {status,orderId,productId} = req.body
+    const { status, orderId, productId } = req.body;
     const order = await OrderDB.findById(orderId);
     // find status level
 
     const statusMap = {
-      "Shipped": 2,
-      "OutforDelivery": 3,
-      "Delivered": 4
+      Shipped: 2,
+      OutforDelivery: 3,
+      Delivered: 4,
     };
-    
+
     const selectedStatus = status;
     const statusLevel = statusMap[selectedStatus];
-    
-    console.log(statusLevel); 
-    // find status levelend
 
+    console.log(statusLevel);
+    // find status levelend
 
     console.log(order);
 
@@ -456,14 +487,60 @@ const changeOrderStatus = async(req,res)=>{
 
     console.log(result);
     // console.log(req.body);
-      res.redirect(`/admin/orders/manage?orderId=${orderId}&productId=${productId}`)
+    res.redirect(
+      `/admin/orders/manage?orderId=${orderId}&productId=${productId}`
+    );
   } catch (error) {
     console.log(error.message);
   }
+};
+
+//payment verification
+// --------------------------
+const verifyPayment = async (req, res) => {
+  try {
+    console.log(req.body.payment);
+    const paymentDetails = req.body.payment
+    let paySignature =paymentSignatureMatching(paymentDetails).then(()=>{
+
+    })
+  } catch (error) {}
+};
+
+//razorpay payment  Signature Matching
+// ---------------------------------------
+const paymentSignatureMatching= (payment)=>{
+  return new Promise((resolve,reject)=>{
+    const hmac = crypto.createHmac('sha256',process.env.razorpay_key_secret)
+    hmac.update(payment.razorpay_order_id+'|'+payment.razorpay_payment_id)
+    hmac=hmac.digest('hex')
+    if(hmac==payment.razorpay_payment_id){
+      resolve()
+    }else{
+      reject()
+    }
+  })
 }
 
 
+const orderStatusPageLoad = async (req, res) => {
+  try {
+    const orderId = req.query.id
+    let orderDetails = await OrderDB.findOne({_id:orderId})
+    if(orderDetails.paymentMethod!="Online"){
+      return res.render("orderStatus", {
+        success: 1,
+        user: req.session.user_id,
+      });
+    }else{
+      //online area
+    }
 
+   
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 
 // =============+++++++++++++++=======================
@@ -478,5 +555,6 @@ module.exports = {
   orderMangePageLoad,
   cancelOrder,
   changeOrderStatus,
-
+  verifyPayment,
+  orderStatusPageLoad,
 };
