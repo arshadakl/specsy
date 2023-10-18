@@ -122,6 +122,10 @@ const orderSchema = new mongoose.Schema({
       StatusLevel:{
         type: Number,
         required: true
+      },
+      paymentStatus:{
+        type:String,
+        require:true
       }
       
     }
@@ -135,10 +139,6 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
   paymentMethod:{
-    type:String,
-    require:true
-  },
-  paymentStatus:{
     type:String,
     require:true
   }

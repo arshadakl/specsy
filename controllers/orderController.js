@@ -5,9 +5,7 @@ const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
 const Razorpay = require("razorpay");
 const mongoose = require("mongoose");
-const crypto = require('crypto');
 require("dotenv").config();
-
 
 var instance = new Razorpay({
   key_id: process.env.razorpay_key_id,
@@ -35,7 +33,7 @@ var instance = new Razorpay({
 const genarateRazorpay = (orderId, total) => {
   return new Promise((resolve, reject) => {
     var options = {
-      amount: total*100, // amount in the smallest currency unit
+      amount: total * 100, // amount in the smallest currency unit
       currency: "INR",
       receipt: orderId,
     };
@@ -238,7 +236,6 @@ const paymentSelectionManage = async (req, res) => {
 //place order
 const placeOrderManage = async (req, res) => {
   try {
-    
     // console.log(req.body.address);
     let addressId = req.body.address;
 
@@ -250,10 +247,7 @@ const placeOrderManage = async (req, res) => {
       return address._id.toString() === addressId.toString();
     });
 
-    
-    console.log("collected:", shipAddress);
-
-
+    // console.log("collected:", shipAddress);
 
     if (!shipAddress) {
       return res.status(400).json({ error: "Address not found" });
@@ -268,6 +262,7 @@ const placeOrderManage = async (req, res) => {
       quantity: productItem.quantity,
       OrderStatus: "pending",
       StatusLevel: 1,
+      paymentStatus: "pending",
     }));
     let total = await calculateTotalPrice(req.session.user_id);
 
@@ -283,7 +278,6 @@ const placeOrderManage = async (req, res) => {
       products: cartProducts,
       totalAmount: total,
       paymentMethod: paymentType,
-      paymentStatus: "pending",
     });
 
     const placeorder = await order.save();
@@ -292,7 +286,19 @@ const placeOrderManage = async (req, res) => {
       console.log(placeorder._id);
       let changeOrderStatus = await OrderDB.updateOne(
         { _id: placeorder._id },
-        { $set: { OrderStatus: "success" } }
+        {
+          $set: {
+            "products.$[].OrderStatus": "placed",
+          },
+        }
+      );
+      let changePaymentStatus = await OrderDB.updateOne(
+        { _id: placeorder._id },
+        {
+          $set: {
+            "products.$[].paymentStatus": "success",
+          },
+        }
       );
       // console.log(changeOrderStatus);
       await CartDB.deleteOne({ user: req.session.user_id });
@@ -300,7 +306,7 @@ const placeOrderManage = async (req, res) => {
       //   success: 1,
       //   user: req.session.user_id
       // });
-      return res.json({ cod: true,orderId:placeorder._id });
+      return res.json({ cod: true, orderId: placeorder._id });
     } else {
       let order = await genarateRazorpay(placeorder._id, total);
       // console.log(order);
@@ -308,20 +314,18 @@ const placeOrderManage = async (req, res) => {
       //   success: 0,
       //   user: req.session.user_id
       // });
-      let userData = await UserDB.findById(req.session.user_id)
-      let user={
-        name:fullName,
-        mobile:mobileNumber,
-        email:userData.email
-      }
-      return res.json({ order,user });
+      let userData = await UserDB.findById(req.session.user_id);
+      let user = {
+        name: fullName,
+        mobile: mobileNumber,
+        email: userData.email,
+      };
+      return res.json({ order, user });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
-
-
 
 // orders page load
 // ----------------------
@@ -357,7 +361,7 @@ const orderPageLoad = async (req, res) => {
               OrderStatus: productInfo.OrderStatus,
               StatusLevel: productInfo.StatusLevel,
               paymentMethod: order.paymentMethod,
-              paymentStatus: order.paymentStatus,
+              paymentStatus: productInfo.paymentStatus,
               quantity: productInfo.quantity,
             },
           });
@@ -406,7 +410,7 @@ const orderMangePageLoad = async (req, res) => {
         OrderStatus: productInfo.OrderStatus,
         StatusLevel: productInfo.StatusLevel,
         paymentMethod: order.paymentMethod,
-        paymentStatus: order.paymentStatus,
+        paymentStatus: productInfo.paymentStatus,
         quantity: productInfo.quantity,
       },
     };
@@ -499,49 +503,96 @@ const changeOrderStatus = async (req, res) => {
 // --------------------------
 const verifyPayment = async (req, res) => {
   try {
-    console.log(req.body.payment);
-    const paymentDetails = req.body.payment
-    let paySignature =paymentSignatureMatching(paymentDetails).then(()=>{
-
-    })
+    console.log("verify fn called ...");
+    // console.log(req.body.payment);
+    const paymentDetails = req.body.payment;
+    paymentSignatureMatching(paymentDetails)
+      .then((status) => {
+        console.log("signature resolved...");
+        console.log(status);
+        // changeOrderStatus(paymentDetails.payment.razorpay_order_id)
+        console.log("payment success");
+        res.json({ status: true });
+      })
+      .catch((err) => {
+        res.json({ status: "payment Failed" });
+      });
   } catch (error) {}
 };
 
 //razorpay payment  Signature Matching
 // ---------------------------------------
-const paymentSignatureMatching= (payment)=>{
-  return new Promise((resolve,reject)=>{
-    var hmac = crypto.createHmac('sha256',process.env.razorpay_key_secret)
-    hmac.update(payment.razorpay_order_id+'|'+payment.razorpay_payment_id)
-    hmac=hmac.digest('hex')
-    if(hmac==payment.razorpay_payment_id){
-      resolve()
-    }else{
-      reject()
-    }
-  })
-}
+// const paymentSignatureMatching = (payment) => {
+//   return new Promise((resolve, reject) => {
+//     const crypto = require("crypto");
+//     console.log("signature console :" + payment.razorpay_order_id);
+//     var hmac = crypto.createHmac("sha256", "5Vd91ubM3TJQvfqdtpsDA12f");
+//     hmac.update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id);
+//     hmac = hmac.digest("hex");
 
+//     console.log("hmac :" + hmac);
+//     console.log("razorpay_payment_id :" + payment.razorpay_payment_id);
+
+//     if (hmac == payment.razorpay_payment_id) {
+//       console.log("payment signatur condition called...");
+
+//       resolve({ status: true });
+//     } else {
+//       console.log("else called when signature");
+//       reject();
+//     }
+//   });
+// };
+
+
+const paymentSignatureMatching = (payment) => {
+  return new Promise((resolve, reject) => {
+    const crypto = require("crypto");
+
+    // Replace "your_webhook_secret_key" with your actual webhook secret key
+    const webhookSecretKey = process.env.razorpay_key_secret;
+
+    const hmac = crypto.createHmac("sha256", webhookSecretKey);
+    hmac.update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id);
+    const calculatedHmac = hmac.digest("hex");
+
+    // console.log("Calculated HMAC: " + calculatedHmac);
+    // console.log("Received HMAC: " + payment.razorpay_signature);
+
+    if (calculatedHmac === payment.razorpay_signature) {
+      resolve();
+    } else {
+      console.log("Invalid payment signature.");
+    }
+  });
+};
+
+
+
+
+//change payment status
+// --------------------
+const changePaymentStatus = async (id) => {
+  try {
+  } catch (error) {}
+};
 
 const orderStatusPageLoad = async (req, res) => {
   try {
-    const orderId = req.query.id
-    let orderDetails = await OrderDB.findOne({_id:orderId})
-    if(orderDetails.paymentMethod!="Online"){
+    const orderId = req.query.id;
+    let orderDetails = await OrderDB.findOne({ _id: orderId });
+    if (orderDetails.paymentMethod != "Online") {
       return res.render("orderStatus", {
         success: 1,
         user: req.session.user_id,
       });
-    }else{
+    } else {
       //online area
     }
-
-   
   } catch (error) {
     console.log(error.message);
   }
 };
-
 
 // =============+++++++++++++++=======================
 // exportings
