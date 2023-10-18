@@ -511,7 +511,7 @@ const verifyPayment = async (req, res) => {
 // ---------------------------------------
 const paymentSignatureMatching= (payment)=>{
   return new Promise((resolve,reject)=>{
-    const hmac = crypto.createHmac('sha256',process.env.razorpay_key_secret)
+    var hmac = crypto.createHmac('sha256',process.env.razorpay_key_secret)
     hmac.update(payment.razorpay_order_id+'|'+payment.razorpay_payment_id)
     hmac=hmac.digest('hex')
     if(hmac==payment.razorpay_payment_id){

@@ -16,7 +16,7 @@ const userRouter = require('./routes/userRouter')
 const adminRouter = require('./routes/adminRouter')
 
 app.use(cookieParser());
-app.use(session({secret:config.sessionKey,cookie:{maxAge:86400000}}))
+app.use(session({secret:config.sessionKey,cookie:{maxAge:86400000},resave: false,saveUninitialized: true}))
 app.use(nocache());
 // app.set('trust proxy', 'loopback');
 
