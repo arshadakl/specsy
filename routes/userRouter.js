@@ -67,6 +67,8 @@ router.post('/checkout',auth.isLogin,orderController.reciveShippingAddress)
 router.post('/checkout/paymentselection',auth.isLogin,orderController.paymentSelectionManage)
 router.post('/checkout/placeorder',auth.isLogin,orderController.placeOrderManage)
 router.get('/checkout/placeorder',auth.isLogin,orderController.orderStatusPageLoad)
+router.post('/checkout/placeorder/verify-payment',auth.isLogin,orderController.orderStatusPageLoad)
+
 
 //add address 
 router.post('/shippingaddress',userController.addShippingAddress)
@@ -74,6 +76,8 @@ router.get('/profile/user_address',auth.isLogin,userController.loadShippingAddre
 router.post('/profile/user_address',auth.isLogin,userController.addShippingAddressFromProfile)
 router.post('/profile/user_address/edit',auth.isLogin,userController.updateShippingAddress)
 router.delete('/profile/user_address/delete',auth.isLogin,userController.deleteShippingAddress)
+
+
 
 // view orders related 
 // -------------------------

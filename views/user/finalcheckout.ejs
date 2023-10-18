@@ -210,7 +210,15 @@
                         </form>
         </main><!-- End .main -->
 
+        <form id="paymentVerifyForm" action="/checkout/placeorder/verify-payment" method="post">
+            <input type="text" name="status" id="statusInput" hidden>
+            <button type="submit" hidden></button>
+        </form>
+
         <script>
+            let paymentVerifyForm = document.getElementById('paymentVerifyForm')
+            let paymentstatusInput = document.getElementById('statusInput')
+
             let addressBtn = document.getElementById('addressBtn')
             addressBtn.addEventListener('click', () => {
                 submitForm.click()
@@ -227,7 +235,7 @@
                         if (response.cod) {
                             location.href = `/checkout/placeorder?id=${response.orderId}`
                         } else {
-                            payPayment(response.order,response.user)
+                            payPayment(response.order,response.user,response.orderId)
                         }
 
                     }
@@ -235,7 +243,7 @@
             })
 
 
-            function payPayment(order,user) {
+            function payPayment(order,user,orderId) {
                 console.log(order.amount);
                 var options = {
                     "key": "rzp_test_17MHXRPIopDJOu", // Enter the Key ID generated from the Dashboard
@@ -246,10 +254,10 @@
                     "image": "/user/images/logo.png",
                     "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                     "handler": function (response) {
-                        alert(response.razorpay_payment_id);
-                        alert(response.razorpay_order_id);
-                        alert(response.razorpay_signature)
-                        verifyPayment(response, order)
+                        // alert(response.razorpay_payment_id);
+                        // alert(response.razorpay_order_id);
+                        // alert(response.razorpay_signature)
+                        verifyPayment(response, order,orderId)
                     },
                     "prefill": {
                         "name": user.name,
@@ -264,29 +272,54 @@
                     }
                 };
                 var rzp1 = new Razorpay(options);
-                rzp1.on('payment.failed', function (response) {
-                    alert(response.error.code);
-                    alert(response.error.description);
-                    alert(response.error.source);
-                    alert(response.error.step);
-                    alert(response.error.reason);
-                    alert(response.error.metadata.order_id);
-                    alert(response.error.metadata.payment_id);
-                });
+                // rzp1.on('payment.failed', function (response) {
+                //     alert(response.error.code);
+                //     alert(response.error.description);
+                //     alert(response.error.source);
+                //     alert(response.error.step);
+                //     alert(response.error.reason);
+                //     alert(response.error.metadata.order_id);
+                //     alert(response.error.metadata.payment_id);
+                // });
                 rzp1.open();
             }
 
-            function verifyPayment(payment, order) {
+            function orderStatus(status){
+                console.log("orderStatus called...");
+                paymentstatusInput.value=status
+                paymentVerifyForm.submit()
+
+                // $.ajax({
+                //     url:'/checkout/placeorder/verify-payment',
+                //     method:'post',
+                //     data: {status},
+                //     success:(response)=>{
+                //         alert("called")
+                //     }
+                // })
+            }
+
+            function verifyPayment(payment, order,orderId) {
                 console.log("verify fun called...");
                 $.ajax({
                     url: '/checkout/verify-payment',
                     method: "post",
                     data: { payment, order },
                     success: (response) => {
-
+                        if(response){
+                            orderStatus(response.status)
+                        }
+                        // if(response.status=="success"){
+                        //     console.log("payment succ");
+                        //     location.href = `/checkout/placeorder?id=${orderId}`
+                        // }else if(response.status=="fail"){
+                        //     console.log("payment fail");
+                        //     location.href = `/checkout/placeorder?id=${orderId}`
+                        // }
                     }
                 })
             }
+            
 
 
         </script>

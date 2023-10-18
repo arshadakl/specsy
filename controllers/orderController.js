@@ -422,6 +422,8 @@ const orderMangePageLoad = async (req, res) => {
   }
 };
 
+
+
 // order cancel
 // -----------------------
 const cancelOrder = async (req, res) => {
@@ -507,15 +509,14 @@ const verifyPayment = async (req, res) => {
     // console.log(req.body.payment);
     const paymentDetails = req.body.payment;
     paymentSignatureMatching(paymentDetails)
-      .then((status) => {
-        console.log("signature resolved...");
-        console.log(status);
-        // changeOrderStatus(paymentDetails.payment.razorpay_order_id)
+      .then(async() => {
+        let usercart = await CartDB.deleteOne({ user: req.session.user_id });
         console.log("payment success");
-        res.json({ status: true });
+        res.json({ status: "success" });
+
       })
       .catch((err) => {
-        res.json({ status: "payment Failed" });
+        res.json({ status: "fail" });
       });
   } catch (error) {}
 };
@@ -579,16 +580,21 @@ const changePaymentStatus = async (id) => {
 
 const orderStatusPageLoad = async (req, res) => {
   try {
-    const orderId = req.query.id;
-    let orderDetails = await OrderDB.findOne({ _id: orderId });
-    if (orderDetails.paymentMethod != "Online") {
-      return res.render("orderStatus", {
+    // const orderId = req.query.id;
+    console.log(req.body);
+    // let orderDetails = await OrderDB.findOne({ _id: orderId });
+    if(req.body.status=="success"){
+     return res.render("orderStatus", {
         success: 1,
         user: req.session.user_id,
-      });
-    } else {
-      //online area
+    });
+    }else{
+     return res.render("orderStatus", {
+        success: 0,
+        user: req.session.user_id,
+    });
     }
+    
   } catch (error) {
     console.log(error.message);
   }
