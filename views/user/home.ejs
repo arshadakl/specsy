@@ -216,7 +216,7 @@
                                 </a>
 
                                 <div class="product-action-vertical">
-                                    <a  class="btn-product-icon btn-wishlist"><span>add to wishlist</span></a>
+                                    <a style="cursor: pointer;" onclick="addWishlist('<%= products[i]._id %>')" class="btn-product-icon btn-wishlist"><span>add to wishlist</span></a>
                                 </div>
                             </figure>
 
@@ -322,7 +322,7 @@
                                         </a>
 
                                         <div class="product-action-vertical">
-                                            <a href="#" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
+                                            <a style="cursor: pointer;" onclick="addWishlist('<%= products[i]._id %>')" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
                                         </div><!-- End .product-action-vertical -->
                                     </figure><!-- End .product-media -->
 

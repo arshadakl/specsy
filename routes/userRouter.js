@@ -17,6 +17,8 @@ router.set('views','./views/user/')
 const userController = require("../controllers/userController")
 const productController = require('../controllers/productsController')
 const orderController = require('../controllers/orderController')
+const wishlistController = require('../controllers/wishlistController')
+
 
 
 
@@ -87,6 +89,10 @@ router.post('/profile/orders/cancel',userController.cancelOrder)
 //payment related
 router.post('/checkout/verify-payment',auth.isLogin,orderController.verifyPayment)
 
-// router.get('/test',userController.testLoad)
+//wishlist related
+router.post('/addtowishlist',auth.isLogin,wishlistController.addToWishlist)
+
+// test case
+router.get('/test',userController.testLoad)
 
 module.exports = router

@@ -1083,17 +1083,6 @@ const deleteShippingAddress = async (req, res) => {
   }
 };
 
-// +++++++++++++++++++++++++++++++
-// for testing purpose
-// ----------------------------
-
-const testLoad = async (req, res) => {
-  try {
-    res.render("address", { user: 0 });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
 
 // order cancel
 // ---------------
@@ -1123,6 +1112,21 @@ const cancelOrder = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+
+// +++++++++++++++++++++++++++++++
+// for testing purpose
+// ----------------------------
+
+const testLoad = async (req, res) => {
+  try {
+    res.render("wishlist", { user: 0 });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 
 // ===============================
 // exporting
@@ -1159,3 +1163,6 @@ module.exports = {
   deleteShippingAddress,
   cancelOrder,
 };
+
+
+

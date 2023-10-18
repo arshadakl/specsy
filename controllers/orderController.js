@@ -510,7 +510,8 @@ const verifyPayment = async (req, res) => {
     const paymentDetails = req.body.payment;
     paymentSignatureMatching(paymentDetails)
       .then(async() => {
-        let usercart = await CartDB.deleteOne({ user: req.session.user_id });
+        let usercartDelete = await CartDB.deleteOne({ user: req.session.user_id });
+        console.log(usercartDelete);
         console.log("payment success");
         res.json({ status: "success" });
 

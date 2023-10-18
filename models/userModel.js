@@ -48,14 +48,14 @@ const userSchema = mongoose.Schema({
 const cartSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Reference to the User model for associating the cart with a user
+        ref: 'User',
         required: true
     },
     products: [
         {
             product: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'product', // Reference to the Product model for associating products with the cart
+                ref: 'product', 
                 required: true
             },
             quantity: {
@@ -115,7 +115,35 @@ const userAddressSchema = new mongoose.Schema({
   });
 
   
-  
+// wishlist 
+const wishlistSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', 
+    required: true,
+  },
+  products: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true,
+      },
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
+});
+
+const Wishlist = mongoose.model('Wishlist', wishlistSchema);
 const UserAddress = mongoose.model('UserAddress', userAddressSchema);
 const Cart = mongoose.model('Cart',cartSchema)
 const User = mongoose.model('User', userSchema);
@@ -123,5 +151,5 @@ const User = mongoose.model('User', userSchema);
 module.exports = {
     User,
     Cart,
-    UserAddress
+    UserAddress,Wishlist
 };

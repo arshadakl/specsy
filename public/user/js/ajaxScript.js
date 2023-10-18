@@ -112,3 +112,46 @@ function removeAddress(id){
         }
     })
 }
+
+
+//add to wishlist
+function addWishlist(productId){
+
+    function showWishAlertBox() {
+        console.log("alert fun called...");
+        $("#wishAlert").fadeIn();
+    
+        // Hide the alert box after 5 seconds
+        setTimeout(function () {
+            $("#wishAlert").fadeOut();
+        }, 4000);
+    }
+
+    function showWishAlertBoxAlready() {
+        console.log("alert fun called...");
+        $("#wishAlertAlready").fadeIn();
+    
+        // Hide the alert box after 5 seconds
+        setTimeout(function () {
+            $("#wishAlertAlready").fadeOut();
+        }, 3000);
+    }
+
+
+    console.log(productId);
+    $.ajax({
+        url:'/addtowishlist',
+        method:'post',
+        data:{productId},
+        success:(response)=>{
+            if(response.status==1){
+                showWishAlertBox()
+                // alert(response.status)
+            }else{
+                showWishAlertBoxAlready()
+                // alert(response.status)
+
+            }
+        }
+    })
+}
