@@ -1,0 +1,101 @@
+<%- include('../admin/layouts/header.ejs') %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+
+
+
+
+        <div class="row ">
+            <div class="col-12 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+                            <h4 class="card-title"><p class=""></p>Coupon Management</h4>
+                            <a href="/admin/coupon/add"
+                                class="btn btn-outline-success d-flex align-items-center">&nbsp<b>+ </b> &nbsp Add
+                                Coupon</a>
+                        </div>
+                        <hr class="white-line my-4">
+                        <div class="mb-5 ">
+                            <ul class="navbar-nav w-100">
+                                <li class="nav-item w-100">
+                                    <!-- d-none -->
+                                    <form action="" method="get"
+                                        class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
+                                        <input type="text" name="key" class="form-control mb-1 text-light"
+                                            placeholder="Search Coupon">
+                                        <button type="submit" class="btn-inverse-info mb-1"> search </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Coupon Code</th>
+                                        <th> Discount Amount </th>
+                                        <th> validFrom </th>
+                                        <th> validTo </th>
+                                        <th> description </th>
+                                        <th> minimumSpend</th>
+                                        <th> Edit</th>
+                                        <th> Remove</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <!-- list -->
+                                            <td>
+                                                CODE123
+                                            </td>
+                                            <td>
+                                                1
+                                            </td>
+                                            <td>
+                                                1
+                                            </td>
+                                            <td>
+                                                1
+                                            </td>
+                                            <td>
+                                               
+                                                    <span class="text-danger text-center">Out Of Stock </span>
+                                                    
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-inverse-info">Edit Product</a>
+                                            </td>
+                                            <td>
+                                           
+                                                <button type="button" class="btn btn-inverse-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#mod">
+                                                    Delete Item
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                            <!-- list -->
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- content-wrapper ends -->
+    <!-- partial:partials/_footer.html -->
+    <footer class="footer">
+
+    </footer>
+    <!-- partial -->
+</div>
+<%- include('../admin/layouts/footer.ejs') %>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interlinked Date Pickers</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
+</head>
+<body>
+    <label for="start-date">Start Date:</label>
+    <input type="text" id="start-date">
+
+    <label for="end-date">End Date:</label>
+    <input type="text" id="end-date">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#start-date").datepicker({
+                dateFormat: 'yy-mm-dd',
+                onSelect: function (selectedDate) {
+                    var minDate = new Date(selectedDate);
+                    minDate.setDate(minDate.getDate() + 1); // Set the minimum date for the end date picker to the next day
+                    $("#end-date").datepicker("option", "minDate", minDate);
+                }
+            });
+
+            $("#end-date").datepicker({
+                dateFormat: 'yy-mm-dd'
+            });
+        });
+    </script>
+</body>
+</html>

@@ -8,6 +8,7 @@ const adminController = require('../controllers/adminController')
 const productController = require('../controllers/productsController')
 const categoryController = require('../controllers/categoryController')
 const orderController = require('../controllers/orderController')
+const couponController = require('../controllers/couponController')
 
 //auth checking middleware
 const auth = require('../middleware/admin')
@@ -59,6 +60,9 @@ router.get('/orders/manage',auth.isLogin,orderController.orderMangePageLoad)
 router.post('/orders/manage/cancel',auth.isLogin,orderController.cancelOrder)
 router.post('/orders/manage/changestatus',auth.isLogin,orderController.changeOrderStatus)
 
+//coupon related routers
+router.get('/coupon',couponController.couponPageLoad)
+router.get('/coupon/add',couponController.addCouponPageLoad)
 
 
 

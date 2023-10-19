@@ -12,23 +12,7 @@ var instance = new Razorpay({
   key_secret: process.env.razorpay_key_secret,
 });
 
-//this used to genarate order in razorpay
-// const genarateRazorpay = async(orderId,total)=>{
-//   try {
-//     var options = {
-//       amount: total,  // amount in the smallest currency unit
-//       currency: "INR",
-//       receipt: orderId
-//     };
-//     let details = instance.orders.create(options, function(err, order) {
-//       console.log(order);
-//       return order
-//     });
-//     return details
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
+
 
 const genarateRazorpay = (orderId, total) => {
   return new Promise((resolve, reject) => {
