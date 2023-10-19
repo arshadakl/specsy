@@ -14,6 +14,19 @@ const isLogin = async(req,res,next)=>{
     }
 }
 
+//json requies validations
+const jsonIsLogin = async(req,res,next)=>{
+    try {
+        if(req.session.user_id){}
+        else{
+           return res.json({auth:0})
+        }
+        next()
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 const isLogout = async(req,res,next)=>{
     try {
         if(req.session.user_id){
@@ -29,5 +42,6 @@ const isLogout = async(req,res,next)=>{
 
 module.exports ={
     isLogin,
-    isLogout
+    isLogout,
+    jsonIsLogin
 }

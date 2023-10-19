@@ -155,3 +155,19 @@ function addWishlist(productId){
         }
     })
 }
+
+
+function removeWishItem(productId){
+    console.log(productId);
+    $.ajax({
+        url:'/removewishitem',
+        method:"delete",
+        data:{productId},
+        success:(response)=>{
+            if(response.status=="remove"){
+                window.location.reload()
+            }
+        }
+
+    })
+}

@@ -90,7 +90,9 @@ router.post('/profile/orders/cancel',userController.cancelOrder)
 router.post('/checkout/verify-payment',auth.isLogin,orderController.verifyPayment)
 
 //wishlist related
+router.get('/wishlist',auth.isLogin,wishlistController.wishListPageLoad)
 router.post('/addtowishlist',auth.isLogin,wishlistController.addToWishlist)
+router.delete('/removewishitem',auth.jsonIsLogin,wishlistController.removeItemFromWish)
 
 // test case
 router.get('/test',userController.testLoad)
