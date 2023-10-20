@@ -63,6 +63,8 @@ router.post('/orders/manage/changestatus',auth.isLogin,orderController.changeOrd
 //coupon related routers
 router.get('/coupon',couponController.couponPageLoad)
 router.get('/coupon/add',couponController.addCouponPageLoad)
+router.post('/coupon/add',couponController.addNewCoupon)
+
 
 
 

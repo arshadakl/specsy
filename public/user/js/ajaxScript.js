@@ -171,3 +171,49 @@ function removeWishItem(productId){
 
     })
 }
+
+// document.getElementById("couponInput").addEventListener("submit",(e)=>{
+//     e.preventDefault()
+//     alert("coppen called")
+// })
+
+
+//couponInput ,applyBtn
+
+function couponApply(){
+    let code = document.getElementById("couponInput").value
+    let discount = document.getElementById("dicountDisplay")
+    let discount2 = document.getElementById("dicountDisplay2")
+    let total = document.getElementById('totalDisplay')
+    let total2 = document.getElementById('totalDisplay2')
+
+    let MessDis = document.getElementById('MessDis')
+    let couponInDiv = document.getElementById("couponInDiv")
+    let couponShow = document.getElementById("couponShow")
+    let appliedCouponInput = document.getElementById("couponApInput")
+
+
+    // alert(couponInput)
+    $.ajax({
+        url:'/checkout/placeorder/coupon',
+        method:'post',
+        data:{code},
+        success:(response)=>{
+            if(!response.valid){
+                alert(response.message)
+                
+
+            }else{
+                console.log(response.redeem);
+                discount.innerHTML=response.redeem.discount
+                total.innerHTML = response.redeem.total
+                discount2.innerHTML=response.redeem.discount
+                total2.innerHTML = response.redeem.total
+                MessDis.innerHTML =response.redeem.discount
+                couponInDiv.classList.add("couponHide")
+                couponShow.classList.remove("couponHide")
+                appliedCouponInput.value=response.redeem.code
+            }
+        }
+    })
+}

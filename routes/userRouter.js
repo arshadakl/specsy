@@ -18,7 +18,7 @@ const userController = require("../controllers/userController")
 const productController = require('../controllers/productsController')
 const orderController = require('../controllers/orderController')
 const wishlistController = require('../controllers/wishlistController')
-
+const couponController = require('../controllers/couponController')
 
 
 
@@ -94,6 +94,9 @@ router.get('/wishlist',auth.isLogin,wishlistController.wishListPageLoad)
 router.post('/addtowishlist',auth.isLogin,wishlistController.addToWishlist)
 router.delete('/removewishitem',auth.jsonIsLogin,wishlistController.removeItemFromWish)
 
+//coupons
+router.get('/profile/coupons',auth.isLogin,couponController.couponUserPageLoad)
+router.post('/checkout/placeorder/coupon',couponController.ApplyCoupon)
 // test case
 router.get('/test',userController.testLoad)
 

@@ -80,7 +80,7 @@ const couponSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  discount_percentage: {
+  discount_amount: {
     type: Number,
     required: true,
   },
@@ -94,12 +94,15 @@ const couponSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    require:true
   },
   minimumSpend: {
     type: Number,
+    require:true
   },
   maxUsers: {
     type: Number,
+    require:true
   },
   usersUsed: [
     {
