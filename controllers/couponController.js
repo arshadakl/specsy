@@ -137,7 +137,16 @@ const ApplyCoupon = async(req,res)=>{
 
 //delete coupons 
 // --------------------
-// const deleteCoupon = async(req,res)=>
+const deleteCoupon = async(req,res)=>{
+    try {
+
+        const deleteCoupon = await CouponDB.deleteOne({_id:req.query.id})
+        console.log(deleteCoupon);
+        res.redirect('/admin/coupon')
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 
 
@@ -149,5 +158,6 @@ module.exports={
     addCouponPageLoad,
     addNewCoupon,
     couponUserPageLoad,
-    ApplyCoupon
+    ApplyCoupon,
+    deleteCoupon
 }

@@ -61,9 +61,10 @@ router.post('/orders/manage/cancel',auth.isLogin,orderController.cancelOrder)
 router.post('/orders/manage/changestatus',auth.isLogin,orderController.changeOrderStatus)
 
 //coupon related routers
-router.get('/coupon',couponController.couponPageLoad)
-router.get('/coupon/add',couponController.addCouponPageLoad)
-router.post('/coupon/add',couponController.addNewCoupon)
+router.get('/coupon',auth.isLogin,couponController.couponPageLoad)
+router.get('/coupon/add',auth.isLogin,couponController.addCouponPageLoad)
+router.post('/coupon/add',auth.isLogin,couponController.addNewCoupon)
+router.get('/coupon/delete',auth.isLogin,couponController.deleteCoupon)
 
 
 
