@@ -192,8 +192,8 @@ function couponApply(){
     let couponShow = document.getElementById("couponShow")
     let appliedCouponInput = document.getElementById("couponApInput")
     let couponPass = document.getElementById("couponPass")
-
-
+    let validMessage = document.getElementById('CouponValidMessage')
+    let couponInvalidMess = document.getElementById("couponInvalidMess")
 
 
     // alert(couponInput)
@@ -203,7 +203,11 @@ function couponApply(){
         data:{code},
         success:(response)=>{
             if(!response.valid){
-                alert(response.message)
+                validMessage.innerHTML=response.message
+                couponInvalidMess.classList.remove("couponHide")
+                setTimeout(() => {
+                    couponInvalidMess.classList.add("couponHide")
+                }, 5000);
                 
 
             }else{

@@ -96,12 +96,12 @@ const ApplyCoupon = async(req,res)=>{
         console.log(coupon);
         if (coupon==null) {
             console.log("condition called ..");
-            return res.json({ valid: false, message: 'Coupon not found' });
+            return res.json({ valid: false, message: 'Coupon not Valid' });
         }
 
          // Check if the user has already used the coupon
         if (coupon.usersUsed.includes(userId)) {
-            return res.json({ valid: false, message: 'Coupon has already been used by this user' });
+            return res.json({ valid: false, message: 'You have already claimed this coupon' });
         }
 
         const currentDate = new Date();
@@ -111,7 +111,7 @@ const ApplyCoupon = async(req,res)=>{
         
         // Check if the cart total meets the minimum spend requirement
          if (cartTotalAmount < coupon.minimumSpend) {
-           return res.json({ valid: false, message: 'Minimum spend not met' });
+           return res.json({ valid: false, message: 'The minimum spend has not been met' });
         }
 
         // Check if the maximum number of users have already redeemed the coupon
