@@ -25,6 +25,8 @@ router.set('views','./views/admin')
 // routers 
 
 router.get('/',auth.isLogin,adminController.adminPageLoad)
+router.get('/users',auth.isLogin,adminController.usersPageLoad)
+
 
 // user managment related routers
 router.post('/blockuser',auth.isLogin,adminController.userBlock)

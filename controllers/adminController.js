@@ -12,7 +12,19 @@ const adminPageLoad = async (req, res) => {
   try {
     let users = await getAlluserData();
     // console.log(users);
-    res.render("home", { users: users });
+    res.render("dashbord", { users: users });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+//users page loading function
+// ----------------------------------------------------------------
+const usersPageLoad = async (req, res) => {
+  try {
+    let users = await getAlluserData();
+    // console.log(users);
+    res.render("users", { users: users });
   } catch (error) {
     console.log(error.message);
   }
@@ -119,7 +131,7 @@ const updateUserData = async (req, res) => {
       }
     );
     console.log(updateUser);
-    res.redirect("/admin");
+    res.redirect("/admin/users");
   } catch (error) {
     console.log(error.message);
   }
@@ -150,7 +162,7 @@ const searchUsers = async (req, res) => {
   try {
     console.log(req.query.key);
     let users = await searchUsersByKey(req.query.key);
-    res.render("home", { users: users });
+    res.render("users", { users: users });
   } catch (error) {
     console.log(error.message);
   }
@@ -237,6 +249,7 @@ const adminLogOut = async (req, res) => {
 // =========================
 module.exports = {
   adminPageLoad,
+  usersPageLoad,
   userBlock,
   editUserPageLoad,
   updateUserData,

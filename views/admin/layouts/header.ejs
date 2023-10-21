@@ -39,6 +39,9 @@
     <!-- date -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     
+
+    <!-- chart  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 </head>
 
 <body>
@@ -97,9 +100,16 @@
                 <li class="nav-item nav-category">
                     <span class="nav-link">Navigation</span>
                 </li>
-                
                 <li class="nav-item menu-items">
-                    <a class="nav-link" href="/admin">
+                    <a class="nav-link" href="/admin/">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-chart-line"></i>
+                        </span>
+                        <span class="menu-title">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="/admin/users">
                         <span class="menu-icon">
                             <i class="mdi mdi-account-multiple"></i>
                         </span>
@@ -137,7 +147,7 @@
                 <li class="nav-item menu-items">
                     <a class="nav-link" href="/admin/coupon">
                         <span class="menu-icon">
-                            <i class="mdi mdi-wallet-giftcard"></i>
+                            <i class="mdi mdi-sale"></i>
                         </span>
                         <span class="menu-title">Coupon</span>
                     </a>

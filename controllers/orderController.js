@@ -4,6 +4,7 @@ const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
 const CouponDB = require("../models/orderModel").Coupon;
+const PaymentDB  = require("../models/paymentModel");
 
 const Razorpay = require("razorpay");
 const mongoose = require("mongoose");
@@ -219,8 +220,14 @@ const paymentSelectionManage = async (req, res) => {
   }
 };
 
-//place order
+// ===========================
+//  ###    //place order
+// ==============================
 const placeOrderManage = async (req, res) => {
+  let discountDetails = {
+    codeId:0,
+    amount:0
+  }
   try {
     // console.log(req.body.address);
     let addressId = req.body.address;
@@ -251,9 +258,13 @@ const placeOrderManage = async (req, res) => {
       paymentStatus: "pending",
     }));
     let total = await calculateTotalPrice(req.session.user_id);
+    //coupon checking 
+    // ===================
     if(req.body.coupon!=""){
       let couponDetails = await CouponDB.findById(req.body.coupon)
       total -= couponDetails.discount_amount
+      discountDetails.codeId = couponDetails._id
+      discountDetails.amount = couponDetails.discount_amount
     }
 
     // console.log(cartProducts);
@@ -292,6 +303,8 @@ const placeOrderManage = async (req, res) => {
       );
       // console.log(changeOrderStatus);
       await CartDB.deleteOne({ user: req.session.user_id });
+      const PaymentHistory = await createPaymentHistory(req.session.user_id,placeorder,paymentType,discountDetails)
+      console.log(PaymentHistory);
       // return res.render("orderStatus", {
       //   success: 1,
       //   user: req.session.user_id
@@ -300,12 +313,12 @@ const placeOrderManage = async (req, res) => {
     } else {
       //here manage when the order is online
       let order = await genarateRazorpay(placeorder._id, total);
-      // console.log(order);
-      // return res.render("orderStatus", {
-      //   success: 0,
-      //   user: req.session.user_id
-      // });
+      
       let userData = await UserDB.findById(req.session.user_id);
+
+      // payment history create
+      const PaymentHistory = await createPaymentHistory(req.session.user_id,placeorder,paymentType,discountDetails)
+      console.log(PaymentHistory);
       let user = {
         name: fullName,
         mobile: mobileNumber,
@@ -317,6 +330,11 @@ const placeOrderManage = async (req, res) => {
     console.log(error.message);
   }
 };
+// ==============
+// ==============
+
+
+
 
 // orders page load
 // ----------------------
@@ -591,6 +609,39 @@ const orderStatusPageLoad = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+// create payment history
+// --------------------------------
+const createPaymentHistory = async(userId, order, paymentMethod,discount)=>{
+  try {
+     const newTransaction = new PaymentDB({
+      userId: userId,
+      orderDetails: [
+        {
+          orderId: order._id,
+          orderDate: order.orderDate,
+          products: order.products, // Include product IDs and quantities
+        },
+      ],
+      paymentMethod: paymentMethod,
+      totalAmount: order.totalAmount,
+      discount: {
+        discount_amount:discount.amount,
+        code_id:discount.codeId
+      }
+    });
+
+    
+
+    // Save the transaction history entry
+    const transaction = await newTransaction.save();
+    console.log('Transaction history entry created:', transaction);
+    return transaction;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 // =============+++++++++++++++=======================
 // exportings
