@@ -3,6 +3,8 @@ const ProductDB = require("../models/productsModel").product;
 const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
+const CouponDB = require("../models/orderModel").Coupon;
+
 const Razorpay = require("razorpay");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -249,6 +251,10 @@ const placeOrderManage = async (req, res) => {
       paymentStatus: "pending",
     }));
     let total = await calculateTotalPrice(req.session.user_id);
+    if(req.body.coupon!=""){
+      let couponDetails = await CouponDB.findById(req.body.coupon)
+      total -= couponDetails.discount_amount
+    }
 
     // console.log(cartProducts);
     const order = new OrderDB({
@@ -292,6 +298,7 @@ const placeOrderManage = async (req, res) => {
       // });
       return res.json({ cod: true, orderId: placeorder._id });
     } else {
+      //here manage when the order is online
       let order = await genarateRazorpay(placeorder._id, total);
       // console.log(order);
       // return res.render("orderStatus", {

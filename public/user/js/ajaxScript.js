@@ -191,6 +191,9 @@ function couponApply(){
     let couponInDiv = document.getElementById("couponInDiv")
     let couponShow = document.getElementById("couponShow")
     let appliedCouponInput = document.getElementById("couponApInput")
+    let couponPass = document.getElementById("couponPass")
+
+
 
 
     // alert(couponInput)
@@ -213,6 +216,7 @@ function couponApply(){
                 couponInDiv.classList.add("couponHide")
                 couponShow.classList.remove("couponHide")
                 appliedCouponInput.value=response.redeem.code
+                couponPass.value = response.redeem._id
             }
         }
     })

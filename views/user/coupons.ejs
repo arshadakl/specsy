@@ -25,11 +25,22 @@
                         <% var dateTo=new Date(coupons[i].validTo); %>
                     
 
+                      <% var redeemed = null; %>
+
+                      <% for (var j = 0; j < coupons[i].usersUsed.length; j++) { %>
+                          <% var usersId = coupons[i].usersUsed[j]; %>
+                          <% if (usersId.toString() === user.toString()) { %>
+                              <% redeemed = usersId; %>
+                              <% break; %>
+                          <% } %>
+                      <% } %>
 
 
                     <div class="card  m-2 col-md-5 col-10 p-4 pt-3" style="background: #F3F3F9; border-radius: 10px;">
                         <div class="card-body ">
-                            <h6 class="card-title mb-1" style="font-size: 25px;">
+                            <h5 class="text-danger"><%if(redeemed!==null){%><i class="fa-solid fa-medal"></i> Redeemed<%}%></h5>
+                            
+                            <h6 class="card-title mb-1 <%if(redeemed!==null){%> text-light<%}%>"  style="font-size: 25px;">
                                 <i class="fa-solid fa-gift"></i>
                                 <%=coupons[i].code%>
                             </h6>
@@ -43,10 +54,12 @@
 
                             </div>
                             <div class="d-flex justify-content-end ">
+                                <%if(redeemed==null){%>
                                 <p class="text-dark" type="button" >expire on</p>
                                 <p class="mx-3">:</p>
                                 <p class="text-danger" type="button"   > <%= dateTo.toLocaleDateString() %></p>
                                 
+                                <%}%>
                             </div>
                         </div>
                     </div>
