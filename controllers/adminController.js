@@ -25,13 +25,23 @@ const adminPageLoad = async (req, res) => {
     const paymentChart = { countOfCod, countOfOnline };
     // console.log(TransactionHistory);
     const orders = await recentOrder();
-    let result = await generateReport("daily");
-    console.log(result);
+    // let result = await generateReport("daily");
+    // console.log(result);
+    const stock = await getTotalStockNumber()
+    const analaticalData = await AnalyticsDB.find()
+    const report = {
+      stock,
+      sales:analaticalData[0].totalOrders,
+      amount:analaticalData[0].totalSalesAmount
+
+    }
+    console.log(report);
     res.render("dashbord", {
       users: users,
       paymentHistory: TransactionHistory,
       orders,
       paymentChart,
+      report
     });
   } catch (error) {
     console.log(error.message);
@@ -315,8 +325,8 @@ const generateReport = async (dateRange) => {
     switch (dateRange) {
       case "daily":
         startDate = new Date(currentDate);
-        startDate.setDate(currentDate.getDate() - 1); // Go back one day
-        startDate.setHours(24, 0, 0, 0); // Set the time to 12:00:00 PM
+        startDate.setDate(currentDate.getDate() - 1); 
+        startDate.setHours(24, 0, 0, 0); 
         break;
       case "weekly":
         startDate = new Date();
@@ -340,7 +350,6 @@ const generateReport = async (dateRange) => {
     //   return;
     // }
 
-    // Perform calculations to generate the report
     const totalSalesAmount = calculateTotalSalesAmount(orders);
     const totalOrders = orders.length;
 
@@ -361,6 +370,38 @@ function calculateTotalSalesAmount(orders) {
   return orders.reduce((total, order) => total + order.totalAmount, 0);
 }
 
+//reports filltering request
+// ----------------------------
+const genarateSalesReports = async(req,res)=>{
+  try {
+    // console.log(req.body);
+    const report = await generateReport(req.body.data)
+    res.json(report)
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+//const get Total Stock  number
+// -----------------------------
+const getTotalStockNumber = async() => {
+  try {
+    const result = await ProductDB.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalStock: { $sum: '$stock' }
+        }
+      }
+    ]);
+    const totalStock = result.length > 0 ? result[0].totalStock : 0;
+    // console.log(totalStock);
+    return totalStock;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 // exportings
 // =========================
 module.exports = {
@@ -373,4 +414,5 @@ module.exports = {
   loginPageLoad,
   doLogin,
   adminLogOut,
+  genarateSalesReports
 };

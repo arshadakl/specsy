@@ -10,11 +10,11 @@
       <div class="row">
         <div class="col-md-12 stretch-card p-3">
           <h6 class="m-0">Filter Report :</h6>
-          <button id="dailyBtn" class="btn btn-inverse-info ml-3">Daily</button>
-          <button id="weeklyBtn" class="btn btn-inverse-info ml-3">Weekly</button>
-          <button id="yearlyBtn" class="btn btn-inverse-info ml-3">Yearly</button>
+          <button id="daily" onclick="reportMake('daily')" class="btn btn-inverse-info ml-3">Daily</button>
+          <button id="weekly" onclick="reportMake('weekly')" class="btn btn-inverse-info ml-3">Weekly</button>
+          <button id="yearly" onclick="reportMake('yearly')" class="btn btn-inverse-info ml-3">Yearly</button>
           <div class="d-flex justify-content-end w-100">
-             <p class="text-secondary">Report generated on : 12.02.25</p>
+             <p class="text-secondary" id="reportTime"></p>
           </div>
         </div>
         
@@ -25,10 +25,10 @@
               <div class="row">
                 <div class="col-8 col-sm-12 col-xl-8 my-auto">
                   <div class="d-flex d-sm-block d-md-flex align-items-center">
-                    <h2 class="mb-0">₹32123</h2>
+                    <h2 class="mb-0" id="revenue" >₹<%= report.amount%></h2>
                     <!-- <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p> -->
                   </div>
-                  <h6 class="text-muted font-weight-normal">11.38% Since last month</h6>
+                  <!-- <h6 class="text-muted font-weight-normal">11.38% Since last month</h6> -->
                 </div>
                 <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
                   <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
@@ -44,10 +44,10 @@
               <div class="row">
                 <div class="col-8 col-sm-12 col-xl-8 my-auto">
                   <div class="d-flex d-sm-block d-md-flex align-items-center">
-                    <h2 class="mb-0">850</h2>
+                    <h2 class="mb-0" id="totalSale"><%= report.sales %></h2>
                     <!-- <p class="text-success ml-2 mb-0 font-weight-medium">+8.3%</p> -->
                   </div>
-                  <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>
+                  <!-- <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6> -->
                 </div>
                 <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
                   <i class="icon-lg mdi mdi-chart-areaspline text-danger ml-auto"></i>
@@ -63,7 +63,7 @@
               <div class="row">
                 <div class="col-8 col-sm-12 col-xl-8 my-auto">
                   <div class="d-flex d-sm-block d-md-flex align-items-center">
-                    <h2 class="mb-0">2039</h2>
+                    <h2 class="mb-0"><%= report.stock %></h2>
                     <!-- <p class="text-danger ml-2 mb-0 font-weight-medium">-2.1% </p> -->
                   </div>
                   <h6 class="text-muted font-weight-normal">2.27% Since last month</h6>
@@ -217,6 +217,27 @@
     });
   }
   window.onload =onpageLoad()
+
+
+  function reportMake(data){
+    let yearly = document.getElementById("year")
+    let weekly = document.getElementById("weekly")
+    let daily = document.getElementById("daily")
+    let totalSale = document.getElementById("totalSale")
+    let revenue = document.getElementById("revenue")
+    let reportTime = document.getElementById("reportTime")
+    $.ajax({
+      url: '/admin/report/genarate',
+      type: 'POST',
+      data: {data},
+      success: function(response){
+        console.log(response);
+        revenue.innerHTML="₹"+response.totalSalesAmount
+        totalSale.innerHTML=response.totalOrders 
+        reportTime.innerHTML =  "Report generated on :"+formatDate(response.reportDate)
+      }
+    })
+  }
   </script>
   
   <%- include('../admin/layouts/footer.ejs') %>

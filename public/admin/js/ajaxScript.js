@@ -52,3 +52,33 @@ function blockCategory(id) {
 }
 
 
+
+function formatDate(inputDate) {
+    // Parse the input date string
+    const parsedDate = new Date(inputDate);
+  
+    if (isNaN(parsedDate.getTime())) {
+      return "Invalid Date"; // Handle invalid input
+    }
+  
+    // Define months for formatting
+    const months = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+  
+    // Extract date and time components
+    const day = parsedDate.getDate();
+    const month = months[parsedDate.getMonth()];
+    const year = parsedDate.getFullYear();
+    const hours = parsedDate.getHours();
+    const minutes = parsedDate.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+  
+    // Format the date in the desired format
+    const formattedDate = `${day} ${month} ${year}, ${formattedHours}:${formattedMinutes} ${ampm}`;
+  
+    return formattedDate;
+  }

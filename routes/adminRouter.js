@@ -68,7 +68,8 @@ router.get('/coupon/add',auth.isLogin,couponController.addCouponPageLoad)
 router.post('/coupon/add',auth.isLogin,couponController.addNewCoupon)
 router.get('/coupon/delete',auth.isLogin,couponController.deleteCoupon)
 
-
+//report make related routers
+router.post('/report/genarate',auth.isLogin,adminController.genarateSalesReports)
 
 
 //exporting
