@@ -3,6 +3,9 @@ const AdminDB = require("../models/adminModel");
 const ProductDB = require("../models/productsModel").product;
 const CategoryDB = require("../models/productsModel").category;
 const OrderDB = require("../models/orderModel").Order;
+const PaymentDB = require("../models/paymentModel");
+const AnalyticsDB = require("../models/analyticModel");
+
 const path = require("path");
 const bcrypt = require("bcrypt");
 
@@ -12,10 +15,75 @@ const adminPageLoad = async (req, res) => {
   try {
     let users = await getAlluserData();
     // console.log(users);
-    res.render("dashbord", { users: users });
+    const TransactionHistory = await PaymentDB.find();
+    const countOfCod = await PaymentDB.countDocuments({
+      paymentMethod: "Cash on Delivery",
+    });
+    const countOfOnline = await PaymentDB.countDocuments({
+      paymentMethod: "Online",
+    });
+    const paymentChart = { countOfCod, countOfOnline };
+    // console.log(TransactionHistory);
+    const orders = await recentOrder();
+    let result = await generateReport("daily");
+    console.log(result);
+    res.render("dashbord", {
+      users: users,
+      paymentHistory: TransactionHistory,
+      orders,
+      paymentChart,
+    });
   } catch (error) {
     console.log(error.message);
   }
+};
+
+// recent orders
+// =================
+const recentOrder = async () => {
+  try {
+    const orders = await OrderDB.find();
+
+    const productWiseOrdersArray = [];
+
+    for (const order of orders) {
+      for (const productInfo of order.products) {
+        const productId = productInfo.productId;
+
+        const product = await ProductDB.findById(productId).select(
+          "product_name images price"
+        );
+        const userDetails = await UserDB.findById(order.userId).select(
+          "userName"
+        );
+        // console.log(userDetails);
+        if (product) {
+          // Push the order details with product details into the array
+          orderDate = await formatDate(order.orderDate);
+          productWiseOrdersArray.push({
+            user: userDetails,
+            product: product,
+            orderDetails: {
+              _id: order._id,
+              userId: order.userId,
+              shippingAddress: order.shippingAddress,
+              orderDate: orderDate,
+              totalAmount: productInfo.quantity * product.price,
+              OrderStatus: productInfo.OrderStatus,
+              StatusLevel: productInfo.StatusLevel,
+              paymentMethod: order.paymentMethod,
+              paymentStatus: productInfo.paymentStatus,
+              quantity: productInfo.quantity,
+            },
+          });
+        }
+      }
+    }
+
+    // for(i=0;i<productWiseOrdersArray.length;i++){
+    // console.log(productWiseOrdersArray);
+    return productWiseOrdersArray;
+  } catch (error) {}
 };
 
 //users page loading function
@@ -155,7 +223,6 @@ const searchUsersByKey = async (key) => {
   }
 };
 
-
 // handdille search users
 // ---------------------------------------
 const searchUsers = async (req, res) => {
@@ -192,8 +259,6 @@ const loginPageLoad = async (req, res) => {
     console.log(error.message);
   }
 };
-
-
 
 // Admin login handilling
 // ---------------------------------------
@@ -239,11 +304,62 @@ const adminLogOut = async (req, res) => {
   }
 };
 
+//order report maker
+// ========================
+const generateReport = async (dateRange) => {
+  try {
+    const currentDate = new Date();
+    let startDate;
+    let endDate = new Date();
 
+    switch (dateRange) {
+      case "daily":
+        startDate = new Date(currentDate);
+        startDate.setDate(currentDate.getDate() - 1); // Go back one day
+        startDate.setHours(24, 0, 0, 0); // Set the time to 12:00:00 PM
+        break;
+      case "weekly":
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7);
+        break;
+      case "yearly":
+        startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1);
+        break;
+      default:
+        break;
+    }
 
+    // Retrieve orders within the specified date range
+    const orders = await OrderDB.find({
+      orderDate: { $gte: startDate, $lte: endDate },
+    });
 
+    // if (orders.length === 0) {
+    //   console.log(`No orders found for the ${dateRange} report.`);
+    //   return;
+    // }
 
+    // Perform calculations to generate the report
+    const totalSalesAmount = calculateTotalSalesAmount(orders);
+    const totalOrders = orders.length;
 
+    const report = {
+      reportDate: endDate,
+      totalSalesAmount,
+      totalOrders,
+    };
+
+    console.log(`Generated ${dateRange} report for ${endDate}`);
+    return report;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+function calculateTotalSalesAmount(orders) {
+  return orders.reduce((total, order) => total + order.totalAmount, 0);
+}
 
 // exportings
 // =========================
@@ -256,5 +372,5 @@ module.exports = {
   searchUsers,
   loginPageLoad,
   doLogin,
-  adminLogOut
+  adminLogOut,
 };

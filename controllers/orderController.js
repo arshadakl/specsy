@@ -5,16 +5,19 @@ const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
 const CouponDB = require("../models/orderModel").Coupon;
 const PaymentDB  = require("../models/paymentModel");
+const AnalyticsDB = require("../models/analyticModel")
 
 const Razorpay = require("razorpay");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+
+// razorpay related functions
+// ============================
 var instance = new Razorpay({
   key_id: process.env.razorpay_key_id,
   key_secret: process.env.razorpay_key_secret,
 });
-
 
 
 const genarateRazorpay = (orderId, total) => {
@@ -29,6 +32,34 @@ const genarateRazorpay = (orderId, total) => {
     });
   });
 };
+
+
+//order analatical creation
+// =========================
+const CreateOrderAnalatic = async()=>{
+  try {
+    const orders = await OrderDB.find() 
+    const totalSalesAmount = orders.reduce((total, order) => total + order.totalAmount, 0);
+    const totalOrders = orders.length;
+    let orderAnalytics = await AnalyticsDB.findOne();
+    if (!orderAnalytics) {
+      orderAnalytics = new AnalyticsDB({
+        totalSalesAmount,
+        totalOrders,
+      });
+    } else {
+      orderAnalytics.totalSalesAmount = totalSalesAmount;
+      orderAnalytics.totalOrders = totalOrders;
+    }
+
+    let result = await orderAnalytics.save();
+    return result;
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 
 // This Function used to formmate date from new Date() function
 // ==============================================================
@@ -279,9 +310,12 @@ const placeOrderManage = async (req, res) => {
       products: cartProducts,
       totalAmount: total,
       paymentMethod: paymentType,
+      orderDate:new Date()
     });
 
     const placeorder = await order.save();
+    let analaticResult = await CreateOrderAnalatic()
+    console.log(analaticResult);
     console.log(placeorder._id);
     if (paymentType !== "Online") {
       console.log(placeorder._id);
@@ -309,7 +343,7 @@ const placeOrderManage = async (req, res) => {
       //   success: 1,
       //   user: req.session.user_id
       // });
-      return res.json({ cod: true, orderId: placeorder._id });
+      return res.json({ cod: true, orderId: placeorder._id, status: "success" });
     } else {
       //here manage when the order is online
       let order = await genarateRazorpay(placeorder._id, total);
@@ -642,6 +676,65 @@ const createPaymentHistory = async(userId, order, paymentMethod,discount)=>{
     console.log(error.message);
   }
 }
+
+
+
+//order report maker
+// ========================
+const generateReport = async(dateRange)=>{
+  try {
+     let startDate;
+     let endDate = new Date(); // By default, the end date is the current date
+     endDate.setHours(23, 59, 59);
+
+    // Calculate the start date based on the date range
+    switch (dateRange) {
+      case 'daily':
+        startDate = new Date(); // Set start date to the current date for daily report
+        break;
+      case 'weekly':
+        startDate = new Date(); // Set start date to the current date for weekly report
+        startDate.setDate(startDate.getDate() - 7); // Go back 7 days for a week
+        break;
+      case 'yearly':
+        startDate = new Date(); // Set start date to the current date for yearly report
+        startDate.setFullYear(startDate.getFullYear() - 1); // Go back 1 year
+        break;
+      default:
+        // Handle other date ranges or provide an error message
+        break;
+    }
+
+    // Retrieve orders within the specified date range
+    const orders = await OrderDB.find({
+      orderDate: { $gte: startDate, $lte: endDate },
+    });
+
+    // Perform calculations to generate the report
+    const SalesAmount = await AnalyticsDB.find({},{totalSalesAmount:1,_id:0});
+    const totalSalesAmount =SalesAmount.totalSalesAmount
+    const totalOrders = orders.length;
+
+    // Create a new report document
+    const report = new OrderReport({
+      reportDate: endDate, // Use the end date as the report date
+      totalSalesAmount,
+      totalOrders,
+    });
+
+    // Save the report to the database
+    await report.save();
+
+    console.log(`Generated ${dateRange} report for ${endDate}`);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
+
+
 
 // =============+++++++++++++++=======================
 // exportings

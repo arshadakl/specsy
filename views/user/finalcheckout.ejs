@@ -276,7 +276,8 @@
                     success: (response) => {
                         console.log(response);
                         if (response.cod) {
-                            location.href = `/checkout/placeorder?id=${response.orderId}`
+                            // location.href = `/checkout/placeorder?id=${response.orderId}`
+                            orderStatus(response.status)
                         } else {
                             payPayment(response.order,response.user,response.orderId)
                         }
