@@ -97,6 +97,12 @@ router.delete('/removewishitem',auth.jsonIsLogin,wishlistController.removeItemFr
 //coupons
 router.get('/profile/coupons',auth.isLogin,couponController.couponUserPageLoad)
 router.post('/checkout/placeorder/coupon',couponController.ApplyCoupon)
+
+//shop page router
+router.get('/shop',productController.shopPageLoad)   
+
+
+
 // test case
 router.get('/test',userController.testLoad)
 

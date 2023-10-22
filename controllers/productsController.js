@@ -209,6 +209,28 @@ const getProductDetails = async (id) => {
   };
   
 
+  // shop page loading with pagenation
+  // ----------------------------------------------------------------
+  const shopPageLoad = async (req, res) => {
+    try {
+
+      let page = req.query.page || 1
+      let pageDB = Number(page)-1
+      let productPerPage = 9
+      let totalProduct = await ProductDB.countDocuments()
+      let totalPage = Math.ceil(totalProduct / productPerPage)
+      let products = await ProductDB.find().skip(pageDB * productPerPage).limit(productPerPage)
+      // let products = await ProductDB.find()
+      // console.log(totalPage);
+      // console.log(products);
+
+      res.render("shop", { products: products,user:req.session.user_id,totalPage,curentPage:Number(page) });
+      // res.status(200).json(products)
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
 
 
 
@@ -222,5 +244,6 @@ module.exports = {
     productEditPageLoad,
     searchproduct,
     updateProduct,
-    deleteproduct
+    deleteproduct,
+    shopPageLoad
 }
