@@ -83,12 +83,12 @@ function changeQty(userId,productId,qty){
 }
 
 
-function removeCartItem(user,product){
-    console.log(user,product);
+function removeCartItem(user,product,qty){
+    console.log(user,product,qty);
     $.ajax({
         url:'/removecartproduct',
         method:'delete',
-        data:{user,product},
+        data:{user,product,qty},
         success:(response)=>{
             console.log(response);
             if(response.remove==1){

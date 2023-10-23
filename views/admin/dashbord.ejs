@@ -9,12 +9,22 @@
       <!-- revenue areas -->
       <div class="row">
         <div class="col-md-12 stretch-card p-3">
-          <h6 class="m-0">Filter Report :</h6>
-          <button id="daily" onclick="reportMake('daily')" class="btn btn-inverse-info ml-3">Daily</button>
-          <button id="weekly" onclick="reportMake('weekly')" class="btn btn-inverse-info ml-3">Weekly</button>
-          <button id="yearly" onclick="reportMake('yearly')" class="btn btn-inverse-info ml-3">Yearly</button>
-          <div class="d-flex justify-content-end w-100">
-             <p class="text-secondary" id="reportTime"></p>
+          <div class="row col-4">
+
+            <h6 class="mb-3">Filter Report :</h6>
+            <div >
+              <button id="daily" onclick="reportMake('daily')" class="btn btn-inverse-info ml-0 px-4">Daily</button>
+              <button id="weekly" onclick="reportMake('weekly')" class="btn btn-inverse-info ml-3 px-4">Weekly</button>
+              <button id="yearly" onclick="reportMake('yearly')" class="btn btn-inverse-info ml-3 px-4">Yearly</button>
+            </div>
+              <p class="text-secondary mt-2" id="reportTime"></p>
+            
+          </div>
+          <div class="d-flex justify-content-end  w-100">
+            <div class="d-flex  align-items-center col-3">
+              <!-- <p class="text-secondary" id="reportTime">Report generated on :23 Oct 2023, 2:46 PM</p> -->
+              <a id="downloadBtn" style="display: none;"  class="btn btn-warning btn-icon-text py-2"> <i class="mdi mdi-download "></i>Download Report</a>
+            </div>
           </div>
         </div>
         
@@ -226,18 +236,26 @@
     let totalSale = document.getElementById("totalSale")
     let revenue = document.getElementById("revenue")
     let reportTime = document.getElementById("reportTime")
+    let downloadBtn = document.getElementById("downloadBtn")
     $.ajax({
       url: '/admin/report/genarate',
       type: 'POST',
       data: {data},
       success: function(response){
         console.log(response);
-        revenue.innerHTML="₹"+response.totalSalesAmount
-        totalSale.innerHTML=response.totalOrders 
-        reportTime.innerHTML =  "Report generated on :"+formatDate(response.reportDate)
+        revenue.innerHTML="₹"+response.report.totalSalesAmount
+        totalSale.innerHTML=response.report.totalOrders 
+        reportTime.innerHTML =  "Report generated on :"+formatDate(response.report.reportDate)
+        downloadBtn.setAttribute("href",`/admin/reports/${response.fileName}`);
+        downloadBtn.style.display = "block";
+
       }
     })
   }
   </script>
   
   <%- include('../admin/layouts/footer.ejs') %>
+
+  <!-- ../public/admin/reports/ -->
+
+  /admin/reports/

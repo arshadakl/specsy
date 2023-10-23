@@ -640,6 +640,7 @@ const addtoCart = async (req, res) => {
 
       let result = await cart.save();
       console.log(result);
+      decreaseStock(req.body.id,1)
       res.json({ cart: 1 });
     } else {
       const productInCart = existingCart.products.find(
@@ -653,12 +654,11 @@ const addtoCart = async (req, res) => {
           product: req.body.id,
           quantity: 1,
         });
+        decreaseStock(req.body.id,1)
         res.json({ cart: 1 });
       }
       const result = await existingCart.save();
       console.log("Product added to cart:", result);
-      // cart res 1 for added item
-      // cart res 2 for already item in product
     }
 
     res.json();
@@ -732,6 +732,11 @@ const changeProductQuantity = async (userId, productId, newQuantityChange) => {
       return;
     }
 
+    if(newQuantity==1){
+      increaseStock(productId,1)
+    }else{
+      decreaseStock(productId,1)
+    }
     productInCart.quantity = newQuantity;
 
     // Save the updated cart back to the database
@@ -756,6 +761,7 @@ const productQuantityHandlling = async (req, res) => {
       qty = Number(qty);
       console.log(qty);
       let qtyChange = await changeProductQuantity(userId, productId, qty);
+      // console.log(qtyChange);
 
       const cartDetails = await CartDB.findOne({ user: userId });
       // const userData = await takeUserData(userId);
@@ -772,8 +778,13 @@ const productQuantityHandlling = async (req, res) => {
 // ------------------------
 const removeCartItem = async (req, res) => {
   try {
-    const { user, product } = req.body;
+    const { user, product, qty } = req.body;
     const cart = await CartDB.findOne({ user: user });
+    // console.log(cart);
+    const qtyFind = cart.products.find(item => item.product.toString() == product.toString())
+    await increaseStock(product,qtyFind.quantity)
+    // console.log(qtyFind.quantity);
+
     cart.products = cart.products.filter(
       (cartProduct) => cartProduct.product.toString() !== product.toString()
     );
@@ -1126,6 +1137,45 @@ const testLoad = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+
+//decrease the product stock
+// ----------------------------
+const decreaseStock = async(productId, quantity)=>{
+  try {
+    const product = await ProductDB.findById(productId);
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    if (product.stock < quantity) {
+      throw new Error('Not enough stock available');
+    }
+    product.stock -= quantity;
+    const result = await product.save();
+    return result;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+//increase the product stock
+// --------------------------------
+const increaseStock = async(productId, quantity)=>{
+  try {
+    const product = await ProductDB.findById(productId);
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    product.stock += quantity;
+    const result = await product.save();
+    return result;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 
 
 // ===============================

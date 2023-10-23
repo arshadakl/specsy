@@ -5,6 +5,8 @@ const CategoryDB = require("../models/productsModel").category;
 const OrderDB = require("../models/orderModel").Order;
 const PaymentDB = require("../models/paymentModel");
 const AnalyticsDB = require("../models/analyticModel");
+const XLSX = require("xlsx");
+const ExcelJS = require("exceljs");
 
 const path = require("path");
 const bcrypt = require("bcrypt");
@@ -27,21 +29,20 @@ const adminPageLoad = async (req, res) => {
     const orders = await recentOrder();
     // let result = await generateReport("daily");
     // console.log(result);
-    const stock = await getTotalStockNumber()
-    const analaticalData = await AnalyticsDB.find()
+    const stock = await getTotalStockNumber();
+    const analaticalData = await AnalyticsDB.find();
     const report = {
       stock,
-      sales:analaticalData[0].totalOrders,
-      amount:analaticalData[0].totalSalesAmount
-
-    }
+      sales: analaticalData[0].totalOrders,
+      amount: analaticalData[0].totalSalesAmount,
+    };
     console.log(report);
     res.render("dashbord", {
       users: users,
       paymentHistory: TransactionHistory,
       orders,
       paymentChart,
-      report
+      report,
     });
   } catch (error) {
     console.log(error.message);
@@ -325,8 +326,8 @@ const generateReport = async (dateRange) => {
     switch (dateRange) {
       case "daily":
         startDate = new Date(currentDate);
-        startDate.setDate(currentDate.getDate() - 1); 
-        startDate.setHours(24, 0, 0, 0); 
+        startDate.setDate(currentDate.getDate() - 1);
+        startDate.setHours(24, 0, 0, 0);
         break;
       case "weekly":
         startDate = new Date();
@@ -370,29 +371,42 @@ function calculateTotalSalesAmount(orders) {
   return orders.reduce((total, order) => total + order.totalAmount, 0);
 }
 
+
 //reports filltering request
 // ----------------------------
-const genarateSalesReports = async(req,res)=>{
+const genarateSalesReports = async (req, res) => {
   try {
-    // console.log(req.body);
-    const report = await generateReport(req.body.data)
-    res.json(report)
+    const date = Date.now();    
+    const report = await generateReport(req.body.data);
+    const reportData = [
+      {
+        reportDate: report.reportDate,
+        totalSalesAmount: report.totalSalesAmount,
+        totalOrders: report.totalOrders,
+      },
+    ];
+
+    const fileName = `salesReport-${date}.xlsx`; // Provide the desired file name
+
+    const exel = await generateExcelReport(reportData,fileName);
+    res.status(200).json({report,fileName});
+    // res.json(report,exel);
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 //const get Total Stock  number
 // -----------------------------
-const getTotalStockNumber = async() => {
+const getTotalStockNumber = async () => {
   try {
     const result = await ProductDB.aggregate([
       {
         $group: {
           _id: null,
-          totalStock: { $sum: '$stock' }
-        }
-      }
+          totalStock: { $sum: "$stock" },
+        },
+      },
     ]);
     const totalStock = result.length > 0 ? result[0].totalStock : 0;
     // console.log(totalStock);
@@ -400,7 +414,48 @@ const getTotalStockNumber = async() => {
   } catch (error) {
     console.log(error.message);
   }
-}
+};
+
+//genarate exel sheet report
+// -------------------------------
+const generateExcelReport = async (reportData, fileName) => {
+   const filePath = path.join(__dirname,"../public/admin/reports/",fileName);
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('SalesReport');
+
+  // Define the columns for the worksheet
+  worksheet.columns = [
+    { header: 'Report Date', key: 'reportDate' },
+    { header: 'Total Sales Amount', key: 'totalSalesAmount' },
+    { header: 'Total Orders', key: 'totalOrders' },
+  ];
+
+  // Add data to the worksheet
+  reportData.forEach((item) => {
+    worksheet.addRow(item);
+  });
+
+
+
+  await workbook.xlsx.writeFile(filePath);
+  console.log('Excel report created at:', filePath);
+  return filePath; 
+};
+
+
+// Usage
+// const reportData = [
+//   {
+//     reportDate: '2023-10-23',
+//     totalSalesAmount: 1000.0,
+//     totalOrders: 50,
+//   },
+//   // Add more data as needed
+// ];
+
+// const filePath = 'salesReport.xlsx'; // Provide the desired file path
+
+// generateExcelReport(reportData, filePath);
 
 // exportings
 // =========================
@@ -414,5 +469,5 @@ module.exports = {
   loginPageLoad,
   doLogin,
   adminLogOut,
-  genarateSalesReports
+  genarateSalesReports,
 };
