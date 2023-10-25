@@ -787,16 +787,22 @@ const returnOrderProduct = async(req,res)=>{
   try {
     // const orderId = req.body.orderId;
     // const productId = req.body.productId;
-    console.log(req.body);
-    const {orderId, productId } = req.body
-    const order = await OrderDB.findOne({ _id: orderId });
-    const product = order.products.find(
-      (product) => product.productId.toString() === productId
-    );
-    product.OrderStatus="Returned";
-    let result = await order.save()
-    console.log(result);
-    res.json(result);
+    // const {orderId, productId , reason } = req.body.formDataObject
+    // console.log(orderId, productId , reason);
+    // const order = await OrderDB.findOne({ _id: orderId });
+    // const product = order.products.find(
+    //   (product) => product.productId.toString() === productId
+    // );
+    // if(!product){
+    //   return res.json({status:false});
+    // }
+    // product.OrderStatus="Returned";
+    // product.returnOrderStatus.status="Returned";
+    // product.returnOrderStatus.status=reason;
+
+    // let result = await order.save()
+    // console.log(result);
+    return res.json({status:true});
   } catch (error) {
     console.log(error.message);
   }
