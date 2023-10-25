@@ -56,6 +56,15 @@ const orderSchema = new mongoose.Schema({
       paymentStatus:{
         type:String,
         require:true
+      },
+      returnOrderStatus:{
+        status:{
+          type:String
+        },
+        reason:{
+          type:String
+        }
+        
       }
       
     }
@@ -70,6 +79,14 @@ const orderSchema = new mongoose.Schema({
   },
   paymentMethod:{
     type:String,
+    require:true
+  },
+  coupon:{
+      type: String,
+      required: true
+  },
+  trackId:{
+    type:Number,
     require:true
   }
 });

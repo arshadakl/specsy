@@ -34,6 +34,33 @@ const genarateRazorpay = (orderId, total) => {
 };
 
 
+//genarate Order uniq Id
+// --------------------------
+const generateUniqueTrackId = async()=>{
+  try {
+    let orderID;
+  let isUnique = false;
+
+  // Keep generating order IDs until a unique one is found
+  while (!isUnique) {
+    // Generate a random 6-digit number
+    orderID = Math.floor(100000 + Math.random() * 900000);
+
+    // Check if the order ID already exists in the database
+    const existingOrder = await OrderDB.findOne({ orderID });
+
+    // If no existing order with the same orderID is found, it's unique
+    if (!existingOrder) {
+      isUnique = true;
+    }
+  }
+
+  return orderID;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 //order analatical creation
 // =========================
 const CreateOrderAnalatic = async()=>{
@@ -287,6 +314,8 @@ const placeOrderManage = async (req, res) => {
       OrderStatus: "pending",
       StatusLevel: 1,
       paymentStatus: "pending",
+      "returnOrderStatus.status":"none",
+      "returnOrderStatus.reason":"none"
     }));
     let total = await calculateTotalPrice(req.session.user_id);
     //coupon checking 
@@ -299,6 +328,7 @@ const placeOrderManage = async (req, res) => {
     }
 
     // console.log(cartProducts);
+    const trackId = await generateUniqueTrackId()
     const order = new OrderDB({
       userId: req.session.user_id,
       "shippingAddress.country": country,
@@ -310,7 +340,9 @@ const placeOrderManage = async (req, res) => {
       products: cartProducts,
       totalAmount: total,
       paymentMethod: paymentType,
-      orderDate:new Date()
+      coupon: req.body.coupon ? req.body.coupon : "none",
+      orderDate:new Date(),
+      trackId
     });
 
     const placeorder = await order.save();
