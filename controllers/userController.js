@@ -1095,34 +1095,6 @@ const deleteShippingAddress = async (req, res) => {
 };
 
 
-// order cancel
-// ---------------
-const cancelOrder = async (req, res) => {
-  try {
-    const { oderId, productId } = req.body;
-    const order = await OrderDB.findById(oderId);
-
-    console.log(order);
-
-    if (!order) {
-      return res.status(404).json({ message: "Order not found." });
-    }
-
-    // Find the product within the order by its ID (using .toString() for comparison)
-    const productInfo = order.products.find(
-      (product) => product.productId.toString() === productId
-    );
-    console.log(productInfo);
-    // Update the OrderStatus for the specific product to "canceled"
-    productInfo.OrderStatus = "canceled";
-    // Save the updated order
-    const result = await order.save();
-    console.log(result);
-    res.json({cancel:1})
-  } catch (error) {
-    console.log(error.message);
-  }
-};
 
 
 
@@ -1211,7 +1183,6 @@ module.exports = {
   addShippingAddressFromProfile,
   updateShippingAddress,
   deleteShippingAddress,
-  cancelOrder,
 };
 
 

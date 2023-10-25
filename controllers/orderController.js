@@ -549,10 +549,27 @@ const changeOrderStatus = async (req, res) => {
 const verifyPayment = async (req, res) => {
   try {
     console.log("verify fn called ...");
-    // console.log(req.body.payment);
+    console.log(req.body);
     const paymentDetails = req.body.payment;
     paymentSignatureMatching(paymentDetails)
       .then(async() => {
+        let changeOrderStatus = await OrderDB.updateOne(
+          { _id: req.body.order.receipt },
+          {
+            $set: {
+              "products.$[].OrderStatus": "placed",
+            },
+          }
+        );
+        let changePaymentStatus = await OrderDB.updateOne(
+          { _id: req.body.order.receipt },
+          {
+            $set: {
+              "products.$[].paymentStatus": "success",
+            },
+          }
+        );
+        console.log(changePaymentStatus,changeOrderStatus);
         let usercartDelete = await CartDB.deleteOne({ user: req.session.user_id });
         console.log(usercartDelete);
         console.log("payment success");
@@ -732,8 +749,26 @@ const generateReport = async(dateRange)=>{
 }
 
 
-
-
+//return ordered Product
+// ------------------------------
+const returnOrderProduct = async(req,res)=>{
+  try {
+    // const orderId = req.body.orderId;
+    // const productId = req.body.productId;
+    console.log(req.body);
+    const {orderId, productId } = req.body
+    const order = await OrderDB.findOne({ _id: orderId });
+    const product = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    product.OrderStatus="Returned";
+    let result = await order.save()
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 
 // =============+++++++++++++++=======================
@@ -750,4 +785,5 @@ module.exports = {
   changeOrderStatus,
   verifyPayment,
   orderStatusPageLoad,
+  returnOrderProduct
 };

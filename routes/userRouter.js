@@ -84,7 +84,8 @@ router.delete('/profile/user_address/delete',auth.isLogin,userController.deleteS
 // view orders related 
 // -------------------------
 router.get('/profile/orders',auth.isLogin,userController.allOrdersPageLoad)
-router.post('/profile/orders/cancel',userController.cancelOrder)
+router.post('/profile/orders/cancel',auth.isLogin,orderController.cancelOrder)
+router.post('/profile/orders/return',auth.isLogin,orderController.returnOrderProduct)
 
 //payment related
 router.post('/checkout/verify-payment',auth.isLogin,orderController.verifyPayment)

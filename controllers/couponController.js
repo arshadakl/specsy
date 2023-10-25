@@ -99,7 +99,7 @@ const ApplyCoupon = async(req,res)=>{
             return res.json({ valid: false, message: 'Coupon not Valid' });
         }
 
-         // Check if the user has already used the coupon
+        
         if (coupon.usersUsed.includes(userId)) {
             return res.json({ valid: false, message: 'You have already claimed this coupon' });
         }
@@ -109,7 +109,7 @@ const ApplyCoupon = async(req,res)=>{
             return res.json({ valid: false, message: 'Coupon is not valid' });
         }
         
-        // Check if the cart total meets the minimum spend requirement
+        
          if (cartTotalAmount < coupon.minimumSpend) {
            return res.json({ valid: false, message: 'The minimum spend has not been met' });
         }
