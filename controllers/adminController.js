@@ -27,6 +27,7 @@ const adminPageLoad = async (req, res) => {
     const paymentChart = { countOfCod, countOfOnline };
     // console.log(TransactionHistory);
     const orders = await recentOrder();
+    console.log(orders);
     // let result = await generateReport("daily");
     // console.log(result);
     const stock = await getTotalStockNumber();

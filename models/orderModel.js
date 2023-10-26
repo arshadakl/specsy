@@ -65,6 +65,10 @@ const orderSchema = new mongoose.Schema({
           type:String
         }
         
+      },
+      updatedAt:{
+        type:Date,
+        default:Date.now
       }
       
     }

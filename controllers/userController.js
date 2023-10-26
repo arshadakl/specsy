@@ -949,6 +949,8 @@ const allOrdersPageLoad = async (req, res) => {
         const placeDate = formatDate(order.orderDate);
         const OrderStatus = product.OrderStatus;
         const StatusLevel = product.StatusLevel;
+        const updatedAt = formatDate(product.updatedAt)
+        const returnOrderStatus = product.returnOrderStatus
 
         // Retrieve additional product details using the productId
         const productDetails = await ProductDB.findById(productId, {
@@ -970,7 +972,9 @@ const allOrdersPageLoad = async (req, res) => {
           address: order.shippingAddress,
           deliveryDate: DeliveryexpectedDate,
           OrderStatus,
-          StatusLevel
+          StatusLevel,
+          updatedAt,
+          returnOrderStatus
         };
 
         // Push the product-wise order data into the productWiseOrders array

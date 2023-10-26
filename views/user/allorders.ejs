@@ -16,7 +16,7 @@
                     </ol>
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
-               
+
             <%if(products){%>
                 <div class="container-fluid d-flex flex-column justify-content-center py-5">
                     <%for(i=products.length-1;i>=0;i--){%>
@@ -90,24 +90,27 @@
 
 
                             <!-- model return  -->
-
                             <div class="modal fade" id="modreturn<%=products[i].orderId%><%=products[i].productDetails._id%>" tabindex="-1" aria-labelledby="exampleModalLabel"
                                                                                                                                                                                                                                                                                            aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header py-4">
                                             <!-- <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                                Modal title</h1> -->
+Modal title</h1> -->
                                             <p class="modal-title text-danger mx-auto"> <b
                                                                                                                                                                                                                                                                                                                class="mdi mdi-comment-alert text-warning"></b>
                                                 <b>Are you sure to
-                                                Return this order </b>  <i class="fa-sharp fa-light fa-truck-fast fa-bounce"></i></p>
+                                                    Return this order </b> <i
+                                                                                                                                                                                                                                                                                                               class="fa-sharp fa-light fa-truck-fast fa-bounce"></i>
+                                            </p>
                                             <!-- <button type="button" class=" btn mdi mdi-close" data-bs-dismiss="modal"
-                                                aria-label="Close">x</button> -->
+aria-label="Close">x</button> -->
                                         </div>
-                                        <div class="" style="border: 1px solid #e2e2e2; border-radius: 0px; background: #F3F3F9;">
+                                        <div class=""
+                                                                                                                                                                                                                                                                                                       style="border: 1px solid #e2e2e2; border-radius: 0px; background: #F3F3F9;">
 
-                                            <div class=" mx-auto mb-3 py-5" style="max-width: 540px; border: 1px solid #e2e2e2; border-radius: 0px; background: #F3F3F9;">
+                                            <div class=" mx-auto mb-3 py-5"
+                                                                                                                                                                                                                                                                                                           style="max-width: 540px; border: 1px solid #e2e2e2; border-radius: 0px; background: #F3F3F9;">
                                                 <div class="row g-0 " style="border: none;">
                                                     <div class="col-md-5  d-flex align-items-center">
                                                         <img style="width: 170px; height: 170px; border-radius: 7px;" src="/products/images/<%= products[i].productDetails.images.image1 %>" class="card-img-start mx-2"
@@ -141,44 +144,47 @@
                                                 <hr class="m-1">
                                                 <div class="card-body d-flexmy-auto ">
                                                     <div class="mx-auto px-4 mt-4">
-                                                    <h6 class="mx-auto">Would you mind telling me the reason for returning the order?</h6>
+                                                        <h6 class="mx-auto">Would you mind telling me the reason for
+                                                            returning the order?</h6>
 
                                                     </div>
 
-                                                    <form id="returnForm" >
-                                                    <label class="p-3 border rounded-4 m-2 custom-label">
-                                                        <div class="form-check d-flex align-items-center mx-4">
-                                                            <input class="form-check-input " type="radio" value="disappoint"
-                                                                name="reason" id="defectiveRadio" 
-                                                                >
+                                                    <form id="returnForm">
+                                                        <label class="p-3 border rounded-4 m-2 custom-label">
+                                                            <div class="form-check d-flex align-items-center mx-4">
+                                                                <input onchange="returnButtonState('<%= products[i].orderId %>','<%= products[i].productDetails._id %>')" class="form-check-input" type="radio" value="disappoint" name="reason"
+                                                                                                                                                                                                                                                                                                                               id="defectiveRadio<%= products[i].orderId %><%= products[i].productDetails._id %>">
                                                                 <div class="mx-5">
-                                                                    <p class="text-dark">The product did not meet the expectations of the customer.</p>
+                                                                    <p class="text-dark">The product did not meet the
+                                                                        expectations of the customer.</p>
                                                                 </div>
-                                                        </div>
-                                                    </label>
-                                                    <label class="p-3 border rounded-4 m-2 custom-label">
-                                                        <div class="form-check d-flex align-items-center mx-4">
-                                                            <input class="form-check-input " type="radio" value="damaged"
-                                                                name="reason" id="damagedRadio" 
-                                                                >
+                                                            </div>
+                                                        </label>
+                                                        <label class="p-3 border rounded-4 m-2 custom-label">
+                                                            <div class="form-check d-flex align-items-center mx-4">
+                                                                <input onchange="returnButtonState('<%= products[i].orderId %>','<%= products[i].productDetails._id %>')" class="form-check-input" type="radio" value="damaged" name="reason"
+                                                                                                                                                                                                                                                                                                                               id="damagedRadio<%= products[i].orderId %><%= products[i].productDetails._id %>">
                                                                 <div class="mx-5">
-                                                                    <p class="text-dark">A damaged product has been delivered</p>
+                                                                    <p class="text-dark">A damaged product has been
+                                                                        delivered</p>
                                                                 </div>
-                                                        </div>
-                                                    </label>
-                                                </form>
-                                                   
+                                                            </div>
+                                                        </label>
+
+                                                    </form>
+
 
                                                 </div>
 
                                             </div>
 
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Not
+                                                <button type="button" class="btn btn-outline-dark"
+                                                                                                                                                                                                                                                                                                               data-bs-dismiss="modal">Not
                                                     Now</button>
-                                                <button id="returnBtn" type="button" class="btn btn-dark"
-                                                onclick="ReturnProduct('<%=products[i].orderId%>','<%=products[i].productDetails._id%>')" disabled>
-                                                Return Now</button>
+                                                <button class="btn btn-dark" id="returnBtn<%= products[i].orderId %><%= products[i].productDetails._id %>" onclick="ReturnProduct('<%=products[i].orderId%>','<%=products[i].productDetails._id%>')"
+                                                                                                                                                                                                                                                                                                               disabled>
+                                                    Return Now</button>
                                             </div>
                                         </div>
                                     </div>
@@ -186,131 +192,210 @@
 
                                 <!-- model end -->
                             </div>
+
+
                             <!-- model return end  -->
 
 
 
                             <div class="card  col-md-6 col-10 my-3 mx-auto p-3"
                                                                                                                                                                                                                                                                                            style="border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;">
-                                <div class="card-header d-flex justify-content-between w-100">
-                                    <dir class="d-flex flex-column w-100">
-                                        <%if(products[i].OrderStatus!="canceled"){%>
-                                            <p>ORDER PLACED</p>
-                                            <p>
-                                                <%= products[i].placeOrderDate%>
-                                            </p>
-                                            <%}%>
-
-                                    </dir>
-
-
-                                </div>
-                                <hr class="m-0 mb-1">
-                                <div>
-                                    <%if(products[i].OrderStatus!="canceled"){%>
-                                        <h6 class="mx-5 mb-2">Delivery Expect on : <b>
-                                                <%= products[i].deliveryDate %>
-                                            </b></h6>
-                                        <%}%>
-                                </div>
-                                <div class="card-body row col-12 d-flex ">
-                                    <div class="col-4 ">
-                                        <img src="/products/images/<%= products[i].productDetails.images.image1 %>" style="width: 150px;"
-                                                                                                                                                                                                                                                                                                       alt="">
-                                        <p class="card-text">
-                                        </p>
-                                        <!-- <a href="#" class="btn btn-dark">Go somewhere</a> -->
-                                    </div>
-                                    <div class="col-8">
-                                        <h5 class="card-title">
-                                            <%= products[i].productDetails.product_name %>
-                                        </h5>
-                                        <p class="card-text">
-                                        <p>Quantity : <b>
-                                                <%=products[i].quantity %>
-                                            </b></p><i class="fa-solid fa-file-invoice-dollar"></i>
-                                        <%=products[i].paymentMethod %>
-                                            </p>
-                                            <h5 class="card-title mb-2">₹ <%= products[i].productDetails.price %>
-                                            </h5>
-
+                                <%if(products[i].OrderStatus!="Returned"){ %>
+                                    <div class="card-header d-flex justify-content-between w-100">
+                                        <dir class="d-flex flex-column w-100">
                                             <%if(products[i].OrderStatus!="canceled"){%>
+                                                <p>ORDER PLACED</p>
+                                                <p>
+                                                    <%= products[i].placeOrderDate%>
+                                                </p>
+                                                <%}%>
 
-                                                <div class="col-12 row d-flex justify-content-start">
-                                                    <!-- <a href="#" class="btn btn-dark col-2 mb-1">Track your Order</a> -->
-                                                    <%if(products[i].OrderStatus!="Delivered"){%>
-                                                        <button data-bs-toggle="modal" data-bs-target="#modCancel<%=products[i].orderId%><%=products[i].productDetails._id%>"
-                                                                                                                                                                                                                                                                                                                       class="btn btn-dark col-2 mb-1">Cancel
-                                                            Order </button>
+                                        </dir>
+
+
+                                    </div>
+                                    <hr class="m-0 mb-1">
+                                    <div>
+                                        <%if(products[i].OrderStatus!="canceled"){%>
+                                            <h6 class="mx-5 mb-2">Delivery Expect on : <b>
+                                                    <%= products[i].deliveryDate %>
+                                                </b></h6>
+                                            <%}%>
+                                    </div>
+                                    <div class="card-body row col-12 d-flex ">
+                                        <div class="col-4 ">
+                                            <img src="/products/images/<%= products[i].productDetails.images.image1 %>" style="width: 150px;"
+                                                                                                                                                                                                                                                                                                           alt="">
+                                            <p class="card-text">
+                                            </p>
+                                            <!-- <a href="#" class="btn btn-dark">Go somewhere</a> -->
+                                        </div>
+                                        <div class="col-8">
+                                            <h5 class="card-title">
+                                                <%= products[i].productDetails.product_name %>
+                                            </h5>
+                                            <p class="card-text">
+                                            <p>Quantity : <b>
+                                                    <%=products[i].quantity %>
+                                                </b></p><i class="fa-solid fa-file-invoice-dollar"></i>
+                                            <%=products[i].paymentMethod %>
+                                                </p>
+                                                <h5 class="card-title mb-2">₹ <%= products[i].productDetails.price %>
+                                                </h5>
+
+
+                                                <%if(products[i].returnOrderStatus!="none"){%>
+                                                    <%if(products[i].OrderStatus!="canceled" ){%>
+
+                                                        <div class="col-12 row d-flex justify-content-start">
+                                                            <!-- <a href="#" class="btn btn-dark col-2 mb-1">Track your Order</a> -->
+                                                            <%if(products[i].OrderStatus!="Delivered" ){%>
+                                                                <button data-bs-toggle="modal" data-bs-target="#modCancel<%=products[i].orderId%><%=products[i].productDetails._id%>"
+                                                                                                                                                                                                                                                                                                                               class="btn btn-dark col-2 mb-1">Cancel
+                                                                    Order </button>
+                                                                <%}else{%>
+                                                                    <button data-bs-toggle="modal" data-bs-target="#modreturn<%=products[i].orderId%><%=products[i].productDetails._id%>"
+                                                                                                                                                                                                                                                                                                                                   class="btn btn-dark col-2 mb-1">Return
+                                                                        Item </button>
+                                                                    <p><i
+                                                                                                                                                                                                                                                                                                                                       class="fa-regular fa-clipboard-list-check text-danger"></i>
+                                                                        &nbsp; </i> <span style="font-size: 12px;"> Free
+                                                                            replacement will be provided within <b> 7
+                                                                                days</b>
+                                                                            if the product is delivered in
+                                                                            defective/damaged
+                                                                            condition or different from the ordered
+                                                                            item.</span>
+                                                                    </p>
+
+                                                                    <%}%>
+
+                                                        </div>
                                                         <%}else{%>
-                                                            <button data-bs-toggle="modal" data-bs-target="#modreturn<%=products[i].orderId%><%=products[i].productDetails._id%>"
-                                                                                                                                                                                                                                                                                                                           class="btn btn-dark col-2 mb-1">Return
-                                                                Item </button>
-                                                            <p><i
-                                                                                                                                                                                                                                                                                                                               class="fa-regular fa-clipboard-list-check text-danger"></i>
-                                                                &nbsp; </i> <span style="font-size: 12px;"> Free
-                                                                    replacement will be provided within <b> 7 days</b>
-                                                                    if the product is delivered in defective/damaged
-                                                                    condition or different from the ordered item.</span>
-                                                            </p>
+                                                            <h6 class="text-danger text-center mr-5">Canceled Order</h6>
+                                                            <div class="progress-track  col-12">
+                                                                <ul id="progressbar">
+                                                                    <li class="step0 active " style="width: 50%; font-size: 1rem;"
+                                                                                                                                                                                                                                                                                                                                   id="step1">
+                                                                        Order placed</li>
+                                                                    <li class="step0 active text-right text-danger" style="width: 50%; font-size: 1rem;"
+                                                                                                                                                                                                                                                                                                                                   id="step4">
+                                                                        Canceled</li>
+                                                                </ul>
+                                                            </div>
 
                                                             <%}%>
+                                                                <%}else{%>
+                                                                    <!-- products[i].returnOrderStatus!="none" else case -->
+                                                                    <h1>returned item</h1>
+                                                                    <%}%>
+
+
+
+
+                                        </div>
+
+                                    </div>
+                                    <div class="w-75">
+                                        <%if(products[i].OrderStatus=="Delivered"){%>
+                                            <%}%>
+                                    </div>
+
+                                    <%if(products[i].OrderStatus!="canceled" ){%>
+
+                                        <div class="card-footer" style="background: #F3F3F9;">
+                                            <h6 class="text-center">Order status</h6>
+                                            <div class="progress-track">
+                                                <ul id="progressbar">
+                                                    <li style="font-size: 12px;" class="step0 active " id="step1">Order
+                                                        placed
+                                                    </li>
+                                                    <li style="font-size: 12px;" class="step0 text-center <%= products[i].StatusLevel >= 2 ? 'active' : '' %>"
+                                                                                                                                                                                                                                                                                                                   id="step2">
+                                                        Shipped</li>
+                                                    <li style="font-size: 12px;" class="step0  text-right <%= products[i].StatusLevel >= 3 ? 'active' : '' %>"
+                                                                                                                                                                                                                                                                                                                   id="step3">
+                                                        Out for Delivery</li>
+                                                    <li style="font-size: 12px;" class="step0 text-right <%= products[i].StatusLevel >= 4 ? 'active' : '' %>"
+                                                                                                                                                                                                                                                                                                                   id="step4">
+                                                        Delivered</li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <%}%>
+
+
+
+
+
+
+                                        <%}else{%>
+                                            <!-- returned product else case  -->
+                                            <div class="card-header d-flex justify-content-between w-100">
+                                                <dir class="d-flex flex-column w-100">   
+                                                    <p>RETURN DATE</p>
+                                                    <p> <%= products[i].updatedAt%></p>
+                                                </dir>
+                                            </div>
+                                              <hr class="m-0 mb-1">
+                                              <div class="card-body row col-12 d-flex mb-0">
+
+                                                <div class="col-4 ">
+                                                    <img src="/products/images/<%= products[i].productDetails.images.image1 %>" style="width: 150px;"
+                                                                                                                                                                                                                                                                                                                   alt="">
+                                                    <p class="card-text">
+                                                    </p>
+                                                </div>
+                                                <div class="col-8">
+                                                    <h5 class="card-title">
+                                                        <%= products[i].productDetails.product_name %>
+                                                    </h5>
+                                                    <p class="card-text">
+                                                    <p>Quantity : <b>
+                                                            <%=products[i].quantity %>
+                                                        </b></p><i class="fa-solid fa-file-invoice-dollar"></i>
+                                                    <%=products[i].paymentMethod %>
+                                                        </p>
+                                                        <h5 class="card-title mb-2">₹ <%= products[i].productDetails.price %> </h5>
+                                                        <p class=" mb-2"><i class="fa-light text-danger fa-truck-bolt fa-flip-horizontal"></i> You returned this order because 
+                                                            <%= products[i].returnOrderStatus.reason === "disappoint" ? "Your expectations were not met by the product" : " received damaged product" %> on <b> <%= products[i].updatedAt%></b></p>
 
                                                 </div>
-                                                <%}else{%>
-                                                    <h6 class="text-danger text-center mr-5">Canceled Order</h6>
-                                                    <div class="progress-track  col-12">
-                                                        <ul id="progressbar">
-                                                            <li class="step0 active " style="width: 50%; font-size: 1rem;"
-                                                                                                                                                                                                                                                                                                                           id="step1">
-                                                                Order placed</li>
-                                                            <li class="step0 active text-right text-danger" style="width: 50%; font-size: 1rem;"
-                                                                                                                                                                                                                                                                                                                           id="step4">
-                                                                Canceled</li>
-                                                        </ul>
-                                                    </div>
 
-                                                    <%}%>
+                                              </div>
+                                              <div class="card-footer" style="background: #F3F3F9;">
+                                                <h6 class="text-center">Return Status</h6>
+                                                
+                                                <div class="progress-track">
+                                                <p ><i class="fa-duotone text-success fa-money-check-dollar"></i> You have successfully received the funds in your designated wallet account</p>
 
+                                                    <ul id="progressbar">
+                                                        <li style="font-size: 12px;" class="step0 active " id="step1">
+                                                            Order placed
+                                                        </li>
+                                                        <li style="font-size: 12px;" class="step0 text-center <%= products[i].StatusLevel >= 2 ? 'active' : '' %>" id="step2">
+                                                            Delivered</li>
+                                                        <li style="font-size: 12px;" class="step0  text-right <%= products[i].StatusLevel >= 3 ? 'active' : '' %>" id="step3">
+                                                            Product Returned</li>
+                                                        <li style="font-size: 12px;" class="step0 text-right <%= products[i].StatusLevel >= 4 ? 'active' : '' %>" id="step4">
+                                                            Refund Completed</li>
+    
+                                                    </ul>
+                                                </div>
 
+                                            </div>
 
-
-                                    </div>
-
-                                </div>
-                                <div class="w-75">
-                                    <%if(products[i].OrderStatus=="Delivered"){%>
+        
+        
+                                            </div>
                                         <%}%>
-                                </div>
-
-                                <%if(products[i].OrderStatus!="canceled"){%>
-
-                                    <div class="card-footer" style="background: #F3F3F9;">
-                                        <h6 class="text-center">Order status</h6>
-                                        <div class="progress-track">
-                                            <ul id="progressbar">
-                                                <li style="font-size: 12px;" class="step0 active " id="step1">Order
-                                                    placed
-                                                </li>
-                                                <li style="font-size: 12px;" class="step0 text-center <%= products[i].StatusLevel >= 2 ? 'active' : '' %>"
-                                                                                                                                                                                                                                                                                                               id="step2">
-                                                    Shipped</li>
-                                                <li style="font-size: 12px;" class="step0  text-right <%= products[i].StatusLevel >= 3 ? 'active' : '' %>"
-                                                                                                                                                                                                                                                                                                               id="step3">
-                                                    Out for Delivery</li>
-                                                <li style="font-size: 12px;" class="step0 text-right <%= products[i].StatusLevel >= 4 ? 'active' : '' %>"
-                                                                                                                                                                                                                                                                                                               id="step4">
-                                                    Delivered</li>
-
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <%}%>
-
 
                             </div>
 
+
                             <%}%>
+
 
                         </div>
                         <%}else{%>
@@ -331,64 +416,83 @@
 
         </main>
 
-        <button id="returnStatusModelBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" hidden></button>
-        
-          
-          <!-- Modal -->
-          <div  class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" >
-              <div class="modal-content py-5" style="height: 500px;">
-                
-                <div class="modal-body d-flex justify-content-center flex-column p-5">
-
-                    <span class="couponHide" id="RStatusF">
-                        <div class=" w-100  d-flex justify-content-center">
-                            <h6 class="text-center">Returns are being processed.</h6>
-                        </div>
-                        <div class=" w-100  d-flex justify-content-center">
-                            <dotlottie-player src="/user/icon-lot/loading.lottie" background="transparent" speed="1" style="width: 120px; height: 120px;" direction="1" loop autoplay></dotlottie-player>
-                        </div>
-                    </span>
-                 
-
-                    <span class="couponHide" id="RStatusL">
-
-                        <div class=" w-100  d-flex justify-content-center">
-                            <dotlottie-player src="/user/icon-lot/boxExgange.lottie" background="transparent" speed="0.6" style="width: 280px; height: 280px;" direction="1" autoplay></dotlottie-player>
-                        </div>
-                        <div class=" w-100  d-flex justify-content-center">
-                            <h5 class="text-center">Your Return request has been approved</h5>
-                        </div>
-                    </span>
+        <button id="returnStatusModelBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                                                                                                                                                                                                                                       hidden></button>
 
 
+        <!-- Modal -->
+        <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content py-5" style="height: 500px;">
+
+                    <div class="modal-body d-flex justify-content-center flex-column p-5">
+
+                        <span class="couponHide" id="RStatusF">
+                            <div class=" w-100  d-flex justify-content-center">
+                                <h6 class="text-center">Returns are being processed.</h6>
+                            </div>
+                            <div class=" w-100  d-flex justify-content-center">
+                                <dotlottie-player src="/user/icon-lot/loading.lottie" background="transparent" speed="1" style="width: 120px; height: 120px;" direction="1" loop
+                                                                                                                                                                                                                                                                                               autoplay></dotlottie-player>
+                            </div>
+                        </span>
+
+
+                        <span class="couponHide" id="RStatusL">
+
+                            <div class=" w-100  d-flex justify-content-center">
+                                <dotlottie-player src="/user/icon-lot/boxExgange.lottie" background="transparent" speed="0.6" style="width: 280px; height: 280px;" direction="1" loop
+                                                                                                                                                                                                                                                                                               autoplay></dotlottie-player>
+                            </div>
+                            <div class=" w-100  d-flex justify-content-center">
+                                <h5 class="text-center">Your Return request has been approved</h5>
+                            </div>
+                        </span>
+
+
+
+                    </div>
 
                 </div>
-               
-              </div>
             </div>
-          </div>
+        </div>
 
 
         <script>
 
-            let damagedRadio = document.getElementById("damagedRadio")
-            let defectiveRadio = document.getElementById("defectiveRadio")
-            let returnBtn = document.getElementById("returnBtn")
+            // let damagedRadio = document.getElementById("damagedRadio")
+            // let defectiveRadio = document.getElementById("defectiveRadio")
 
-            damagedRadio.addEventListener('change', returnButtonState);
-            defectiveRadio.addEventListener('change', returnButtonState);
+            // damagedRadio.addEventListener('change', returnButtonState);
+            // defectiveRadio.addEventListener('change', returnButtonState);
 
-            
+
 
             // Function to toggle the button state based on the radio button selection
-            function returnButtonState() {
-                if (damagedRadio.checked || defectiveRadio.checked) {
+            // function returnButtonState(a, b) {
+            //     let damagedR = document.getElementById(`damagedRadio${a}${b}`)
+            //     let defectiveR = document.getElementById(`defectiveRadio${a}${b}`)
+            //     let returnBtn = document.getElementById(`returnBtn${a}${b}`)
+
+            //     if (damagedR.checked || defectiveR.checked) {
+            //         returnBtnn.disabled = false;
+            //     } else {
+            //         returnBtn.disabled = true;
+            //     }
+            // }
+
+            function returnButtonState(a, b) {
+                let damagedR = document.getElementById(`damagedRadio${a}${b}`);
+                let defectiveR = document.getElementById(`defectiveRadio${a}${b}`);
+                let returnBtn = document.getElementById(`returnBtn${a}${b}`);
+
+                if (damagedR.checked || defectiveR.checked) {
                     returnBtn.disabled = false;
                 } else {
-                    returnBtn.disabled = true; 
+                    returnBtn.disabled = true;
                 }
             }
+
 
 
 
@@ -411,7 +515,7 @@
             }
 
 
-            
+
 
 
             function ReturnProduct(orderId, productId) {
@@ -421,7 +525,7 @@
                 formData.append("productId", productId);
                 let formDataObject = {};
                 formData.forEach((value, key) => {
-                      formDataObject[key] = value;
+                    formDataObject[key] = value;
                 });
 
                 // alert(formData)
@@ -430,7 +534,7 @@
                     method: "post",
                     data: { formDataObject },
                     success: function (response) {
-                        if(response.status){
+                        if (response.status) {
                             manageReturnStatus()
                         }
                     }
@@ -442,11 +546,20 @@
             const RStatusF = document.getElementById("RStatusF")
             const RStatusL = document.getElementById("RStatusL")
 
-            function manageReturnStatus(){
+            function manageReturnStatus() {
                 returnStatusModelBtn.click()
+                RStatusF.classList.remove("couponHide")
                 setTimeout(() => {
+                    RStatusF.classList.add("couponHide")
+                    RStatusL.classList.remove("couponHide")
 
-                },1000)
+                }, 2000)
+                setTimeout(() => {
+                    RStatusL.classList.add("couponHide")
+                    location.reload()
+
+                }, 5000)
+
             }
         </script>
 

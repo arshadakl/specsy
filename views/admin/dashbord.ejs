@@ -152,11 +152,11 @@
                 <div class="col-12">
                   <div class="preview-list">
 
-                    <%for(i=orders.length-1;i>=orders.length-10;i--){%>
+                    <%for(i=orders.length-1;i>=0;i--){%>
                     <div class="preview-item border-bottom">
                       <div class="preview-thumbnail">
                         <div class="preview-icon bg-primary">
-                          <img src="/products/images/<%= orders[i].product.images.image1 %>"" alt="">
+                          <img src="/products/images/<%= orders[i].product.images.image1 %>" alt="">
                         </div>
                       </div>
                       <div class="preview-item-content d-sm-flex flex-grow">

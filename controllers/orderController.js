@@ -521,6 +521,7 @@ const cancelOrder = async (req, res) => {
     );
     console.log(productInfo);
     productInfo.OrderStatus = "canceled";
+    productInfo.updatedAt = Date.now()
     const result = await order.save();
 
     console.log(result);
@@ -563,6 +564,7 @@ const changeOrderStatus = async (req, res) => {
     console.log(productInfo);
     productInfo.OrderStatus = status;
     productInfo.StatusLevel = statusLevel;
+    productInfo.updatedAt = Date.now();
 
     const result = await order.save();
 
@@ -787,20 +789,25 @@ const returnOrderProduct = async(req,res)=>{
   try {
     // const orderId = req.body.orderId;
     // const productId = req.body.productId;
-    // const {orderId, productId , reason } = req.body.formDataObject
-    // console.log(orderId, productId , reason);
-    // const order = await OrderDB.findOne({ _id: orderId });
-    // const product = order.products.find(
-    //   (product) => product.productId.toString() === productId
-    // );
-    // if(!product){
-    //   return res.json({status:false});
-    // }
-    // product.OrderStatus="Returned";
-    // product.returnOrderStatus.status="Returned";
-    // product.returnOrderStatus.status=reason;
+    const {orderId, productId , reason } = req.body.formDataObject
+    console.log(orderId, productId , reason);
+    const order = await OrderDB.findOne({ _id: orderId });
+    const product = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    if(!product){
+      return res.json({status:false});
+    }
+    product.OrderStatus="Returned";
+    product.returnOrderStatus.status="Returned";
+    product.returnOrderStatus.reason=reason;
 
-    // let result = await order.save()
+    if(reason!="damaged"){
+      const qty = product.quantity
+      await increaseStock(product.productId,qty)
+    }
+
+    let result = await order.save()
     // console.log(result);
     return res.json({status:true});
   } catch (error) {
@@ -808,6 +815,41 @@ const returnOrderProduct = async(req,res)=>{
   }
 }
 
+
+//decrease the product stock
+// ----------------------------
+const decreaseStock = async(productId, quantity)=>{
+  try {
+    const product = await ProductDB.findById(productId);
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    if (product.stock < quantity) {
+      throw new Error('Not enough stock available');
+    }
+    product.stock -= quantity;
+    const result = await product.save();
+    return result;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+//increase the product stock
+// --------------------------------
+const increaseStock = async(productId, quantity)=>{
+  try {
+    const product = await ProductDB.findById(productId);
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    product.stock += quantity;
+    const result = await product.save();
+    return result;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 // =============+++++++++++++++=======================
 // exportings
