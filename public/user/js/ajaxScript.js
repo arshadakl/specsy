@@ -50,6 +50,15 @@ function addCart(id,user) {
 
 
 function changeQty(userId,productId,qty){
+    function showStockAlertBox() {
+       
+        $("#noStockAlert").fadeIn();
+    
+        // Hide the alert box after 5 seconds
+        setTimeout(function () {
+            $("#noStockAlert").fadeOut();
+        }, 3000);
+    }
     // console.log(qty);
     let totalDis = document.getElementById('totalDisplay')
     let subTotalDis = document.getElementById('subTotalDisplay')
@@ -64,9 +73,12 @@ function changeQty(userId,productId,qty){
             success:(response)=>{
                 // alert(response)
                 // console.log(response);
+                if(response.NoStock==1){
+                    showStockAlertBox()
+                }else{
                 
                 response.total==undefined ? window.location.href='/login' :
-
+                
                 totalDis.innerHTML=response.total
                 subTotalDis.innerHTML=response.total
 
@@ -76,8 +88,9 @@ function changeQty(userId,productId,qty){
                 qtyInput.value=newQuantity.quantity
                 singleProductTotal.innerHTML=`₹${Number(singleProductPrice.innerHTML)*Number(newQuantity.quantity)}`
                 console.log(singleProductPrice.innerHTML);
-                
             }
+                
+        }
     })
     }
 }

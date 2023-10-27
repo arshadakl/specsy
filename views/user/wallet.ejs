@@ -15,7 +15,7 @@
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
 
-            <div class="container">
+            <div class="container my-5">
                 <div class="col-12 row p-5">
 
                     <div class="col-lg-6 col-12">
@@ -62,9 +62,10 @@
                             <hr my-0>
                             <!-- table-wrapper-scroll-y my-custom-scrollbar -->
                             <%if(history.length!=0){%>
-                                
-                            <table class="table  my-custom-scrollbar">
-                                <thead class="table-light">
+                        <div class="my-custom-scrollbar" style="max-height: 600px; overflow: auto;">
+
+                            <table class="table " >
+                                <thead class="table-light ">
                                     <tr>
                                         <th>Purpose</th>
                                         <th>Amount</th>
@@ -99,7 +100,7 @@
                                         
                                 </tr>
                                     <td> <%=history[i].purpose%></td>
-                                    <td>₹<%=history[i].totalAmount%></td>
+                                    <td style="font-weight: 500;">₹ <%=history[i].totalAmount%></td>
                                     <td><%= history[i].paymentMethod== "Cash on Delivery" ? "COD" : "Online"%></td>
                                     
                                     <td><%=formattedDate %></td>
@@ -114,6 +115,8 @@
 
                                 </tbody>
                             </table>
+                        </div>
+
                             <%}else{%>
                                 <p class="text-center"><i class="fa-light fa-money-check-dollar"></i> You have no Transaction</p>
                             <%}%>    

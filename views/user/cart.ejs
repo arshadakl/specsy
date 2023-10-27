@@ -53,15 +53,23 @@
                                                                 <!-- product name -->
                                                                 <a href="#">
                                                                     <%= cartItems.products[i].product.product_name %>
+                                                                    <%if(cartItems.products[i].product.stock<=5 && cartItems.products[i].product.stock!=0){%>
+                                                                        <p class="text-danger">only few Stock left</p>
+                                                                        <%}else if(cartItems.products[i].product.stock===0){%>
+                                                                            <p class="text-danger">No other Stock Avilable</p>
+                                                                        <%}%>
+                                                                           
+                                                                    
                                                                 </a>
 
                                                             </h3><!-- End .product-title -->
                                                         </div><!-- End .product -->
-                                                    </td>
+                                                    </td>                                                    
                                                     <td class="price-col">
                                                         ₹ <span
                                                             id="singleProductPrice<%= cartItems.products[i].product._id %>">
                                                             <%= cartItems.products[i].product.price %>
+
                                                         </span>
                                                     </td>
 
@@ -77,6 +85,7 @@
                                                                 onclick="changeQty('<%= user._id %>','<%= cartItems.products[i].product._id %>',1)">+
                                                             </button>
                                                         </div>
+                                                        
 
                                                     </td>
                                                     <!-- test1 -->

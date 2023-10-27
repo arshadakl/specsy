@@ -596,7 +596,7 @@ const cartPageLoad = async (req, res) => {
     const cartDetails = await CartDB.findOne({ user: req.session.user_id })
       .populate({
         path: "products.product",
-        select: "product_name price frame_shape images.image1",
+        select: "product_name price frame_shape images.image1 stock",
       })
       .exec();
 
@@ -719,6 +719,8 @@ const changeProductQuantity = async (userId, productId, newQuantityChange) => {
       return;
     }
 
+    const product = await ProductDB.findById(productId);
+
     const currentQuantity = productInCart.quantity;
 
     const newQuantity = currentQuantity + newQuantityChange;
@@ -732,6 +734,8 @@ const changeProductQuantity = async (userId, productId, newQuantityChange) => {
       return;
     }
 
+    
+
     if(newQuantity==1){
       increaseStock(productId,1)
     }else{
@@ -739,6 +743,13 @@ const changeProductQuantity = async (userId, productId, newQuantityChange) => {
     }
     productInCart.quantity = newQuantity;
 
+     // Check if the new quantity exceeds the available stock
+     console.log("new qty :"+newQuantity, "stock count" +product.stock);
+     if (newQuantity > product.stock) {
+      console.log("Quantity exceeds available stock.");
+      return 1;
+    }
+    
     // Save the updated cart back to the database
     let result = await cart.save();
     console.log("Product quantity updated successfully.");
@@ -762,11 +773,17 @@ const productQuantityHandlling = async (req, res) => {
       console.log(qty);
       let qtyChange = await changeProductQuantity(userId, productId, qty);
       // console.log(qtyChange);
+      let stockStatus =0
+      if (qtyChange == 1) {
+        stockStatus=1
+      }
+        const cartDetails = await CartDB.findOne({ user: userId });
+        // const userData = await takeUserData(userId);
+        let total = await calculateTotalPrice(userId);
+        res.json({ cartItems: cartDetails, total,NoStock:stockStatus });
+      
 
-      const cartDetails = await CartDB.findOne({ user: userId });
-      // const userData = await takeUserData(userId);
-      let total = await calculateTotalPrice(userId);
-      res.json({ cartItems: cartDetails, total });
+     
     }
     // console.log(qtyChange);
   } catch (error) {
