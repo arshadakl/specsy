@@ -84,7 +84,7 @@
                                                     name)
                                                 </label>
                                                 <input type="text" class="form-control address-input"
-                                                    id="exampleFormControlInput1" value="<%=address[i].fullName%>" name="fullName" required>
+                                                    id="exampleFormControlInput1" value="<%=address[i].fullName%>" name="fullName" pattern="[0-9]{10,12}" maxlength="12" required>
                                             </div>
                                             <div class="mb-1">
                                                 <label for="exampleFormControlInput1" class="form-label m-0">Mobile
@@ -93,6 +93,11 @@
                                                 <input type="number" class="form-control address-input"
                                                     id="exampleFormControlInput1" value="<%=address[i].mobileNumber%>" name="mobileNumber" required>
                                             </div>
+                                            <div class="mb-1">
+                                                <label for="exampleFormControlInput1" class="form-label m-0">Full name (First and Last name)</label>
+                                                <input type="text" class="form-control address-input" id="exampleFormControlInput1" value="<%=address[i].fullName%>" name="fullName" required>
+                                            </div>
+                                            
                                             <div class="mb-1">
                                                 <label for="exampleFormControlInput1" class="form-label m-0">Area,
                                                     Street, Sector,
@@ -161,7 +166,7 @@
                                             <a class="btn btn-outline-primary-2" style="border-radius: 7px;"
                                                 data-bs-dismiss="modal">Close</a>
                                             <a onclick="removeAddress('<%=address[i]._id%>')" class="btn btn-outline-primary-2"
-                                                style="border-radius: 7px; background: #000; color: #fff;">Update</a>
+                                                style="border-radius: 7px; background: #000; color: #fff;">Remove</a>
                                         </div>
                                     
                                 </div>
@@ -211,12 +216,20 @@
                                 <input type="text" class="form-control address-input" id="exampleFormControlInput1"
                                     name="fullName" required>
                             </div>
-                            <div class="mb-1">
+                            <!-- <div class="mb-1">
                                 <label for="exampleFormControlInput1" class="form-label m-0">Mobile number
                                 </label>
                                 <input type="number" class="form-control address-input" id="exampleFormControlInput1"
                                     name="mobileNumber" required>
+                            </div> -->
+
+                            <div class="mb-1">
+                                <label for="mobileNumberInput" class="form-label m-0">Mobile number</label>
+                                <input type="number" class="form-control address-input" id="mobileNumberInput" name="mobileNumber" required>
                             </div>
+                            
+
+
                             <div class="mb-1">
                                 <label for="exampleFormControlInput1" class="form-label m-0">Area, Street, Sector,
                                     Village
@@ -253,6 +266,28 @@
             </div>
         </div>
         <!-- model end -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var mobileNumberInput = document.getElementById("mobileNumberInput");
+        
+                mobileNumberInput.addEventListener("input", function () {
+                    var mobileNumber = mobileNumberInput.value;
+        
+                    // Remove any non-digit characters from the input
+                    var cleanedMobileNumber = mobileNumber.replace(/\D/g, '');
+        
+                    // Check if the cleaned input is exactly 10 digits
+                    if (cleanedMobileNumber.length !== 10) {
+                        mobileNumberInput.setCustomValidity("Mobile number must be exactly 10 digits.");
+                    } else {
+                        mobileNumberInput.setCustomValidity(""); // Reset the validation message
+                    }
+                });
+            });
+        </script>
+        
+        
+        
 
         <script>
             let addressBTN = document.getElementById("addAddressBtn")

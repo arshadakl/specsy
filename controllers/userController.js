@@ -982,8 +982,8 @@ const allOrdersPageLoad = async (req, res) => {
       }
     }
     //  testing END+++++++++====================
-    console.log(productWiseOrders);
-    console.log(productWiseOrders);
+    // console.log(productWiseOrders);
+    // console.log(productWiseOrders);
     res.render("allorders", {
       user: req.session.user_id,
       products: productWiseOrders,

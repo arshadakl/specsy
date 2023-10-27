@@ -18,13 +18,21 @@
             <div class="container">
                 <div class="col-12 row p-5">
 
-                    <div class="col-6 ">
+                    <div class="col-lg-6 col-12">
 
                         <div class="card  wallet-card ">
                             <div class="card-body text-white m-5  col-12 row ">
                                 <div class="col-8 mt-3">
                                     <span class="text-uppercase"><%=userData.userName%></span> 
-                                    <h6 class=" text-white mt-0" style="font-size: 20px;"><span class=""><%=wallet.walletId%></span>
+                                    <% function formatNumber(input) {
+                                        if (input && typeof input === 'string') {
+                                          return input.replace(/(\d{4})(?=\d)/g, '$1 ');
+                                        }
+                                        return input;
+                                      } 
+                                      var walletIdNumber = formatNumber(wallet.walletId)
+                                      %>
+                                    <h6 class=" text-white mt-0" style="font-size: 24px;"><span class=""><%=walletIdNumber%></span>
                                     </h6>
 
                                 </div>
@@ -38,7 +46,7 @@
                                     <h4 class="text-light pb-1">Wallet Balace</h4>
                                 </div>
                                 <div class="col-5 d-flex  align-items-end">
-                                    <h1 class="text-white">₹ <%= wallet.balance%></h1>
+                                    <h2 class="text-white">₹ <%= wallet.balance%></h2>
                                  
                                       
                                 </div>
@@ -47,8 +55,8 @@
 
                     </div>
 
-                    <div class="col-6">
-                        <div class="w-100">
+                    <div class="col-lg-6 col-12">
+                        <div class="w-100 mt-2">
                             <p style="font-size: 22px;"><i class="fa-duotone fa-money-check-dollar-pen"></i> Transaction
                                 History</p>
                             <hr my-0>
@@ -67,30 +75,30 @@
                                 </thead>
                                 <tbody>
                                     
-                                    <%for(i=0;i<history.length;i++){%>
+                                    <%for(i=history.length-1;i>=0;i--){%>
                                         <% 
-                   // Assuming dateObject is a JavaScript Date object containing your date
-                   var dateObject = history[i].transactionDate; // Replace this with your date
+                                         // Assuming dateObject is a JavaScript Date object containing your date
+                                         var dateObject = history[i].transactionDate; // Replace this with your date
 
-                   // Define months for formatting
-                   var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                                         // Define months for formatting
+                                         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-                   // Get date components
-                   var day = dateObject.getDate();
-                   var month = months[dateObject.getMonth()];
-                   var year = dateObject.getFullYear();
-                   var hours = dateObject.getHours();
-                   var minutes = dateObject.getMinutes();
-                   var ampm = hours >= 12 ? 'PM' : 'AM';
-                   hours = hours % 12;
-                   hours = hours ? hours : 12; // Handle midnight (0:00) as 12 AM
-                   var minutesFormatted = minutes < 10 ? '0' + minutes : minutes;
+                                         // Get date components
+                                         var day = dateObject.getDate();
+                                         var month = months[dateObject.getMonth()];
+                                         var year = dateObject.getFullYear();
+                                         var hours = dateObject.getHours();
+                                         var minutes = dateObject.getMinutes();
+                                         var ampm = hours >= 12 ? 'PM' : 'AM';
+                                         hours = hours % 12;
+                                         hours = hours ? hours : 12; // Handle midnight (0:00) as 12 AM
+                                         var minutesFormatted = minutes < 10 ? '0' + minutes : minutes;
 
-                   var formattedDate = day + ' ' + month + ' ' + year + ', ' + hours + ':' + minutesFormatted + ampm;
-                   %> 
+                                         var formattedDate = day + ' ' + month + ' ' + year + ', ' + hours + ':' + minutesFormatted + ampm;
+                                         %> 
                                         
                                 </tr>
-                                    <td>Refund</td>
+                                    <td> <%=history[i].purpose%></td>
                                     <td>₹<%=history[i].totalAmount%></td>
                                     <td><%= history[i].paymentMethod== "Cash on Delivery" ? "COD" : "Online"%></td>
                                     
@@ -116,4 +124,7 @@
 
             </div>
         </main>
+        <script>
+          
+        </script>
         <%- include('../user/layouts/footer.ejs') %>

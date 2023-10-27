@@ -4,8 +4,10 @@ const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
 const CouponDB = require("../models/orderModel").Coupon;
-const PaymentDB  = require("../models/paymentModel").TransactionHistory;
+const PaymentDB = require("../models/paymentModel").TransactionHistory;
 const AnalyticsDB = require("../models/analyticModel")
+const WalletDB = require("../models/paymentModel").Wallet;
+
 
 const Razorpay = require("razorpay");
 const mongoose = require("mongoose");
@@ -369,7 +371,7 @@ const placeOrderManage = async (req, res) => {
       );
       // console.log(changeOrderStatus);
       await CartDB.deleteOne({ user: req.session.user_id });
-      const PaymentHistory = await createPaymentHistory(req.session.user_id,placeorder,paymentType,discountDetails)
+      const PaymentHistory = await createPaymentHistory(req.session.user_id,placeorder,paymentType,discountDetails,trackId)
       console.log(PaymentHistory);
       // return res.render("orderStatus", {
       //   success: 1,
@@ -383,7 +385,7 @@ const placeOrderManage = async (req, res) => {
       let userData = await UserDB.findById(req.session.user_id);
 
       // payment history create
-      const PaymentHistory = await createPaymentHistory(req.session.user_id,placeorder,paymentType,discountDetails)
+      const PaymentHistory = await createPaymentHistory(req.session.user_id,placeorder,paymentType,discountDetails,trackId)
       console.log(PaymentHistory);
       let user = {
         name: fullName,
@@ -445,7 +447,7 @@ const orderPageLoad = async (req, res) => {
     }
 
     // for(i=0;i<productWiseOrdersArray.length;i++){
-    console.log(productWiseOrdersArray);
+    // console.log(productWiseOrdersArray);
     // }
     res.render("orders", { orders: productWiseOrdersArray });
   } catch (error) {
@@ -698,7 +700,7 @@ const orderStatusPageLoad = async (req, res) => {
 
 // create payment history
 // --------------------------------
-const createPaymentHistory = async(userId, order, paymentMethod,discount)=>{
+const createPaymentHistory = async(userId, order, paymentMethod,discount,trackId)=>{
   try {
      const newTransaction = new PaymentDB({
       userId: userId,
@@ -713,9 +715,11 @@ const createPaymentHistory = async(userId, order, paymentMethod,discount)=>{
       totalAmount: order.totalAmount,
       discount: {
         discount_amount:discount.amount,
-        code_id:discount.codeId
+        code_id:discount.codeId,
+        refund_used:false
       },
-      purpose:"purchase"
+      purpose:"Purchase ",
+      trackId
     });
 
     
@@ -791,7 +795,7 @@ const returnOrderProduct = async(req,res)=>{
     // const orderId = req.body.orderId;
     // const productId = req.body.productId;
     const {orderId, productId , reason } = req.body.formDataObject
-    console.log(orderId, productId , reason);
+    // console.log(orderId, productId , reason);
     const order = await OrderDB.findOne({ _id: orderId });
     const product = order.products.find(
       (product) => product.productId.toString() === productId
@@ -808,14 +812,83 @@ const returnOrderProduct = async(req,res)=>{
       await increaseStock(product.productId,qty)
     }
 
+    let refundStatus = await refundManagement(orderId, productId,order.trackId,req.session.user_id)
+    // console.log(refundStatus);
     let result = await order.save()
-    // console.log(result);
+    console.log(result);
     return res.json({status:true});
   } catch (error) {
     console.log(error.message);
   }
 }
 
+
+// return refund management
+// ---------------------------------
+const refundManagement = async (orderId, productId,trackId,userId)=>{
+  try { 
+    console.log(trackId);
+    console.log("refund called");
+    const userWallet = await WalletDB.findOne({user:userId})
+    const TransactionHistory = await PaymentDB.findOne({trackId});
+    const returnProduct = await ProductDB.findOne({_id:productId})
+    let refundAmount = returnProduct.price 
+     
+    if(TransactionHistory.discount.discount_amount!=0 && !TransactionHistory.discount.refund_used){
+      refundAmount-=TransactionHistory.discount.discount_amount
+    }
+    userWallet.balance+=refundAmount
+    let Wallet ="Wallet"
+    const trackIdRF = await generateUniqueTrackId()
+    let RefundHistory = await createRefundHistory(userId,Wallet,trackIdRF,orderId,returnProduct._id,refundAmount)
+    // console.log(RefundHistory);
+    let result = await userWallet.save()
+    return result
+
+    // console.log(userWallet);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+//refund transaction history creating
+// -------------------------------------------
+const createRefundHistory = async(userId, paymentMethod,trackId,orderId,productId,refundAmount)=>{
+  try {
+    console.log("createRefundHistory called");
+    let products = [productId]
+     const newRefundTransaction = new PaymentDB({
+      userId: userId,
+      orderDetails: [
+        {
+          orderId: orderId,
+          orderDate: new Date(),
+          products: products, // Include product IDs and quantities
+        },
+      ],
+      paymentMethod: paymentMethod,
+      totalAmount: refundAmount,
+      discount: {
+        discount_amount:0,
+        code_id:"none",
+        refund_used:false
+      },
+      purpose:"Refund",
+      trackId
+    });
+
+    
+
+    // Save the transaction history entry
+    const transaction = await newRefundTransaction.save();
+    console.log(transaction);
+    console.log('Transaction history entry created:', transaction);
+    return transaction;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 //decrease the product stock
 // ----------------------------

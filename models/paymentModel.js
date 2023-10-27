@@ -46,6 +46,10 @@ const transactionHistorySchema = new mongoose.Schema({
       code_id: {
         type: String,
         required: true
+      },
+      refund_used:{
+        type:Boolean,
+        required:true
       }
     },
     transactionDate: {
@@ -56,6 +60,10 @@ const transactionHistorySchema = new mongoose.Schema({
     purpose:{
       type: String,
       required: true,
+    },
+    trackId:{
+      type:Number,
+      required:true
     }
   });
 
