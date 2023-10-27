@@ -20143,6 +20143,25 @@ button:focus {
     font-size: 35px;
 }
 
-.couponHide{
+.couponHide {
     display: none;
 }
+
+
+/* wallet related styles */
+.wallet-card {
+    height: 280px;
+    width: 450px;
+    border-radius: 3rem;
+    background: rgb(0,0,0);
+    background: radial-gradient(circle at 10% 20%, rgb(87, 108, 117) 0%, rgb(37, 50, 55) 100.2%);
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 200px;
+    overflow: auto;
+    }
+    .table-wrapper-scroll-y {
+    display: block;
+    }

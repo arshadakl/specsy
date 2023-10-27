@@ -145,11 +145,13 @@ function updateImagePreview(inputElement, imagePreviewId, alreadyImg, removeButt
   }
 }
 
-function removeImagePreview(imagePreviewId, alreadyImg, removeButtonId) {
+function removeImagePreview(imagePreviewId, alreadyImg, removeButtonId,inputElement) {
   var imagePreview = document.getElementById(imagePreviewId);
+  var inputElement = document.getElementById(inputElement);
   // Restore the original image source when the image is removed
   imagePreview.src = alreadyImg;
   var removeButton = document.getElementById(removeButtonId);
   removeButton.style.display = 'none'; // Hide the remove button
+  inputElement.value=""
 }
 

@@ -4,7 +4,7 @@ const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
 const CouponDB = require("../models/orderModel").Coupon;
-const PaymentDB  = require("../models/paymentModel");
+const PaymentDB  = require("../models/paymentModel").TransactionHistory;
 const AnalyticsDB = require("../models/analyticModel")
 
 const Razorpay = require("razorpay");
@@ -714,7 +714,8 @@ const createPaymentHistory = async(userId, order, paymentMethod,discount)=>{
       discount: {
         discount_amount:discount.amount,
         code_id:discount.codeId
-      }
+      },
+      purpose:"purchase"
     });
 
     

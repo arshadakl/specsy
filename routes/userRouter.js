@@ -19,6 +19,7 @@ const productController = require('../controllers/productsController')
 const orderController = require('../controllers/orderController')
 const wishlistController = require('../controllers/wishlistController')
 const couponController = require('../controllers/couponController')
+const walletController = require('../controllers/walletController')
 
 
 
@@ -102,6 +103,8 @@ router.post('/checkout/placeorder/coupon',couponController.ApplyCoupon)
 //shop page router
 router.get('/shop',productController.shopPageLoad)   
 
+//wallet page router
+router.get('/wallet',auth.isLogin,walletController.walletPageLoader)
 
 
 // test case

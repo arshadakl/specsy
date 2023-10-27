@@ -22,11 +22,9 @@ const transactionHistorySchema = new mongoose.Schema({
             productId: {
               type: mongoose.Schema.Types.ObjectId,
               ref: 'Product',
-              required: true,
             },
             quantity: {
               type: Number,
-              required: true,
             },
           },
         ],
@@ -55,8 +53,36 @@ const transactionHistorySchema = new mongoose.Schema({
       default: Date.now,
       required: true,
     },
+    purpose:{
+      type: String,
+      required: true,
+    }
+  });
+
+
+  const walletSchema = new mongoose.Schema({
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', 
+      required: true,
+      unique: true, 
+    },
+    walletId: {
+      type: String,
+      unique: true, 
+      required: true,
+    },
+    balance: {
+      type: Number,
+      default: 0, 
+      required: true,
+    }
   });
 
 const TransactionHistory = mongoose.model('TransactionHistory', transactionHistorySchema);
+const Wallet = mongoose.model('Wallet', walletSchema);
 
-module.exports = TransactionHistory;
+module.exports ={
+  TransactionHistory,
+  Wallet
+} 

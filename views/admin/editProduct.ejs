@@ -81,49 +81,7 @@
                 <!-- <label class="col-sm-3 col-form-label">Images</label> -->
                 <div class="row d-flex justify-content-center ">
 
-                  <!-- <div class="row d-flex justify-content-between ">
-
-                    <div class="col-lg-3 col-md-6">
-                      <div class=" rounded-image-preview">
-                        <label for="imageInput1" class="image-label">Image 1
-                          <div class="rounded-image-preview">
-                            <img id="imagePreview1" src="/products/images/<%= product.images.image1 %>" alt="Preview" />
-                          </div>
-                          <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput" onchange="updateImagePreview(this, '/products/images/<%= product.images.image1 %>')">
-                        </label>
-                      </div>
-                      <button type="button" style="display: none;" class="remove-button" id="removeButton1" onclick="removeImagePreview('imagePreview1','/products/images/<%= product.images.image1 %>')">Remove</button>
-
-                    </div> -->
-
-                  <!-- <div class="row d-flex justify-content-between">
-                      <div class="col-lg-3 col-md-6">
-                        <div class="rounded-image-preview">
-                          <label for="imageInput1" class="image-label">Image 1
-                            <div class="rounded-image-preview">
-                              <img id="imagePreview1" src="/products/images/<%= product.images.image1 %>" alt="Preview" />
-                            </div>
-                            <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput" onchange="updateImagePreview(this,'/products/images/<%= product.images.image1 %>')">
-                          </label>
-                        </div>
-                        <button type="button" style="display: none;" class="remove-button" id="removeButton1" onclick="removeImagePreview('imagePreview1','/products/images/<%= product.images.image1 %>')">Remove</button>
-                      </div>
-                    </div> -->
-
-                  <!-- this working 1 image  -->
-                  <!-- <div class="col-lg-3 col-md-6">
-                    <div class="rounded-image-preview">
-                      <label for="imageInput1" class="image-label">Image 1
-                        <div class="rounded-image-preview">
-                          <img id="imagePreview1" src="/products/images/<%= product.images.image1 %>" alt="Preview" />
-                        </div>
-                        <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput"
-                          onchange="updateImagePreview(this, 'imagePreview1', '/products/images/<%= product.images.image1 %>', 'removeButton1')">
-                      </label>
-                    </div>
-                    <button type="button" style="display: none;" class="remove-button" id="removeButton1"
-                      onclick="removeImagePreview('imagePreview1', '/products/images/<%= product.images.image1 %>', 'removeButton1')">Remove</button>
-                  </div> -->
+              
 
 
                   <!-- Image Upload 1 -->
@@ -138,7 +96,7 @@
                       </label>
                     </div>
                     <button type="button" style="display: none;" class="remove-button" id="removeButton1"
-                      onclick="removeImagePreview('imagePreview1', '/products/images/<%= product.images.image1 %>', 'removeButton1')">Remove</button>
+                      onclick="removeImagePreview('imagePreview1', '/products/images/<%= product.images.image1 %>', 'removeButton1','imageInput1')">Remove</button>
                   </div>
 
                   <!-- Image Upload 2 -->
@@ -153,7 +111,7 @@
                       </label>
                     </div>
                     <button type="button" style="display: none;" class="remove-button" id="removeButton2"
-                      onclick="removeImagePreview('imagePreview2', '/products/images/<%= product.images.image2 %>', 'removeButton2')">Remove</button>
+                      onclick="removeImagePreview('imagePreview2', '/products/images/<%= product.images.image2 %>', 'removeButton2','imageInput2')">Remove</button>
                   </div>
                   <!-- Repeat similar code for Image Upload 3 and 4 with unique IDs -->
                   <div class="col-lg-3 col-md-6">
@@ -167,7 +125,7 @@
                       </label>
                     </div>
                     <button type="button" style="display: none;" class="remove-button" id="removeButton3"
-                      onclick="removeImagePreview('imagePreview3', '/products/images/<%= product.images.image3 %>', 'removeButton3')">Remove</button>
+                      onclick="removeImagePreview('imagePreview3', '/products/images/<%= product.images.image3 %>', 'removeButton3','imageInput3')">Remove</button>
                   </div>
 
                   <div class="col-lg-3 col-md-6">
@@ -181,7 +139,7 @@
                       </label>
                     </div>
                     <button type="button" style="display: none;" class="remove-button" id="removeButton4"
-                      onclick="removeImagePreview('imagePreview4', '/products/images/<%= product.images.image4 %>', 'removeButton4')">Remove</button>
+                      onclick="removeImagePreview('imagePreview4', '/products/images/<%= product.images.image4 %>', 'removeButton4','imageInput4')">Remove</button>
                   </div>
 
 
