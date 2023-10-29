@@ -466,7 +466,7 @@ const salesReportPageLoad = async(req,res)=>{
     const sales = await createSalesReport("2023-10-01", "2023-10-31");
     const WeeklySales = await generateWeeklySalesCount()
     const SoldProducts = await getMostSellingProducts()
-    // console.log(sales.totalStockSold[0]);
+    console.log(sales);
     // generateWeeklySalesCount
     res.render('salesreport',{week:WeeklySales,Mproducts:SoldProducts,sales})
   } catch (error) {
@@ -485,12 +485,9 @@ const createSalesReport = async (startDate, endDate) => {
       },
     });
 
-    // Create a data structure to store the report
-    const salesReport = {
-      totalSales: 0,
-      totalStockSold: {},
-      productProfits: {},
-    };
+    // Create new objects for total stock sold and product profits
+    const transformedTotalStockSold = {};
+    const transformedProductProfits = {};
 
     // Helper function to fetch product details by ID
     const getProductDetails = async (productId) => {
@@ -506,47 +503,133 @@ const createSalesReport = async (startDate, endDate) => {
 
         // Fetch product details
         const product = await getProductDetails(productId);
-        const productName = product.product_name; // Get product name
-        const image = product.images.image1
-
-        // Update the total sales
-        const productPrice = product.price;
-        const productSales = productPrice * quantity;
-        salesReport.totalSales += productSales;
+        const productName = product.product_name;
+        const image = product.images.image1;
+        const shape = product.frame_shape
 
         // Update the total stock sold
-        if (!salesReport.totalStockSold[productId]) {
-          salesReport.totalStockSold[productId] = {
-            name: productName, // Include product name
+        if (!transformedTotalStockSold[productId]) {
+          transformedTotalStockSold[productId] = {
+            id: productId,
+            name: productName,
             quantity: 0,
+            image: image,
+            shape:shape
+          };
+        }
+        transformedTotalStockSold[productId].quantity += quantity;
+
+        // Update the product profits
+        if (!transformedProductProfits[productId]) {
+          transformedProductProfits[productId] = {
+            id: productId,
+            name: productName,
+            profit: 0,
             image: image,
           };
         }
-        salesReport.totalStockSold[productId].quantity += quantity;
-
-        // Calculate and update the product profits
-        const productCost = productPrice*0.3;
+        const productPrice = product.price;
+        const productCost = productPrice * 0.3;
         const productProfit = (productPrice - productCost) * quantity;
-
-        if (!salesReport.productProfits[productId]) {
-          salesReport.productProfits[productId] = {
-            name: productName, // Include product name
-            profit: 0,
-            image: image
-          };
-        }
-        salesReport.productProfits[productId].profit += productProfit;
+        transformedProductProfits[productId].profit += productProfit;
       }
     }
 
-    // Print or return the sales report with product names
-    // console.log("Sales Report:", salesReport);
-    return salesReport;
+    // Convert the transformed objects to arrays
+    const totalStockSoldArray = Object.values(transformedTotalStockSold);
+    const productProfitsArray = Object.values(transformedProductProfits);
 
+    // Calculate the total sales
+    const totalSales = productProfitsArray.reduce(
+      (total, product) => total + product.profit,
+      0
+    );
+
+    // Create the final sales report object
+    const salesReport = {
+      totalSales,
+      totalStockSold: totalStockSoldArray,
+      productProfits: productProfitsArray,
+    };
+
+    // Print or return the sales report
+    return salesReport;
   } catch (error) {
     console.error("Error generating the sales report:", error.message);
   }
 };
+// const createSalesReport = async (startDate, endDate) => {
+//   try {
+//     // Find orders within the date range
+//     const orders = await OrderDB.find({
+//       orderDate: {
+//         $gte: startDate,
+//         $lte: endDate,
+//       },
+//     });
+
+//     // Create a data structure to store the report
+//     const salesReport = {
+//       totalSales: 0,
+//       totalStockSold: {},
+//       productProfits: {},
+//     };
+
+//     // Helper function to fetch product details by ID
+//     const getProductDetails = async (productId) => {
+//       return await ProductDB.findById(productId);
+//     };
+
+//     // Iterate through each order
+//     for (const order of orders) {
+//       // Iterate through each product in the order
+//       for (const productInfo of order.products) {
+//         const productId = productInfo.productId;
+//         const quantity = productInfo.quantity;
+
+//         // Fetch product details
+//         const product = await getProductDetails(productId);
+//         const productName = product.product_name; // Get product name
+//         const image = product.images.image1
+
+//         // Update the total sales
+//         const productPrice = product.price;
+//         const productSales = productPrice * quantity;
+//         salesReport.totalSales += productSales;
+
+//         // Update the total stock sold
+//         if (!salesReport.totalStockSold[productId]) {
+//           salesReport.totalStockSold[productId] = {
+//             name: productName, // Include product name
+//             quantity: 0,
+//             image: image,
+//           };
+//         }
+//         salesReport.totalStockSold[productId].quantity += quantity;
+
+//         // Calculate and update the product profits
+//         const productCost = productPrice*0.3;
+//         const productProfit = (productPrice - productCost) * quantity;
+
+//         if (!salesReport.productProfits[productId]) {
+//           salesReport.productProfits[productId] = {
+//             name: productName, // Include product name
+//             profit: 0,
+//             image: image
+//           };
+//         }
+//         salesReport.productProfits[productId].profit += productProfit;
+//       }
+//     }
+
+//     // Print or return the sales report with product names
+//     // console.log("Sales Report:", salesReport);
+//     return salesReport;
+
+//   } catch (error) {
+//     console.error("Error generating the sales report:", error.message);
+//   }
+// };
 // Example usage
 
 
