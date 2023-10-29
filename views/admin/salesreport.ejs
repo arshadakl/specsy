@@ -81,13 +81,12 @@
                         </h3>
                     </div>
                     <div class=" col-3 d-flex flex-row ">
+                        <form class="d-flex flex-row" action="/admin/sales-report" method="get">
                         <h2 class="mdi mdi-calendar-clock"></h2>
-                        <input type="text" autocomplete="off" id="start-date" class="form-control text-light m-1 " name="validFrom" placeholder="From"
-                                                                                                                                                                                                                                                                                       required>
-                        <input type="text" autocomplete="off" id="end-date" class="form-control text-light m-1 " name="validTo" placeholder="To"
-                                                                                                                                                                                                                                                                                       required>
-                        <button class="btn btn-inverse-primary m-2">Filter</button>
-
+                        <input type="text" autocomplete="off" id="start-date" class="form-control text-light m-1 " name="start" placeholder="From"  required>
+                        <input type="text" autocomplete="off" id="end-date" class="form-control text-light m-1 " name="end" placeholder="To" required>
+                        <button type="submit" class="btn btn-inverse-primary m-2">Filter</button>
+                        </form>
                     </div>
                     <!-- <div class="col-1 ">
                         
@@ -133,8 +132,8 @@
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9" >
                                       <h6 class="dropdown-header">Download Report</h6>
-                                      <a class="dropdown-item text-white" href="/admin/sales-report/export-report?start=2023-10-01&end=2023-10-31" >Excel file</a>
-                                      <a class="dropdown-item text-white" href="/admin/sales-report/export-PDF-report?start=2023-10-01&end=2023-10-31">PDF File</a>
+                                      <a class="dropdown-item text-white" id="excelDownload" >Excel file</a>
+                                      <a class="dropdown-item text-white" id="pdfDownload"  >PDF File</a>
 
                                     </div>
                                 </div>
@@ -195,6 +194,7 @@
     <script>
 
         function runLoad() {
+            
             const week1 = document.getElementById("week1").value
             const week12 = document.getElementById("week12").value
 
@@ -354,10 +354,36 @@
                 options: options
             });
 
+
+
+            // fileDownloadPathsettings();
+            const excelDownload = document.getElementById("excelDownload");
+            const pdfDownload = document.getElementById("pdfDownload");
+            const queryString = window.location.search;
+            const urlSearchParams = new URLSearchParams(queryString);
+  
+            // Access specific query parameters by name
+            const startDate = urlSearchParams.get('start');
+            const endDate = urlSearchParams.get('end');
+  
+            let today, start, end; // Declare these variables using let
+  
+            if (startDate == null || endDate == null) {
+              today = new Date();
+              start = new Date(today);
+              start.setDate(today.getDate() - 30);
+              end = today.toISOString().split('T')[0];
+              excelDownload.href = `/admin/sales-report/export-report?start=${start}&end=${end}`;
+              pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${start}&end=${end}`;
+            } else {
+              excelDownload.href = `/admin/sales-report/export-report?start=${startDate}&end=${endDate}`;
+              pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${startDate}&end=${endDate}`;
+            }
+
+
         }
 
         // Don't use parentheses when assigning the function to onload
-        window.onload = runLoad;
 
         $("#start-date").datepicker({
             dateFormat: 'yy-mm-dd',
@@ -371,5 +397,18 @@
         $("#end-date").datepicker({
             dateFormat: 'yy-mm-dd'
         });
+
+
+        // report download related things
+        function fileDownloadPathsettings() {
+            
+        }
+        // function autoCalllingFunctions() {
+        //     fileDownloadPathsettings();
+        //     runLoad();
+        // }
+
+        window.onload = runLoad
+
     </script>
     <%- include('../admin/layouts/footer.ejs') %>
