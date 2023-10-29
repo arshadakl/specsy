@@ -9,6 +9,7 @@ const productController = require('../controllers/productsController')
 const categoryController = require('../controllers/categoryController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
+const reportController = require('../controllers/reportController')
 
 //auth checking middleware
 const auth = require('../middleware/admin')
@@ -70,10 +71,12 @@ router.get('/coupon/delete',auth.isLogin,couponController.deleteCoupon)
 
 //report make related routers
 router.post('/report/genarate',auth.isLogin,adminController.genarateSalesReports)
-router.get('/sales-report',adminController.salesReportPageLoad)
-router.get('/sales-report/1',adminController.getMostSellingProducts)
+router.get('/sales-report',reportController.salesReportPageLoad)
+router.get('/sales-report/export-report',reportController.generateExcelReports)
+router.get('/sales-report/export-PDF-report',reportController.generatePDFReports)
 
 
+router.get('/admin/error-page',adminController.errorpageHandil)
 
 //exporting
 module.exports = router

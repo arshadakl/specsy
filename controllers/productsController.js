@@ -206,7 +206,9 @@ const updateProduct = async (req, res) => {
 
     res.redirect("/admin/products");
   } catch (error) {
-    console.log(error.message);
+    if (req.fileFilterError && req.fileFilterError.redirectTo) {
+      return res.redirect(req.fileFilterError.redirectTo);
+    }
   }
 };
 
