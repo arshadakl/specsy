@@ -202,25 +202,41 @@ aria-label="Close">x</button> -->
                                                                                                                                                                                                                                                                                            style="border: 1px solid #e2e2e2; border-radius: 10px; background: #F3F3F9;">
                                 <%if(products[i].OrderStatus!="Returned"){ %>
                                     <div class="card-header d-flex justify-content-between w-100">
-                                        <dir class="d-flex flex-column w-100">
+                                        <dir class="d-flex flex-column col-9">
                                             <%if(products[i].OrderStatus!="canceled"){%>
                                                 <p>ORDER PLACED</p>
                                                 <p>
                                                     <%= products[i].placeOrderDate%>
                                                 </p>
-                                                <%}%>
+                                            <%}%>
 
+                                        </dir>
+                                        <dir class="col-3 ">
+                                            <%if(products[i].OrderStatus!="canceled"){%>
+                                                
+                                                <div class="dropdown">
+                                                    <a class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-padding-y: .15rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem; "><i class="fa-light fa-file-lines"></i> Invoice </a>
+                                                    <ul class="dropdown-menu">
+                                                      <li><a class="dropdown-item" style="font-size: 14px;" href="/profile/orders/invoice?productId=<%=products[i].productDetails._id%>&orderId=<%=products[i].orderId%>"><i class="fa-duotone fa-file-pdf"></i> Download Invoice</a></li>
+                                                    </ul>
+                                                  </div>
+                                            <%}%>
                                         </dir>
 
 
                                     </div>
                                     <hr class="m-0 mb-1">
                                     <div>
-                                        <%if(products[i].OrderStatus!="canceled"){%>
+                                        <%if(products[i].OrderStatus!="canceled" && products[i].OrderStatus!="Delivered"){%>
                                             <h6 class="mx-5 mb-2">Delivery Expect on : <b>
                                                     <%= products[i].deliveryDate %>
                                                 </b></h6>
-                                            <%}%>
+
+                                            <%}else if(products[i].OrderStatus=="Delivered"){%>
+                                                <h6 class="mx-5 mb-2">Delivered on : <b>
+                                                    <%= products[i].updatedAt %>
+                                                </b></h6>
+                                            <%}%>    
                                     </div>
                                     <div class="card-body row col-12 d-flex ">
                                         <div class="col-4 ">
@@ -250,25 +266,37 @@ aria-label="Close">x</button> -->
                                                         <div class="col-12 row d-flex justify-content-start">
                                                             <!-- <a href="#" class="btn btn-dark col-2 mb-1">Track your Order</a> -->
                                                             <%if(products[i].OrderStatus!="Delivered" ){%>
-                                                                <button data-bs-toggle="modal" data-bs-target="#modCancel<%=products[i].orderId%><%=products[i].productDetails._id%>"
-                                                                                                                                                                                                                                                                                                                               class="btn btn-dark col-2 mb-1">Cancel
-                                                                    Order </button>
-                                                                <%}else{%>
-                                                                    <button data-bs-toggle="modal" data-bs-target="#modreturn<%=products[i].orderId%><%=products[i].productDetails._id%>"
-                                                                                                                                                                                                                                                                                                                                   class="btn btn-dark col-2 mb-1">Return
-                                                                        Item </button>
-                                                                    <p><i
-                                                                                                                                                                                                                                                                                                                                       class="fa-regular fa-clipboard-list-check text-danger"></i>
-                                                                        &nbsp; </i> <span style="font-size: 12px;"> Free
-                                                                            replacement will be provided within <b> 7
-                                                                                days</b>
-                                                                            if the product is delivered in
-                                                                            defective/damaged
-                                                                            condition or different from the ordered
-                                                                            item.</span>
-                                                                    </p>
+                                                                <button data-bs-toggle="modal" data-bs-target="#modCancel<%=products[i].orderId%><%=products[i].productDetails._id%>" class="btn btn-dark col-2 mb-1">Cancel Order </button>
+                                                                <%}else{%> 
 
-                                                                    <%}%>
+                                                                    <!-- return periad checking -->
+                                                                    <% 
+                                                                    function isWithinLast7Days(dateToCheck) {
+                                                                        const currentDate = new Date();
+                                                                        const sevenDaysAgo = new Date(currentDate);
+                                                                        sevenDaysAgo.setDate(currentDate.getDate() - 7);
+                                                                        const date = new Date(dateToCheck);
+                                                                        return date >= sevenDaysAgo && date <= currentDate;
+                                                                    }
+                                                                    
+                                                                    const dateToCheck = products[i].updatedAt;
+                                                                    const isWithinLast7DaysResult = isWithinLast7Days(dateToCheck);
+                                                                    %>
+                                                                    <%if(isWithinLast7DaysResult){%>
+                                                                       <button data-bs-toggle="modal" data-bs-target="#modreturn<%=products[i].orderId%><%=products[i].productDetails._id%>" class="btn btn-dark col-2 mb-1">Return Item </button>
+                                                                       <p><i class="fa-regular fa-clipboard-list-check text-danger"></i>
+                                                                           &nbsp; </i> <span style="font-size: 12px;"> Free
+                                                                               replacement will be provided within <b> 7
+                                                                                   days</b>
+                                                                               if the product is delivered in
+                                                                               defective/damaged
+                                                                               condition or different from the ordered
+                                                                               item.</span>
+                                                                       </p>
+                                                                     <%}%>  
+
+
+                                                                <%}%>
 
                                                         </div>
                                                         <%}else{%>
@@ -357,8 +385,8 @@ aria-label="Close">x</button> -->
                                                     <%=products[i].paymentMethod %>
                                                         </p>
                                                         <h5 class="card-title mb-2">₹ <%= products[i].productDetails.price %> </h5>
-                                                        <p class=" mb-2"><i class="fa-light text-danger fa-truck-bolt fa-flip-horizontal"></i> You returned this order because 
-                                                            <%= products[i].returnOrderStatus.reason === "disappoint" ? "Your expectations were not met by the product" : " received damaged product" %> on <b> <%= products[i].updatedAt%></b></p>
+                                                        <p class=" mb-2"><i class="fa-light text-danger fa-truck-bolt fa-flip-horizontal"></i><b> You returned this order </b> because 
+                                                            <%= products[i].returnOrderStatus.reason === "disappoint" ? "Your expectations were not met by the product" : " received damaged product" %> on <%= products[i].updatedAt%></p>
 
                                                 </div>
 

@@ -5,14 +5,14 @@ const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
 const CouponDB = require("../models/orderModel").Coupon;
 const PaymentDB = require("../models/paymentModel").TransactionHistory;
-const AnalyticsDB = require("../models/analyticModel")
+const AnalyticsDB = require("../models/analyticModel");
 const WalletDB = require("../models/paymentModel").Wallet;
-
+const puppeteer = require("puppeteer");
+const path = require("path");
 
 const Razorpay = require("razorpay");
 const mongoose = require("mongoose");
 require("dotenv").config();
-
 
 // razorpay related functions
 // ============================
@@ -20,7 +20,6 @@ var instance = new Razorpay({
   key_id: process.env.razorpay_key_id,
   key_secret: process.env.razorpay_key_secret,
 });
-
 
 const genarateRazorpay = (orderId, total) => {
   return new Promise((resolve, reject) => {
@@ -35,40 +34,42 @@ const genarateRazorpay = (orderId, total) => {
   });
 };
 
-
 //genarate Order uniq Id
 // --------------------------
-const generateUniqueTrackId = async()=>{
+const generateUniqueTrackId = async () => {
   try {
     let orderID;
-  let isUnique = false;
+    let isUnique = false;
 
-  // Keep generating order IDs until a unique one is found
-  while (!isUnique) {
-    // Generate a random 6-digit number
-    orderID = Math.floor(100000 + Math.random() * 900000);
+    // Keep generating order IDs until a unique one is found
+    while (!isUnique) {
+      // Generate a random 6-digit number
+      orderID = Math.floor(100000 + Math.random() * 900000);
 
-    // Check if the order ID already exists in the database
-    const existingOrder = await OrderDB.findOne({ orderID });
+      // Check if the order ID already exists in the database
+      const existingOrder = await OrderDB.findOne({ orderID });
 
-    // If no existing order with the same orderID is found, it's unique
-    if (!existingOrder) {
-      isUnique = true;
+      // If no existing order with the same orderID is found, it's unique
+      if (!existingOrder) {
+        isUnique = true;
+      }
     }
-  }
 
-  return orderID;
+    return orderID;
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 //order analatical creation
 // =========================
-const CreateOrderAnalatic = async()=>{
+const CreateOrderAnalatic = async () => {
   try {
-    const orders = await OrderDB.find() 
-    const totalSalesAmount = orders.reduce((total, order) => total + order.totalAmount, 0);
+    const orders = await OrderDB.find();
+    const totalSalesAmount = orders.reduce(
+      (total, order) => total + order.totalAmount,
+      0
+    );
     const totalOrders = orders.length;
     let orderAnalytics = await AnalyticsDB.findOne();
     if (!orderAnalytics) {
@@ -83,12 +84,10 @@ const CreateOrderAnalatic = async()=>{
 
     let result = await orderAnalytics.save();
     return result;
-
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 // This Function used to formmate date from new Date() function
 // ==============================================================
@@ -285,9 +284,9 @@ const paymentSelectionManage = async (req, res) => {
 // ==============================
 const placeOrderManage = async (req, res) => {
   let discountDetails = {
-    codeId:0,
-    amount:0
-  }
+    codeId: 0,
+    amount: 0,
+  };
   try {
     // console.log(req.body.address);
     let addressId = req.body.address;
@@ -316,21 +315,21 @@ const placeOrderManage = async (req, res) => {
       OrderStatus: "pending",
       StatusLevel: 1,
       paymentStatus: "pending",
-      "returnOrderStatus.status":"none",
-      "returnOrderStatus.reason":"none"
+      "returnOrderStatus.status": "none",
+      "returnOrderStatus.reason": "none",
     }));
     let total = await calculateTotalPrice(req.session.user_id);
-    //coupon checking 
+    //coupon checking
     // ===================
-    if(req.body.coupon!=""){
-      let couponDetails = await CouponDB.findById(req.body.coupon)
-      total -= couponDetails.discount_amount
-      discountDetails.codeId = couponDetails._id
-      discountDetails.amount = couponDetails.discount_amount
+    if (req.body.coupon != "") {
+      let couponDetails = await CouponDB.findById(req.body.coupon);
+      total -= couponDetails.discount_amount;
+      discountDetails.codeId = couponDetails._id;
+      discountDetails.amount = couponDetails.discount_amount;
     }
 
     // console.log(cartProducts);
-    const trackId = await generateUniqueTrackId()
+    const trackId = await generateUniqueTrackId();
     const order = new OrderDB({
       userId: req.session.user_id,
       "shippingAddress.country": country,
@@ -343,12 +342,12 @@ const placeOrderManage = async (req, res) => {
       totalAmount: total,
       paymentMethod: paymentType,
       coupon: req.body.coupon ? req.body.coupon : "none",
-      orderDate:new Date(),
-      trackId
+      orderDate: new Date(),
+      trackId,
     });
 
     const placeorder = await order.save();
-    let analaticResult = await CreateOrderAnalatic()
+    let analaticResult = await CreateOrderAnalatic();
     console.log(analaticResult);
     console.log(placeorder._id);
     if (paymentType !== "Online") {
@@ -371,21 +370,37 @@ const placeOrderManage = async (req, res) => {
       );
       // console.log(changeOrderStatus);
       await CartDB.deleteOne({ user: req.session.user_id });
-      const PaymentHistory = await createPaymentHistory(req.session.user_id,placeorder,paymentType,discountDetails,trackId)
+      const PaymentHistory = await createPaymentHistory(
+        req.session.user_id,
+        placeorder,
+        paymentType,
+        discountDetails,
+        trackId
+      );
       console.log(PaymentHistory);
       // return res.render("orderStatus", {
       //   success: 1,
       //   user: req.session.user_id
       // });
-      return res.json({ cod: true, orderId: placeorder._id, status: "success" });
+      return res.json({
+        cod: true,
+        orderId: placeorder._id,
+        status: "success",
+      });
     } else {
       //here manage when the order is online
       let order = await genarateRazorpay(placeorder._id, total);
-      
+
       let userData = await UserDB.findById(req.session.user_id);
 
       // payment history create
-      const PaymentHistory = await createPaymentHistory(req.session.user_id,placeorder,paymentType,discountDetails,trackId)
+      const PaymentHistory = await createPaymentHistory(
+        req.session.user_id,
+        placeorder,
+        paymentType,
+        discountDetails,
+        trackId
+      );
       console.log(PaymentHistory);
       let user = {
         name: fullName,
@@ -400,9 +415,6 @@ const placeOrderManage = async (req, res) => {
 };
 // ==============
 // ==============
-
-
-
 
 // orders page load
 // ----------------------
@@ -499,8 +511,6 @@ const orderMangePageLoad = async (req, res) => {
   }
 };
 
-
-
 // order cancel
 // -----------------------
 const cancelOrder = async (req, res) => {
@@ -523,7 +533,7 @@ const cancelOrder = async (req, res) => {
     );
     console.log(productInfo);
     productInfo.OrderStatus = "canceled";
-    productInfo.updatedAt = Date.now()
+    productInfo.updatedAt = Date.now();
     const result = await order.save();
 
     console.log(result);
@@ -588,7 +598,7 @@ const verifyPayment = async (req, res) => {
     console.log(req.body);
     const paymentDetails = req.body.payment;
     paymentSignatureMatching(paymentDetails)
-      .then(async() => {
+      .then(async () => {
         let changeOrderStatus = await OrderDB.updateOne(
           { _id: req.body.order.receipt },
           {
@@ -605,12 +615,13 @@ const verifyPayment = async (req, res) => {
             },
           }
         );
-        console.log(changePaymentStatus,changeOrderStatus);
-        let usercartDelete = await CartDB.deleteOne({ user: req.session.user_id });
+        console.log(changePaymentStatus, changeOrderStatus);
+        let usercartDelete = await CartDB.deleteOne({
+          user: req.session.user_id,
+        });
         console.log(usercartDelete);
         console.log("payment success");
         res.json({ status: "success" });
-
       })
       .catch((err) => {
         res.json({ status: "fail" });
@@ -642,7 +653,6 @@ const verifyPayment = async (req, res) => {
 //   });
 // };
 
-
 const paymentSignatureMatching = (payment) => {
   return new Promise((resolve, reject) => {
     const crypto = require("crypto");
@@ -665,9 +675,6 @@ const paymentSignatureMatching = (payment) => {
   });
 };
 
-
-
-
 //change payment status
 // --------------------
 const changePaymentStatus = async (id) => {
@@ -680,29 +687,33 @@ const orderStatusPageLoad = async (req, res) => {
     // const orderId = req.query.id;
     console.log(req.body);
     // let orderDetails = await OrderDB.findOne({ _id: orderId });
-    if(req.body.status=="success"){
-     return res.render("orderStatus", {
+    if (req.body.status == "success") {
+      return res.render("orderStatus", {
         success: 1,
         user: req.session.user_id,
-    });
-    }else{
-     return res.render("orderStatus", {
+      });
+    } else {
+      return res.render("orderStatus", {
         success: 0,
         user: req.session.user_id,
-    });
+      });
     }
-    
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
 // create payment history
 // --------------------------------
-const createPaymentHistory = async(userId, order, paymentMethod,discount,trackId)=>{
+const createPaymentHistory = async (
+  userId,
+  order,
+  paymentMethod,
+  discount,
+  trackId
+) => {
   try {
-     const newTransaction = new PaymentDB({
+    const newTransaction = new PaymentDB({
       userId: userId,
       orderDetails: [
         {
@@ -714,45 +725,41 @@ const createPaymentHistory = async(userId, order, paymentMethod,discount,trackId
       paymentMethod: paymentMethod,
       totalAmount: order.totalAmount,
       discount: {
-        discount_amount:discount.amount,
-        code_id:discount.codeId,
-        refund_used:false
+        discount_amount: discount.amount,
+        code_id: discount.codeId,
+        refund_used: false,
       },
-      purpose:"Purchase ",
-      trackId
+      purpose: "Purchase ",
+      trackId,
     });
-
-    
 
     // Save the transaction history entry
     const transaction = await newTransaction.save();
-    console.log('Transaction history entry created:', transaction);
+    console.log("Transaction history entry created:", transaction);
     return transaction;
   } catch (error) {
     console.log(error.message);
   }
-}
-
-
+};
 
 //order report maker
 // ========================
-const generateReport = async(dateRange)=>{
+const generateReport = async (dateRange) => {
   try {
-     let startDate;
-     let endDate = new Date(); // By default, the end date is the current date
-     endDate.setHours(23, 59, 59);
+    let startDate;
+    let endDate = new Date(); // By default, the end date is the current date
+    endDate.setHours(23, 59, 59);
 
     // Calculate the start date based on the date range
     switch (dateRange) {
-      case 'daily':
+      case "daily":
         startDate = new Date(); // Set start date to the current date for daily report
         break;
-      case 'weekly':
+      case "weekly":
         startDate = new Date(); // Set start date to the current date for weekly report
         startDate.setDate(startDate.getDate() - 7); // Go back 7 days for a week
         break;
-      case 'yearly':
+      case "yearly":
         startDate = new Date(); // Set start date to the current date for yearly report
         startDate.setFullYear(startDate.getFullYear() - 1); // Go back 1 year
         break;
@@ -767,8 +774,11 @@ const generateReport = async(dateRange)=>{
     });
 
     // Perform calculations to generate the report
-    const SalesAmount = await AnalyticsDB.find({},{totalSalesAmount:1,_id:0});
-    const totalSalesAmount =SalesAmount.totalSalesAmount
+    const SalesAmount = await AnalyticsDB.find(
+      {},
+      { totalSalesAmount: 1, _id: 0 }
+    );
+    const totalSalesAmount = SalesAmount.totalSalesAmount;
     const totalOrders = orders.length;
 
     // Create a new report document
@@ -785,80 +795,99 @@ const generateReport = async(dateRange)=>{
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 //return ordered Product
 // ------------------------------
-const returnOrderProduct = async(req,res)=>{
+const returnOrderProduct = async (req, res) => {
   try {
     // const orderId = req.body.orderId;
     // const productId = req.body.productId;
-    const {orderId, productId , reason } = req.body.formDataObject
+    const { orderId, productId, reason } = req.body.formDataObject;
     // console.log(orderId, productId , reason);
     const order = await OrderDB.findOne({ _id: orderId });
     const product = order.products.find(
       (product) => product.productId.toString() === productId
     );
-    if(!product){
-      return res.json({status:false});
+    if (!product) {
+      return res.json({ status: false });
     }
-    product.OrderStatus="Returned";
-    product.returnOrderStatus.status="Returned";
-    product.returnOrderStatus.reason=reason;
+    product.OrderStatus = "Returned";
+    product.returnOrderStatus.status = "Returned";
+    product.returnOrderStatus.reason = reason;
 
-    if(reason!="damaged"){
-      const qty = product.quantity
-      await increaseStock(product.productId,qty)
+    if (reason != "damaged") {
+      const qty = product.quantity;
+      await increaseStock(product.productId, qty);
     }
 
-    let refundStatus = await refundManagement(orderId, productId,order.trackId,req.session.user_id)
+    let refundStatus = await refundManagement(
+      orderId,
+      productId,
+      order.trackId,
+      req.session.user_id
+    );
     // console.log(refundStatus);
-    let result = await order.save()
+    let result = await order.save();
     console.log(result);
-    return res.json({status:true});
+    return res.json({ status: true });
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 // return refund management
 // ---------------------------------
-const refundManagement = async (orderId, productId,trackId,userId)=>{
-  try { 
+const refundManagement = async (orderId, productId, trackId, userId) => {
+  try {
     console.log(trackId);
     console.log("refund called");
-    const userWallet = await WalletDB.findOne({user:userId})
-    const TransactionHistory = await PaymentDB.findOne({trackId});
-    const returnProduct = await ProductDB.findOne({_id:productId})
-    let refundAmount = returnProduct.price 
-     
-    if(TransactionHistory.discount.discount_amount!=0 && !TransactionHistory.discount.refund_used){
-      refundAmount-=TransactionHistory.discount.discount_amount
+    const userWallet = await WalletDB.findOne({ user: userId });
+    const TransactionHistory = await PaymentDB.findOne({ trackId });
+    const returnProduct = await ProductDB.findOne({ _id: productId });
+    let refundAmount = returnProduct.price;
+
+    if (
+      TransactionHistory.discount.discount_amount != 0 &&
+      !TransactionHistory.discount.refund_used
+    ) {
+      refundAmount -= TransactionHistory.discount.discount_amount;
     }
-    userWallet.balance+=refundAmount
-    let Wallet ="Wallet"
-    const trackIdRF = await generateUniqueTrackId()
-    let RefundHistory = await createRefundHistory(userId,Wallet,trackIdRF,orderId,returnProduct._id,refundAmount)
+    userWallet.balance += refundAmount;
+    let Wallet = "Wallet";
+    const trackIdRF = await generateUniqueTrackId();
+    let RefundHistory = await createRefundHistory(
+      userId,
+      Wallet,
+      trackIdRF,
+      orderId,
+      returnProduct._id,
+      refundAmount
+    );
     // console.log(RefundHistory);
-    let result = await userWallet.save()
-    return result
+    let result = await userWallet.save();
+    return result;
 
     // console.log(userWallet);
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 //refund transaction history creating
 // -------------------------------------------
-const createRefundHistory = async(userId, paymentMethod,trackId,orderId,productId,refundAmount)=>{
+const createRefundHistory = async (
+  userId,
+  paymentMethod,
+  trackId,
+  orderId,
+  productId,
+  refundAmount
+) => {
   try {
     console.log("createRefundHistory called");
-    let products = [productId]
-     const newRefundTransaction = new PaymentDB({
+    let products = [productId];
+    const newRefundTransaction = new PaymentDB({
       userId: userId,
       orderDetails: [
         {
@@ -870,36 +899,34 @@ const createRefundHistory = async(userId, paymentMethod,trackId,orderId,productI
       paymentMethod: paymentMethod,
       totalAmount: refundAmount,
       discount: {
-        discount_amount:0,
-        code_id:"none",
-        refund_used:false
+        discount_amount: 0,
+        code_id: "none",
+        refund_used: false,
       },
-      purpose:"Refund",
-      trackId
+      purpose: "Refund",
+      trackId,
     });
-
-    
 
     // Save the transaction history entry
     const transaction = await newRefundTransaction.save();
     console.log(transaction);
-    console.log('Transaction history entry created:', transaction);
+    console.log("Transaction history entry created:", transaction);
     return transaction;
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 //decrease the product stock
 // ----------------------------
-const decreaseStock = async(productId, quantity)=>{
+const decreaseStock = async (productId, quantity) => {
   try {
     const product = await ProductDB.findById(productId);
     if (!product) {
-      throw new Error('Product not found');
+      throw new Error("Product not found");
     }
     if (product.stock < quantity) {
-      throw new Error('Not enough stock available');
+      throw new Error("Not enough stock available");
     }
     product.stock -= quantity;
     const result = await product.save();
@@ -907,15 +934,15 @@ const decreaseStock = async(productId, quantity)=>{
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 //increase the product stock
 // --------------------------------
-const increaseStock = async(productId, quantity)=>{
+const increaseStock = async (productId, quantity) => {
   try {
     const product = await ProductDB.findById(productId);
     if (!product) {
-      throw new Error('Product not found');
+      throw new Error("Product not found");
     }
     product.stock += quantity;
     const result = await product.save();
@@ -923,7 +950,390 @@ const increaseStock = async(productId, quantity)=>{
   } catch (error) {
     console.log(error.message);
   }
+};
+
+// oder invoices
+// ----------------
+const downloadInvoices = async (req, res) => {
+  try {
+    const { productId, orderId } = req.query;
+    // console.log("called machaaaaa...");
+    console.log(productId, orderId);
+    const invoiceData = await genarateInvoice(orderId, productId);
+    await generateInvoicePDF(invoiceData);
+
+    // Set the Content-Type and Content-Disposition headers
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "attachment; filename=invoice.pdf");
+
+    // Send the PDF file
+    res.sendFile("invoice.pdf", { root: "./" }); // Adjust the root directory as needed
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Error generating or serving the PDF report");
+  }
+};
+
+//user order invoice genarate
+// ------------------------------
+const genarateInvoice = async (orderId, productId) => {
+  try {
+    const order = await OrderDB.findOne({ _id: orderId });
+    const productDetails = await ProductDB.findOne({ _id: productId });
+    const product = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    // console.log(productDetails);
+    // if(!product){
+    //   return res.json({status:false});
+    // }
+    let invoice = {
+      orderId: orderId,
+      trackId: order.trackId,
+      address: order.shippingAddress,
+      qty: product.quantity,
+      productDetails: productDetails,
+      orderDate: order.orderDate,
+      totalAmount: order.totalAmount,
+      paymentMethod:order.paymentMethod
+    };
+    return invoice;
+    // console.log(product);
+    // product.OrderStatus="Invoiced";
+    // product.returnOrderStatus.status="Invoiced";
+    // product.returnOrderStatus.reason="";
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const generateInvoicePDF = async (invoiceData) => {
+  try {
+    const orderDate = formatDateTime(invoiceData.orderDate);
+    console.log(invoiceData);
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    // Create an HTML template for the invoice
+    const htmlContent = `
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous">
+    <style>
+        body {
+            background: #ffffff;
+            margin-top: 0px;
+        }
+
+        .text-danger strong {
+            color: #9f181c;
+        }
+
+        .receipt-main {
+            background: #ffffff none repeat scroll 0 0;
+            border-top: 12px solid #9f181c;
+            /* margin-top: 50px; */
+            /* margin-bottom: 50px; */
+            padding: 40px 30px !important;
+            position: relative;
+            /* box-shadow: 0 1px 21px #acacac; */
+            color: #333333;
+            font-family: open sans;
+        }
+
+        .receipt-main p {
+            color: #333333;
+            font-family: open sans;
+            line-height: 1.42857;
+        }
+
+        .receipt-footer h1 {
+            font-size: 15px;
+            font-weight: 400 !important;
+            margin: 0 !important;
+        }
+
+        .receipt-main::after {
+            background: #414143 none repeat scroll 0 0;
+            content: "";
+            height: 5px;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: -13px;
+        }
+
+        .receipt-main thead {
+            background: #414143 none repeat scroll 0 0;
+        }
+
+        .receipt-main thead th {
+            color: #fff;
+        }
+
+        .receipt-right h5 {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 0 7px 0;
+        }
+
+        .receipt-right p {
+            font-size: 12px;
+            margin: 0px;
+        }
+
+        .receipt-right p i {
+            text-align: center;
+            width: 18px;
+        }
+
+        .receipt-main td {
+            padding: 9px 20px !important;
+        }
+
+        .receipt-main th {
+            padding: 13px 20px !important;
+        }
+
+        .receipt-main td {
+            font-size: 13px;
+            font-weight: initial !important;
+        }
+
+        .receipt-main td p:last-child {
+            margin: 0;
+            padding: 0;
+        }
+
+        .receipt-main td h2 {
+            font-size: 20px;
+            font-weight: 900;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .receipt-header-mid .receipt-left h1 {
+            font-weight: 100;
+            margin: 34px 0 0;
+            text-align: right;
+            text-transform: uppercase;
+        }
+
+        .receipt-header-mid {
+            margin: 24px 0;
+            overflow: hidden;
+        }
+
+        #container {
+            background-color: #dcdcdc;
+        }
+    </style>
+</head>
+
+<body >
+<div class="col-md-12">
+<div class="row col-12" style="width: 100%;">
+
+<div class="receipt-main col-12 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+<div class="row">
+<div class="receipt-header">
+<div class="col-xs-6 col-sm-6 col-md-6">
+<div class="receipt-left">
+<img class="img-responsive" alt="iamgurdeeposahan" src="https://raw.githubusercontent.com/arshadakl/specsy/main/public/user/images/logo.png"
+                                style="width: 120px; border-radius: 43px;">
+</div>
+</div>
+<div class="col-xs-6 col-sm-6 col-md-6 text-right">
+<div class="receipt-right">
+<h5>Eyewear Frames</h5>
+<p>www.specsy.com </p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="row">
+<div class="receipt-header receipt-header-mid d-flex justify-content-between">
+<div class="col-xs-6 col-sm-6 col-md-6 text-left">
+<div class="receipt-right">
+<h5>Bill To </h5>
+<h6>${invoiceData.address.fullName}</h6>
+<p> +91 ${invoiceData.address.mobileNumber}</p>
+<p>${invoiceData.address.city}, ${invoiceData.address.state}</p>
+<p>${invoiceData.address.country}, ${invoiceData.address.pincode}</p>
+
+</div>
+</div>
+<div class="col-xs-6 col-sm-6 col-md-6 text-right d-flex justify-content-center">
+<div class="receipt-right ">
+<h5>Shipping Address </h5>
+<h6>${invoiceData.address.fullName}</h6>
+<p> +91 ${invoiceData.address.mobileNumber}</p>
+<p>${invoiceData.address.city}, ${invoiceData.address.state}</p>
+<p>${invoiceData.address.country}, ${invoiceData.address.pincode}</p>
+</div>
+
+</div>
+
+
+</div>
+</div>
+<div class="receipt-left">
+<h5>Invoice #${invoiceData.trackId}</h5>
+</div>
+
+<div>
+<table class="table table-bordered">
+<thead>
+
+</thead>
+<tbody>
+<tr>
+<td class="col-md-9">
+<p><b>Product Details</b></p>
+<p class="m-0"><b>${invoiceData.productDetails.product_name}</b></p>
+<p class="m-0">Categoty :${invoiceData.productDetails.frame_shape}</p>
+<p class="m-0">Quantity:${invoiceData.qty}</p>
+<p class="m-0"><b>Price:₹ ${invoiceData.productDetails.price}</b></p>
+
+
+</td>
+
+</tr>
+
+<tr>
+<td class="text-right">
+<p>
+<strong>Total Amount: </strong>
+</p>
+<p>
+<strong>Payment method: </strong>
+</p>
+</td>
+<td>
+<p>
+<strong><i class="fa fa-inr"></i> ${invoiceData.productDetails.price*invoiceData.qty}/-</strong>
+</p>
+<p>
+<strong><i class="fa fa-inr"></i> ${invoiceData.paymentMethod}</strong>
+</p>
+</td>
+</tr>
+<tr>
+
+<td class="text-right">
+<h2><strong>Total: </strong></h2>
+</td>
+<td class="text-left text-danger">
+<h2><strong><i class="fa fa-inr"></i>₹ ${invoiceData.productDetails.price*invoiceData.qty}/-</strong></h2>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="row">
+<div class="receipt-header receipt-header-mid receipt-footer">
+<div class="col-xs-4 col-sm-4 col-md-4 mb-5">
+<div class="receipt-left">
+<img style="width: 180px;" src="https://raw.githubusercontent.com/arshadakl/covid-tracking/gh-pages/static/css/signature.png"
+                                alt="">
+</div>
+</div>
+<div class="col-xs-8 col-sm-8 col-md-8 text-left">
+<div class="receipt-right">
+<p><b>Date :</b> ${orderDate}</p>
+<h5 style="color: rgb(140, 140, 140);">Thanks for shopping.!</h5>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</body>
+    `;
+
+    await page.setContent(htmlContent);
+    await page.pdf({
+      path: "invoice.pdf",
+      format: "A4",
+      printBackground: true,
+    });
+
+    await browser.close();
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+// const generateInvoicePDF = async (invoiceData) => {
+//   try {
+//     const browser = await puppeteer.launch();
+//     const page = await browser.newPage();
+
+//     // Create an HTML template for the invoice
+//     const htmlContent = `
+//       <style>
+//         h1 {
+//           text-align: center;
+//         }
+//         table {
+//           width: 100%;
+//           border-collapse: collapse;
+//         }
+//         th, td {
+//           border: 1px solid #ddd;
+//           padding: 8px;
+//           text-align: left;
+//         }
+//         th {
+//           background-color: #f2f2f2;
+//         }
+//       </style>
+//       <h1>Invoice</h1>
+//       <table>
+//         <tr>
+//           <th>Order ID</th>
+//           <td>${invoiceData.orderId}</td>
+//         </tr>
+//         <tr>
+//           <th>Tracking ID</th>
+//           <td>${invoiceData.trackId}</td>
+//         </tr>
+//         <!-- Add more invoice details as needed -->
+//       </table>
+//     `;
+
+//     await page.setContent(htmlContent);
+//     await page.pdf({
+//       path: 'invoice.pdf',
+//       format: 'A4',
+//       printBackground: true,
+//     });
+
+//     await browser.close();
+//   } catch (error) {
+//     console.error(error.message);
+//   }
+// };
+
+
+
+function formatDateTime(dateString) {
+  const date = new Date(dateString);
+  const options = {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  };
+  return date.toLocaleString(undefined, options).replace(',', '');
 }
+
 
 // =============+++++++++++++++=======================
 // exportings
@@ -939,5 +1349,6 @@ module.exports = {
   changeOrderStatus,
   verifyPayment,
   orderStatusPageLoad,
-  returnOrderProduct
+  returnOrderProduct,
+  downloadInvoices,
 };

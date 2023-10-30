@@ -71,7 +71,7 @@ router.get('/coupon/delete',auth.isLogin,couponController.deleteCoupon)
 
 //report make related routers
 router.post('/report/genarate',auth.isLogin,adminController.genarateSalesReports)
-router.get('/sales-report',reportController.salesReportPageLoad)
+router.get('/sales-report',auth.isLogin,reportController.salesReportPageLoad)
 // router.get('/sales-report/filter',reportController.salesReportSearchPageLoad)
 
 router.get('/sales-report/export-report',reportController.generateExcelReports)
