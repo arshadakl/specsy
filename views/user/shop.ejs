@@ -64,7 +64,13 @@
                                         </div>
 
                                         <div class="product-action">
-                                            <a style="cursor: pointer;" onclick="addCart('<%= products[i]._id %>','<%= user %>')" class="btn-product btn-cart"><span>add to cart</span></a>
+                                            <%if(products[i].stock==0){%>
+                                                <a style="cursor: pointer;"  class="btn-product btn-cart text-danger"><span>No Stock</span></a>
+
+                                                <%}else{%>
+                                                    <a style="cursor: pointer;" onclick="addCart('<%= products[i]._id %>','<%= user %>')" class="btn-product btn-cart"><span>add to cart</span></a>
+
+                                            <%}%>  
                                         </div><!-- End .product-action -->
                                     </figure><!-- End .product-media -->
 

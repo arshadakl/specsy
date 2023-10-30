@@ -227,7 +227,11 @@
                                 </div>
                             </div>
                             <div class="product-action">
-                                <a  class="btn-product btn-cart" onclick="addCart('<%= products[i]._id %>','<%= user %>')"><span>add to cart</span></a>
+                                <%if(products[i].stock==0){%>
+                                    <a  class="btn-product text-danger" >No Stock</a>
+                                 <%}else{%>
+                                    <a  class="btn-product btn-cart" onclick="addCart('<%= products[i]._id %>','<%= user %>')"><span>add to cart</span></a>
+                                <%}%>
                             </div><!-- End .product-action -->
                         </div><!-- End .product -->
                         <%}%>
@@ -332,8 +336,12 @@
                                             ₹<%= products[i].price %>
                                         </div><!-- End .product-price -->
                                     </div><!-- End .product-body -->
-                                    <div class="product-action">
+                                    <div class="product-action" style="cursor: pointer;">
+                                        <%if(products[i].stock==0){%>
+                                            <a  class="btn-product text-danger" >No Stock</a>
+                                         <%}else{%>
                                         <a   class="btn-product btn-cart" onclick="addCart('<%= products[i]._id %>','<%= user %>')"><span>add to cart</span></a>
+                                        <%}%>
                                     </div><!-- End .product-action -->
                                 </div><!-- End .product -->
                             </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->

@@ -102,9 +102,12 @@
 
 
                                     <div class="product-details-action">
-                                        <button onclick="addCart('<%= product[0]._id %>','<%= user %>')"
-                                            class="btn-product btn-cart"><span>add to cart</span></button>
-
+                                        <%if(product[0].stock==0){%>
+                                        <button class="btn-product btn-cart text-danger" disabled><span>No Stock</span></button>
+                                        <%}else{%>
+                                            <button onclick="addCart('<%= product[0]._id %>','<%= user %>')"
+                                                class="btn-product btn-cart"><span>add to cart</span></button>
+                                        <%}%>    
                                         <div class="details-action-wrapper">
                                             <a style="cursor: pointer;" onclick="addWishlist('<%= product[0]._id %>')" class="btn-product btn-wishlist" title="Wishlist"  ><span>Add to
                                                     Wishlist</span></a>
@@ -182,7 +185,12 @@
                                     </div><!-- End .product-action-vertical -->
 
                                     <div class="product-action">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        <%if(pro.stock==0){%>
+                                            <a  class="btn-product btn-cart text-danger"><span>No Stock</span></a>
+                                            <%}else{%>
+                                                <a onclick="addCart('<%= pro._id %>','<%= user %>')" class="btn-product btn-cart"><span>add to cart</span></a>
+
+                                            <%}%>  
                                     </div><!-- End .product-action -->
                                 </figure><!-- End .product-media -->
 
