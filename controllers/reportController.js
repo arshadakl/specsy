@@ -43,23 +43,23 @@ const salesReportPageLoad = async (req, res) => {
 };
 
 
-const salesReportSearchPageLoad = async (req, res) => {
-  try {
-    const { start, end } = req.query;
-    const sales = await createSalesReport(start, end);
-    const WeeklySales = await generateWeeklySalesCount();
-    const SoldProducts = await getMostSellingProducts();
-    // console.log(sales);
-    // generateWeeklySalesCount
-    res.render("salesreport", {
-      week: WeeklySales,
-      Mproducts: SoldProducts,
-      sales,
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
+// const salesReportSearchPageLoad = async (req, res) => {
+//   try {
+//     const { start, end } = req.query;
+//     const sales = await createSalesReport(start, end);
+//     const WeeklySales = await generateWeeklySalesCount();
+//     const SoldProducts = await getMostSellingProducts();
+//     // console.log(sales);
+//     // generateWeeklySalesCount
+//     res.render("salesreport", {
+//       week: WeeklySales,
+//       Mproducts: SoldProducts,
+//       sales,
+//     });
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
 
 //generate Sales Report
 const createSalesReport = async (startDate, endDate) => {
@@ -408,7 +408,7 @@ const generatePDFReport = async (sales) => {
     await page.pdf({
       path: "sales_report.pdf",
       format: "A4",
-      printBackground: true, // Enable background graphics (CSS styles)
+      printBackground: true
     });
 
     await browser.close();
@@ -489,5 +489,4 @@ module.exports = {
   salesReportPageLoad,
   generateExcelReports,
   generatePDFReports,
-  salesReportSearchPageLoad,
 };

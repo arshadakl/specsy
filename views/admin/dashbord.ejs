@@ -17,13 +17,14 @@
               <button id="weekly" onclick="reportMake('weekly')" class="btn btn-inverse-info ml-3 px-4">Weekly</button>
               <button id="yearly" onclick="reportMake('yearly')" class="btn btn-inverse-info ml-3 px-4">Yearly</button>
             </div>
-              <p class="text-secondary mt-2" id="reportTime"></p>
             
           </div>
           <div class="d-flex justify-content-end  w-100">
-            <div class="d-flex  align-items-center col-3">
+            <div class="d-flex  align-items-center col-5">
               <!-- <p class="text-secondary" id="reportTime">Report generated on :23 Oct 2023, 2:46 PM</p> -->
-              <a id="downloadBtn" style="display: none;"  class="btn btn-warning btn-icon-text py-2"> <i class="mdi mdi-download "></i>Download Report</a>
+              <!-- <a id="downloadBtn" style="display: none;"  class="btn btn-warning btn-icon-text py-2"> <i class="mdi mdi-download "></i>Download Report</a> -->
+              <p class="text-secondary mt-2" id="reportTime"></p>
+
             </div>
           </div>
         </div>
@@ -236,7 +237,7 @@
     let totalSale = document.getElementById("totalSale")
     let revenue = document.getElementById("revenue")
     let reportTime = document.getElementById("reportTime")
-    let downloadBtn = document.getElementById("downloadBtn")
+    // let downloadBtn = document.getElementById("downloadBtn")
     $.ajax({
       url: '/admin/report/genarate',
       type: 'POST',
@@ -246,7 +247,7 @@
         revenue.innerHTML="₹"+response.report.totalSalesAmount
         totalSale.innerHTML=response.report.totalOrders 
         reportTime.innerHTML =  "Report generated on :"+formatDate(response.report.reportDate)
-        downloadBtn.setAttribute("href",`/admin/reports/${response.fileName}`);
+        // downloadBtn.setAttribute("href",`/admin/reports/${response.fileName}`);
         downloadBtn.style.display = "block";
 
       }

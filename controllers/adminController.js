@@ -347,17 +347,14 @@ const generateReport = async (dateRange) => {
       orderDate: { $gte: startDate, $lte: endDate },
     });
 
-    // if (orders.length === 0) {
-    //   console.log(`No orders found for the ${dateRange} report.`);
-    //   return;
-    // }
 
-    const totalSalesAmount = calculateTotalSalesAmount(orders);
+    // const totalSalesAmount = calculateTotalSalesAmount(orders);
+    const totalSalesProfit = await calculateTotalProfit(orders);
     const totalOrders = orders.length;
 
     const report = {
       reportDate: endDate,
-      totalSalesAmount,
+      totalSalesAmount:totalSalesProfit,
       totalOrders,
     };
 
@@ -368,9 +365,47 @@ const generateReport = async (dateRange) => {
   }
 };
 
-function calculateTotalSalesAmount(orders) {
-  return orders.reduce((total, order) => total + order.totalAmount, 0);
+async function calculateTotalProfit(orders) {
+  let totalProfit = 0;
+
+  for (const order of orders) {
+    for (const productInfo of order.products) {
+      if (productInfo.OrderStatus === 'Delivered') {
+        const product = await ProductDB.findOne(productInfo.productId);
+        // console.log(product);
+        const productCost = (30 / 100) * product.price;
+        const productRevenue = productInfo.quantity * product.price;
+        const orderProductProfit = productRevenue - productCost;
+        totalProfit += orderProductProfit;
+      }
+    }
+  }
+
+  return totalProfit;
 }
+// function calculateTotalProfit(orders) {
+//   return orders.reduce(async(totalProfit, order) => {
+//     const orderProductProfit = await order.products.reduce(async(orderTotalProfit, productInfo) => {
+//       if (productInfo.OrderStatus === 'Delivered') {
+//         // const product = productInfo.product;
+//         const product = await ProductDB.findOne(productInfo.productId)
+//         console.log(product);
+//         const productCost = (30 / 100) * product.price; // Calculate the cost as 30% of product price
+//         const productRevenue = productInfo.quantity * product.price;
+//         const orderProductProfit = productRevenue - productCost;
+//         return orderTotalProfit + orderProductProfit;
+//       }
+//       return orderTotalProfit;
+//     }, 0);
+
+//     return totalProfit + orderProductProfit;
+//   }, 0);
+// }
+
+
+// function calculateTotalSalesAmount(orders) {
+//   return orders.reduce((total, order) => total + order.totalAmount, 0);
+// }
 
 
 //reports filltering request
@@ -387,10 +422,10 @@ const genarateSalesReports = async (req, res) => {
       },
     ];
 
-    const fileName = `salesReport-${date}.xlsx`; // Provide the desired file name
+    // const fileName = `salesReport-${date}.xlsx`; // Provide the desired file name
 
-    const exel = await generateExcelReport(reportData,fileName);
-    res.status(200).json({report,fileName});
+    // const exel = await generateExcelReport(reportData,fileName);
+    res.status(200).json({report});
     // res.json(report,exel);
   } catch (error) {
     console.log(error.message);
