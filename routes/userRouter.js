@@ -102,7 +102,9 @@ router.get('/profile/coupons',auth.isLogin,couponController.couponUserPageLoad)
 router.post('/checkout/placeorder/coupon',couponController.ApplyCoupon)
 
 //shop page router
-router.get('/shop',productController.shopPageLoad)   
+router.get('/shop',productController.shopPageLoad)
+router.get('/shop/search',productController.shopPageLoad)   
+
 
 //wallet page router
 router.get('/wallet',auth.isLogin,walletController.walletPageLoader)

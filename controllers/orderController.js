@@ -65,7 +65,7 @@ const generateUniqueTrackId = async () => {
 // =========================
 const CreateOrderAnalatic = async () => {
   try {
-    const orders = await OrderDB.find();
+    const orders = await OrderDB.find({ "products.OrderStatus": "Delivered" });
     const totalSalesAmount = orders.reduce(
       (total, order) => total + order.totalAmount,
       0
@@ -347,8 +347,8 @@ const placeOrderManage = async (req, res) => {
     });
 
     const placeorder = await order.save();
-    let analaticResult = await CreateOrderAnalatic();
-    console.log(analaticResult);
+    // let analaticResult = await CreateOrderAnalatic();
+    // console.log(analaticResult);
     console.log(placeorder._id);
     if (paymentType !== "Online") {
       console.log(placeorder._id);
@@ -577,7 +577,10 @@ const changeOrderStatus = async (req, res) => {
     productInfo.OrderStatus = status;
     productInfo.StatusLevel = statusLevel;
     productInfo.updatedAt = Date.now();
-
+    if(status=="Deliverd"){
+      let analaticResult = await CreateOrderAnalatic();
+      console.log(analaticResult);
+    }  
     const result = await order.save();
 
     console.log(result);

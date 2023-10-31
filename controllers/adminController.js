@@ -328,7 +328,8 @@ const generateReport = async (dateRange) => {
       case "daily":
         startDate = new Date(currentDate);
         startDate.setDate(currentDate.getDate() - 1);
-        startDate.setHours(24, 0, 0, 0);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(23, 59, 59, 999);
         break;
       case "weekly":
         startDate = new Date();
@@ -342,28 +343,77 @@ const generateReport = async (dateRange) => {
         break;
     }
 
-    // Retrieve orders within the specified date range
+    // Retrieve orders within the specified date range with products having "OrderStatus" of "Delivered"
     const orders = await OrderDB.find({
       orderDate: { $gte: startDate, $lte: endDate },
+      "products.OrderStatus": "Delivered",
     });
 
-
-    // const totalSalesAmount = calculateTotalSalesAmount(orders);
+    // Calculate the total sales profit based on "Delivered" products
     const totalSalesProfit = await calculateTotalProfit(orders);
+
     const totalOrders = orders.length;
 
     const report = {
       reportDate: endDate,
-      totalSalesAmount:totalSalesProfit,
+      totalSalesProfit,
       totalOrders,
     };
 
     console.log(`Generated ${dateRange} report for ${endDate}`);
+    console.log(report);
     return report;
   } catch (error) {
     console.log(error.message);
   }
 };
+
+// const generateReport = async (dateRange) => {
+//   try {
+//     const currentDate = new Date();
+//     let startDate;
+//     let endDate = new Date();
+
+//     switch (dateRange) {
+//       case "daily":
+//         startDate = new Date(currentDate);
+//         startDate.setDate(currentDate.getDate() - 1);
+//         startDate.setHours(24, 0, 0, 0);
+//         break;
+//       case "weekly":
+//         startDate = new Date();
+//         startDate.setDate(startDate.getDate() - 7);
+//         break;
+//       case "yearly":
+//         startDate = new Date();
+//         startDate.setFullYear(startDate.getFullYear() - 1);
+//         break;
+//       default:
+//         break;
+//     }
+
+//     // Retrieve orders within the specified date range
+//     const orders = await OrderDB.find({
+//       orderDate: { $gte: startDate, $lte: endDate },
+//     });
+
+
+//     // const totalSalesAmount = calculateTotalSalesAmount(orders);
+//     const totalSalesProfit = await calculateTotalProfit(orders);
+//     const totalOrders = orders.length;
+
+//     const report = {
+//       reportDate: endDate,
+//       totalSalesAmount:totalSalesProfit,
+//       totalOrders,
+//     };
+
+//     console.log(`Generated ${dateRange} report for ${endDate}`);
+//     return report;
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
 
 async function calculateTotalProfit(orders) {
   let totalProfit = 0;

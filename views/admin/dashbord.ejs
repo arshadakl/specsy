@@ -77,7 +77,7 @@
                     <h2 class="mb-0"><%= report.stock %></h2>
                     <!-- <p class="text-danger ml-2 mb-0 font-weight-medium">-2.1% </p> -->
                   </div>
-                  <h6 class="text-muted font-weight-normal">2.27% Since last month</h6>
+                  <!-- <h6 class="text-muted font-weight-normal">2.27% Since last month</h6> -->
                 </div>
                 <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
                   <i class="icon-lg mdi mdi-cube-send text-success ml-auto"></i>
@@ -244,7 +244,7 @@
       data: {data},
       success: function(response){
         console.log(response);
-        revenue.innerHTML="₹"+response.report.totalSalesAmount
+        revenue.innerHTML="₹"+response.report.totalSalesProfit
         totalSale.innerHTML=response.report.totalOrders 
         reportTime.innerHTML =  "Report generated on :"+formatDate(response.report.reportDate)
         // downloadBtn.setAttribute("href",`/admin/reports/${response.fileName}`);
