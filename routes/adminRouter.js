@@ -73,6 +73,7 @@ router.get('/coupon/delete',auth.isLogin,couponController.deleteCoupon)
 router.post('/report/genarate',auth.isLogin,adminController.genarateSalesReports)
 router.get('/sales-report',auth.isLogin,reportController.salesReportPageLoad)
 // router.get('/sales-report/filter',reportController.salesReportSearchPageLoad)
+router.post('/sales-report/portfolio',auth.isLogin,reportController.portfolioFiltering)
 
 router.get('/sales-report/export-report',reportController.generateExcelReports)
 router.get('/sales-report/export-PDF-report',reportController.generatePDFReports)

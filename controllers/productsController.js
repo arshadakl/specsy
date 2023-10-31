@@ -3,53 +3,57 @@ const AdminDB = require("../models/adminModel");
 const ProductDB = require("../models/productsModel").product;
 const CategoryDB = require("../models/productsModel").category;
 const OrderDB = require("../models/orderModel").Order;
-const sharp = require('sharp');
+const sharp = require("sharp");
 
-
-
-const singleProductLoad = async(req,res)=>{
-    try {
-        let product = await ProductDB.find({_id:req.query.id})
-        if(!product){
-            res.status(404).send("here is nothing...")
-        }else{
-            let relatedProducts = await ProductDB.find({'$and':[{frame_shape:product[0].frame_shape},{_id:{"$ne":product[0]._id}}]})
-            res.render('product',{product:product,user:req.session.user_id,relatedProducts})
-        }
-        // let relatedProducts = await ProductDB.find({_id:{$ne:req.query.id}})
-        // console.log(product[0].frame_shape);
-        // console.log(product);
-        // let user = await UserDB.findOne({_id:req.sesss})
-        // console.log(relatedProducts);
-        
-    } catch (error) {
-        console.log(error.message);
+const singleProductLoad = async (req, res) => {
+  try {
+    let product = await ProductDB.find({ _id: req.query.id });
+    if (!product) {
+      res.status(404).send("here is nothing...");
+    } else {
+      let relatedProducts = await ProductDB.find({
+        $and: [
+          { frame_shape: product[0].frame_shape },
+          { _id: { $ne: product[0]._id } },
+        ],
+      });
+      res.render("product", {
+        product: product,
+        user: req.session.user_id,
+        relatedProducts,
+      });
     }
-}
-
+    // let relatedProducts = await ProductDB.find({_id:{$ne:req.query.id}})
+    // console.log(product[0].frame_shape);
+    // console.log(product);
+    // let user = await UserDB.findOne({_id:req.sesss})
+    // console.log(relatedProducts);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 // xxxxxxxxxxxxxxx
 
 // This function used to products Searching for listing, return searched products
 // ---------------------------------------
 const productSearchByKey = async (key) => {
-    try {
-      console.log("search api called...");
-      // console.log(key);
-      let products = await ProductDB.find({
-        $or: [
-          { product_name: { $regex: key, $options: "i" } },
-          { frame_shape: { $regex: key, $options: "i" } },
-        ],
-      });
-  
-      // console.log(products);
-      return products;
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  try {
+    console.log("search api called...");
+    // console.log(key);
+    let products = await ProductDB.find({
+      $or: [
+        { product_name: { $regex: key, $options: "i" } },
+        { frame_shape: { $regex: key, $options: "i" } },
+      ],
+    });
 
+    // console.log(products);
+    return products;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 // products listing page loading
 // ---------------------------------------
@@ -62,7 +66,6 @@ const productPageLoad = async (req, res) => {
     console.log(error.message);
   }
 };
-
 
 // This load Product adding page
 // ---------------------------------------
@@ -93,8 +96,8 @@ const addProduct = async (req, res) => {
       files.image1[0].filename,
       files.image2[0].filename,
       files.image3[0].filename,
-      files.image4[0].filename
-    ]
+      files.image4[0].filename,
+    ];
 
     for (let i = 0; i < img.length; i++) {
       await sharp("public/products/images/" + img[i])
@@ -156,12 +159,20 @@ const updateProduct = async (req, res) => {
     let imagesFiles = req.files;
     let currentData = await getProductDetails(req.query.id);
 
-    const img=[
-      imagesFiles.image1 ? imagesFiles.image1[0].filename : currentData.images.image1,
-      imagesFiles.image2  ? imagesFiles.image2[0].filename : currentData.images.image2,
-      imagesFiles.image3 ? imagesFiles.image3[0].filename : currentData.images.image3,
-      imagesFiles.image4 ? imagesFiles.image4[0].filename : currentData.images.image4
-    ]
+    const img = [
+      imagesFiles.image1
+        ? imagesFiles.image1[0].filename
+        : currentData.images.image1,
+      imagesFiles.image2
+        ? imagesFiles.image2[0].filename
+        : currentData.images.image2,
+      imagesFiles.image3
+        ? imagesFiles.image3[0].filename
+        : currentData.images.image3,
+      imagesFiles.image4
+        ? imagesFiles.image4[0].filename
+        : currentData.images.image4,
+    ];
 
     for (let i = 0; i < img.length; i++) {
       await sharp("public/products/images/" + img[i])
@@ -225,54 +236,79 @@ const deleteproduct = async (req, res) => {
   }
 };
 
-
 // This used to Take a single product Data useing Product Id
 // ---------------------------------------
 const getProductDetails = async (id) => {
-    try {
-      let product = await ProductDB.find({ _id: id });
-      return product[0];
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-  
+  try {
+    let product = await ProductDB.find({ _id: id });
+    return product[0];
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
-  // shop page loading with pagenation
-  // ----------------------------------------------------------------
-  const shopPageLoad = async (req, res) => {
-    try {
+// shop page loading with pagenation
+// ----------------------------------------------------------------
+const shopPageLoad = async (req, res) => {
+  try {
+    let page = req.query.page || 1;
+    let pageDB = Number(page) - 1;
+    let productPerPage = 9;
+    let totalProduct = await ProductDB.countDocuments();
+    let totalPage = Math.ceil(totalProduct / productPerPage);
+    let products = await ProductDB.find()
+      .skip(pageDB * productPerPage)
+      .limit(productPerPage);
+    // let products = await ProductDB.find()
+    // console.log(totalPage);
+    // console.log(products);
 
-      let page = req.query.page || 1
-      let pageDB = Number(page)-1
-      let productPerPage = 9
-      let totalProduct = await ProductDB.countDocuments()
-      let totalPage = Math.ceil(totalProduct / productPerPage)
-      let products = await ProductDB.find().skip(pageDB * productPerPage).limit(productPerPage)
-      // let products = await ProductDB.find()
-      // console.log(totalPage);
-      // console.log(products);
+    res.render("shop", {
+      products: products,
+      user: req.session.user_id,
+      totalPage,
+      curentPage: Number(page),
+    });
+    // res.status(200).json(products)
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
-      res.render("shop", { products: products,user:req.session.user_id,totalPage,curentPage:Number(page) });
-      // res.status(200).json(products)
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-
-
-
-
+const shopPageSearch = async (req, res) => {
+  try {
+    let page = req.query.page || 1;
+    let pageDB = Number(page) - 1;
+    let productPerPage = 9;
+    let key = req.query.key;
+    let totalProduct = await ProductDB.countDocuments();
+    let totalPage = Math.ceil(totalProduct / productPerPage);
+    let products = await ProductDB.find({
+      $or: [
+        { product_name: { $regex: key, $options: "i" } },
+        { frame_shape: { $regex: key, $options: "i" } },
+      ],
+    })
+      .skip(pageDB * productPerPage)
+      .limit(productPerPage);
+    res.render("shop", {
+      products: products,
+      user: req.session.user_id,
+      totalPage,
+      curentPage: Number(page),
+    });
+  } catch (error) {}
+};
 
 module.exports = {
-    singleProductLoad,
-    productPageLoad,
-    addproductPageLoad,
-    addProduct,
-    productEditPageLoad,
-    searchproduct,
-    updateProduct,
-    deleteproduct,
-    shopPageLoad
-}
+  singleProductLoad,
+  productPageLoad,
+  addproductPageLoad,
+  addProduct,
+  productEditPageLoad,
+  searchproduct,
+  updateProduct,
+  deleteproduct,
+  shopPageLoad,
+  shopPageSearch,
+};

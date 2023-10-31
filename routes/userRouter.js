@@ -103,7 +103,7 @@ router.post('/checkout/placeorder/coupon',couponController.ApplyCoupon)
 
 //shop page router
 router.get('/shop',productController.shopPageLoad)
-router.get('/shop/search',productController.shopPageLoad)   
+router.get('/shop/search',productController.shopPageSearch)   
 
 
 //wallet page router

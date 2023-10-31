@@ -14,6 +14,12 @@
                         <div class="card-body">
                             <h4 class="card-title">Sales Portfolio</h4>
                             <canvas id="areaChart" style="height: 250px;"></canvas>
+                            <div class="col-10 mt-3">
+                                <button onclick="SalesPortfolio('week')" class="btn btn-sm btn-outline-info">Weekly</button>
+                                <button onclick="SalesPortfolio('month')" class="btn btn-sm btn-outline-info">Monthly</button>
+                                <button onclick="SalesPortfolio('year')" class="btn btn-sm btn-outline-info">Yearly</button>
+
+                            </div>
                             <!-- related inputs -->
                             <div style="display: none;">
                                 <input id="week1" value="<%=week[0].date %>">
@@ -190,38 +196,33 @@
 
         </div>
     </div>
-
     <script>
+    
+         function SalesPortfolio(data){
+            $.ajax({
+                    url:"/admin/sales-report/portfolio",
+                    method:"POST",
+                    data:{date:data},
+                    success:(response)=>{
+                        portfolioDataInsert(response)
+                        
+                    }
+                })
+            }
 
-        function runLoad() {
-            
-            const week1 = document.getElementById("week1").value
-            const week12 = document.getElementById("week12").value
+            function portfolioDataInsert(data){
+            //  console.log(data.data[0].date);
+             let week7=data.data[6].date, week6=data.data[5].date, week5=data.data[4].date, week4=data.data[3].date, 
+                 week3=data.data[2].date, week2=data.data[1].date, week1=data.data[0].date
+             let data7=data.data[6].sales, data6=data.data[5].sales, data5=data.data[4].sales,
+                     data4=data.data[3].sales, data3=data.data[2].sales, data2=data.data[1].sales, data1=data.data[0].sales
 
-            const week2 = document.getElementById("week2").value
-            const week22 = document.getElementById("week22").value
 
-            const week3 = document.getElementById("week3").value
-            const week32 = document.getElementById("week32").value
-
-            const week4 = document.getElementById("week4").value
-            const week42 = document.getElementById("week42").value
-
-            const week5 = document.getElementById("week4").value
-            const week52 = document.getElementById("week42").value
-
-            const week6 = document.getElementById("week5").value
-            const week62 = document.getElementById("week52").value
-
-            const week7 = document.getElementById("week6").value
-            const week72 = document.getElementById("week62").value
-
-            console.log(week1, week12);
-            var areaData = {
+             var areaData = {
                 labels: [week7, week6, week5, week4, week3, week2, week1,],
                 datasets: [{
                     label: 'Week Chart',
-                    data: [week72, week62, week52, week42, week32, week22, week12],
+                    data: [data7, data6, data5, data4, data3, data2, data1],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -260,6 +261,89 @@
                     }]
                 }
             };
+            var areaChartCanvas = document.getElementById("areaChart").getContext("2d");
+            var areaChart = new Chart(areaChartCanvas, {
+                type: 'line',
+                data: areaData,
+                options: areaOptions
+            });
+            }
+
+            
+
+    </script>
+
+    <script>
+        
+
+        // function runLoad() {
+           
+            
+            // const week1 = document.getElementById("week1").value
+            // const week12 = document.getElementById("week12").value
+
+            // const week2 = document.getElementById("week2").value
+            // const week22 = document.getElementById("week22").value
+
+            // const week3 = document.getElementById("week3").value
+            // const week32 = document.getElementById("week32").value
+
+            // const week4 = document.getElementById("week4").value
+            // const week42 = document.getElementById("week42").value
+
+            // const week5 = document.getElementById("week4").value
+            // const week52 = document.getElementById("week42").value
+
+            // const week6 = document.getElementById("week5").value
+            // const week62 = document.getElementById("week52").value
+
+            // const week7 = document.getElementById("week6").value
+            // const week72 = document.getElementById("week62").value
+
+            // console.log(week1, week12);
+            // var areaData = {
+            //     labels: [week7, week6, week5, week4, week3, week2, week1,],
+            //     datasets: [{
+            //         label: 'Week Chart',
+            //         data: [week72, week62, week52, week42, week32, week22, week12],
+            //         backgroundColor: [
+            //             'rgba(255, 99, 132, 0.2)',
+            //             'rgba(54, 162, 235, 0.2)',
+            //             'rgba(255, 206, 86, 0.2)',
+            //             'rgba(75, 192, 192, 0.2)',
+            //             'rgba(153, 102, 255, 0.2)'
+            //         ],
+            //         borderColor: [
+            //             'rgba(255, 99, 132, 1)',
+            //             'rgba(54, 162, 235, 1)',
+            //             'rgba(255, 206, 86, 1)',
+            //             'rgba(75, 192, 192, 1)',
+            //             'rgba(153, 102, 255, 1)'
+            //         ],
+            //         borderWidth: 1,
+            //         fill: true,
+            //     }]
+            // };
+
+            // var areaOptions = {
+            //     plugins: {
+            //         filler: {
+            //             propagate: true
+            //         }
+            //     },
+            //     scales: {
+            //         yAxes: [{
+            //             gridLines: {
+            //                 color: "rgba(204, 204, 204, 0.1)"
+            //             }
+            //         }],
+            //         xAxes: [{
+            //             gridLines: {
+            //                 color: "rgba(204, 204, 204, 0.1)"
+            //             }
+            //         }]
+            //     }
+            // };
             //  products
 
             const product1 = document.getElementById("product1").value
@@ -338,12 +422,12 @@
 
 
 
-            var areaChartCanvas = document.getElementById("areaChart").getContext("2d");
-            var areaChart = new Chart(areaChartCanvas, {
-                type: 'line',
-                data: areaData,
-                options: areaOptions
-            });
+            // var areaChartCanvas = document.getElementById("areaChart").getContext("2d");
+            // var areaChart = new Chart(areaChartCanvas, {
+            //     type: 'line',
+            //     data: areaData,
+            //     options: areaOptions
+            // });
 
 
             var barChartCanvas = $("#barChart").get(0).getContext("2d");
@@ -381,7 +465,7 @@
             }
 
 
-        }
+        // }
 
         // Don't use parentheses when assigning the function to onload
 
@@ -399,16 +483,20 @@
         });
 
 
-        // report download related things
-        function fileDownloadPathsettings() {
-            
-        }
-        // function autoCalllingFunctions() {
-        //     fileDownloadPathsettings();
-        //     runLoad();
-        // }
+        
 
-        window.onload = runLoad
+        function SoledProduct(){
+        //    alert("called 2nd")
+        }
+
+
+        function runLoad(){
+            SalesPortfolio("week")
+            SoledProduct()
+        }
+            
+
+        window.onload = runLoad()
 
     </script>
     <%- include('../admin/layouts/footer.ejs') %>

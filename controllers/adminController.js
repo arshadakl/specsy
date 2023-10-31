@@ -37,7 +37,7 @@ const adminPageLoad = async (req, res) => {
       sales: analaticalData[0].totalOrders,
       amount: analaticalData[0].totalSalesAmount,
     };
-    console.log(report);
+    // console.log(report);
     res.render("dashbord", {
       users: users,
       paymentHistory: TransactionHistory,
