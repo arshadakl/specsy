@@ -13,6 +13,17 @@ const isLogin = async(req,res,next)=>{
         console.log(error.message);
     }
 }
+const jsonIsLogin = async(req,res,next)=>{
+    try {
+        if(req.session.admin_id){}
+        else{
+           return res.json({auth:0})
+        }
+        next()
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 const isLogout = async(req,res,next)=>{
     try {
@@ -29,5 +40,6 @@ const isLogout = async(req,res,next)=>{
 
 module.exports = {
     isLogin,
-    isLogout
+    isLogout,
+    jsonIsLogin
 }

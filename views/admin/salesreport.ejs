@@ -20,30 +20,6 @@
                                 <button onclick="SalesPortfolio('year')" class="btn btn-sm btn-outline-info">Yearly</button>
 
                             </div>
-                            <!-- related inputs -->
-                            <div style="display: none;">
-                                <input id="week1" value="<%=week[0].date %>">
-                                <input id="week12" value="<%=week[0].sales %>">
-
-                                <input id="week2" value="<%=week[1].date %>">
-                                <input id="week22" value="<%=week[1].sales %>">
-
-                                <input id="week3" value="<%=week[2].date %>">
-                                <input id="week32" value="<%=week[2].sales %>">
-
-                                <input id="week4" value="<%=week[3].date %>">
-                                <input id="week42" value="<%=week[3].sales %>">
-
-                                <input id="week5" value="<%=week[4].date %>">
-                                <input id="week52" value="<%=week[4].sales %>">
-
-                                <input id="week6" value="<%=week[5].date %>">
-                                <input id="week62" value="<%=week[5].sales %>">
-
-                                <input id="week7" value="<%=week[6].date %>">
-                                <input id="week72" value="<%=week[6].sales %>">
-                            </div>
-                            <!-- <inputs end> -->
 
                         </div>
                     </div>
@@ -94,11 +70,7 @@
                         <button type="submit" class="btn btn-inverse-primary m-2">Filter</button>
                         </form>
                     </div>
-                    <!-- <div class="col-1 ">
-                        
-                    </div>
-                    <div class="col-1 ">
-                    </div> -->
+                    
 
                 </div>
             </div>
@@ -197,20 +169,31 @@
         </div>
     </div>
     <script>
-    
+        function SoledProduct(){
+        //    alert("called 2nd")
+        }
+
+
+        function runLoad(){
+            SalesPortfolio("week")
+            SoledProduct()
+        }
+            
+
+        window.onload = runLoad
          function SalesPortfolio(data){
             $.ajax({
                     url:"/admin/sales-report/portfolio",
                     method:"POST",
                     data:{date:data},
                     success:(response)=>{
-                        portfolioDataInsert(response)
+                        portfolioDataInsert(response,data)
                         
                     }
                 })
             }
 
-            function portfolioDataInsert(data){
+            function portfolioDataInsert(data,chartType){
             //  console.log(data.data[0].date);
              let week7=data.data[6].date, week6=data.data[5].date, week5=data.data[4].date, week4=data.data[3].date, 
                  week3=data.data[2].date, week2=data.data[1].date, week1=data.data[0].date
@@ -221,7 +204,7 @@
              var areaData = {
                 labels: [week7, week6, week5, week4, week3, week2, week1,],
                 datasets: [{
-                    label: 'Week Chart',
+                    label: `${chartType} Chart`,
                     data: [data7, data6, data5, data4, data3, data2, data1],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
@@ -485,18 +468,7 @@
 
         
 
-        function SoledProduct(){
-        //    alert("called 2nd")
-        }
-
-
-        function runLoad(){
-            SalesPortfolio("week")
-            SoledProduct()
-        }
-            
-
-        window.onload = runLoad()
+        
 
     </script>
     <%- include('../admin/layouts/footer.ejs') %>

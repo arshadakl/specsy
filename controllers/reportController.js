@@ -10,30 +10,30 @@ const ExcelJS = require("exceljs");
 const pdfMake = require("pdfmake");
 const puppeteer = require("puppeteer");
 
-
-
 const salesReportPageLoad = async (req, res) => {
   try {
     let start, end;
 
     if (req.query.start && req.query.end) {
       start = req.query.start;
-      end = req.query.end;
+      end = new Date(req.query.end); // Convert to Date
+      end.setDate(end.getDate() + 1); // Add one day to the end date
     } else {
-      today = new Date(); 
-      start = new Date(today); 
-      start.setDate(today.getDate() - 30); 
-      end = today.toISOString().split('T')[0]; 
+      today = new Date();
+      start = new Date(today);
+      start.setDate(today.getDate() - 30);
+      end = new Date(today); // Set end to one day after today
+      end.setDate(today.getDate() + 1); // Add one day
+      end = end.toISOString().split("T")[0];
     }
 
-    const [sales, WeeklySales, SoldProducts] = await Promise.all([
+    const [sales, SoldProducts] = await Promise.all([
       createSalesReport(start, end),
-      generateWeeklySalesCount(),
       getMostSellingProducts(),
     ]);
-
+    console.log(SoldProducts);
     res.render("salesreport", {
-      week: WeeklySales,
+      // week: WeeklySales,
       Mproducts: SoldProducts,
       sales,
     });
@@ -41,7 +41,6 @@ const salesReportPageLoad = async (req, res) => {
     console.error(error.message);
   }
 };
-
 
 // const salesReportSearchPageLoad = async (req, res) => {
 //   try {
@@ -64,7 +63,6 @@ const salesReportPageLoad = async (req, res) => {
 //generate Sales Report
 const createSalesReport = async (startDate, endDate) => {
   try {
-
     const orders = await OrderDB.find({
       orderDate: {
         $gte: startDate,
@@ -142,19 +140,17 @@ const createSalesReport = async (startDate, endDate) => {
 // -----------------------
 const generateWeeklySalesCount = async () => {
   try {
-    
     const weeklySalesCounts = [];
 
     const today = new Date();
-    today.setHours(today.getHours() - 5); 
+    today.setHours(today.getHours() - 5);
 
     for (let i = 0; i < 7; i++) {
       const startDate = new Date(today);
-      startDate.setDate(today.getDate() - i); 
+      startDate.setDate(today.getDate() - i);
       const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 1); 
+      endDate.setDate(startDate.getDate() + 1);
 
-      
       const orders = await OrderDB.find({
         orderDate: {
           $gte: startDate,
@@ -162,17 +158,14 @@ const generateWeeklySalesCount = async () => {
         },
       });
 
-     
       const salesCount = orders.length;
 
-      
       weeklySalesCounts.push({
         date: startDate.toISOString().split("T")[0], // Format the date
         sales: salesCount,
       });
     }
 
-   
     return weeklySalesCounts;
   } catch (error) {
     console.error("Error generating the weekly sales counts:", error.message);
@@ -214,6 +207,7 @@ const getMostSellingProducts = async () => {
     ];
 
     const mostSellingProducts = await OrderDB.aggregate(pipeline);
+    console.log(mostSellingProducts[0].productData);
     return mostSellingProducts;
   } catch (error) {
     console.error("Error fetching most selling products:", error);
@@ -344,7 +338,6 @@ const generatePDFReports = async (req, res) => {
   }
 };
 
-
 // pdf creating
 // _+++++++++++++++++++++++++++++
 
@@ -408,7 +401,7 @@ const generatePDFReport = async (sales) => {
     await page.pdf({
       path: "sales_report.pdf",
       format: "A4",
-      printBackground: true
+      printBackground: true,
     });
 
     await browser.close();
@@ -483,36 +476,32 @@ const salesData = {
   ],
 };
 
-
-
 //portfolio chart data filltering
 // --------------------------------
-const portfolioFiltering = async(req,res)=>{
+const portfolioFiltering = async (req, res) => {
   try {
-    let datePriad = req.body.date
+    let datePriad = req.body.date;
     console.log(datePriad);
 
-    if(datePriad=="week"){
-      let data = await generateWeeklySalesCount()
+    if (datePriad == "week") {
+      let data = await generateWeeklySalesCount();
       console.log(data);
-      res.json({data})
-    }else if(datePriad=="month"){
-      let data = await generateMonthlySalesCount()
-      data = data.reverse()
+      res.json({ data });
+    } else if (datePriad == "month") {
+      let data = await generateMonthlySalesCount();
+      data = data.reverse();
       console.log(data);
 
-      res.json({data})
-    }else if((datePriad=="year")){
-      let data = await generateYearlySalesCount()
+      res.json({ data });
+    } else if (datePriad == "year") {
+      let data = await generateYearlySalesCount();
       console.log(data);
-      res.json({data})
+      res.json({ data });
     }
-    
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 const generateMonthlySalesCount = async () => {
   try {
@@ -531,7 +520,9 @@ const generateMonthlySalesCount = async () => {
 
     // Iterate through the complete date range
     while (earliestMonth <= latestMonth) {
-      const monthString = earliestMonth.toLocaleString('default', { month: 'long' });
+      const monthString = earliestMonth.toLocaleString("default", {
+        month: "long",
+      });
       salesData.set(monthString, 0);
       earliestMonth.setMonth(earliestMonth.getMonth() + 1);
     }
@@ -553,7 +544,9 @@ const generateMonthlySalesCount = async () => {
       });
 
       const salesCount = orders.length;
-      const monthString = startDate.toLocaleString('default', { month: 'long'});
+      const monthString = startDate.toLocaleString("default", {
+        month: "long",
+      });
 
       salesData.set(monthString, salesCount);
     }
@@ -568,8 +561,6 @@ const generateMonthlySalesCount = async () => {
     console.error("Error generating the monthly sales counts:", error.message);
   }
 };
-
-
 
 const generateYearlySalesCount = async () => {
   try {
@@ -607,14 +598,11 @@ const generateYearlySalesCount = async () => {
   }
 };
 
-
-
-
 // exportingss
 //   ------------------
 module.exports = {
   salesReportPageLoad,
   generateExcelReports,
   generatePDFReports,
-  portfolioFiltering
+  portfolioFiltering,
 };

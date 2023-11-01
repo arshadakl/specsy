@@ -70,13 +70,13 @@ router.post('/coupon/add',auth.isLogin,couponController.addNewCoupon)
 router.get('/coupon/delete',auth.isLogin,couponController.deleteCoupon)
 
 //report make related routers
-router.post('/report/genarate',auth.isLogin,adminController.genarateSalesReports)
+router.post('/report/genarate',auth.jsonIsLogin,adminController.genarateSalesReports)
 router.get('/sales-report',auth.isLogin,reportController.salesReportPageLoad)
 // router.get('/sales-report/filter',reportController.salesReportSearchPageLoad)
 router.post('/sales-report/portfolio',auth.isLogin,reportController.portfolioFiltering)
 
-router.get('/sales-report/export-report',reportController.generateExcelReports)
-router.get('/sales-report/export-PDF-report',reportController.generatePDFReports)
+router.get('/sales-report/export-report',auth.isLogin,reportController.generateExcelReports)
+router.get('/sales-report/export-PDF-report',auth.isLogin,reportController.generatePDFReports)
 
 
 router.get('/admin/error-page',adminController.errorpageHandil)

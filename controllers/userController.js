@@ -1075,7 +1075,7 @@ const addShippingAddressFromProfile = async (req, res) => {
 // -------------------------------------------------
 const updateShippingAddress = async (req, res) => {
   try {
-    // console.log(req.body);
+    console.log(req.body.fullName);
     let Addres = req.body;
     let userAddress = await addressDB.findOne({ userId: req.session.user_id });
     const selectedAddress = userAddress.addresses.find(

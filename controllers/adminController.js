@@ -27,17 +27,14 @@ const adminPageLoad = async (req, res) => {
     const paymentChart = { countOfCod, countOfOnline };
     // console.log(TransactionHistory);
     const orders = await recentOrder();
-    console.log(orders);
-    // let result = await generateReport("daily");
-    // console.log(result);
     const stock = await getTotalStockNumber();
-    const analaticalData = await AnalyticsDB.find();
+    const result = await createSalesReport("year")
     const report = {
       stock,
-      sales: analaticalData[0].totalOrders,
-      amount: analaticalData[0].totalSalesAmount,
+      sales: result.productProfits.length,
+      amount: result.totalSales,
     };
-    // console.log(report);
+    
     res.render("dashbord", {
       users: users,
       paymentHistory: TransactionHistory,
@@ -463,14 +460,14 @@ async function calculateTotalProfit(orders) {
 const genarateSalesReports = async (req, res) => {
   try {
     const date = Date.now();    
-    const report = await generateReport(req.body.data);
-    const reportData = [
-      {
-        reportDate: report.reportDate,
-        totalSalesAmount: report.totalSalesAmount,
-        totalOrders: report.totalOrders,
-      },
-    ];
+    // const report = await generateReport(req.body.data);
+    const result = await createSalesReport(req.body.data)
+    const report = {
+        reportDate: date,
+        totalSalesAmount: result.totalSales,
+        totalOrders: result.productProfits.length,
+      };
+      // console.log(report);
 
     // const fileName = `salesReport-${date}.xlsx`; // Provide the desired file name
 
@@ -824,6 +821,118 @@ const errorpageHandil = async(req,res)=>{
     console.log(error.message);
   }
 }
+
+
+//dashreport
+// ==================
+
+const createSalesReport = async (interval) => {
+  try {
+    let startDate, endDate;
+
+    if (interval === "day") {
+      const today = new Date();
+      startDate = new Date(today);
+      startDate.setHours(0, 0, 0, 0); // Start of the day
+      endDate = new Date(today);
+      endDate.setHours(23, 59, 59, 999); // End of the day
+    } else {
+      startDate = getStartDate(interval);
+      endDate = getEndDate(interval);
+    }
+
+    const orders = await OrderDB.find({
+      orderDate: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+
+    const transformedTotalStockSold = {};
+    const transformedProductProfits = {};
+
+    const getProductDetails = async (productId) => {
+      return await ProductDB.findById(productId);
+    };
+
+    for (const order of orders) {
+      for (const productInfo of order.products) {
+        const productId = productInfo.productId;
+        const quantity = productInfo.quantity;
+
+        const product = await getProductDetails(productId);
+        const productName = product.product_name;
+        const image = product.images.image1;
+        const shape = product.frame_shape;
+        const price = product.price;
+
+        if (!transformedTotalStockSold[productId]) {
+          transformedTotalStockSold[productId] = {
+            id: productId,
+            name: productName,
+            quantity: 0,
+            image: image,
+            shape: shape,
+          };
+        }
+        transformedTotalStockSold[productId].quantity += quantity;
+
+        if (!transformedProductProfits[productId]) {
+          transformedProductProfits[productId] = {
+            id: productId,
+            name: productName,
+            profit: 0,
+            image: image,
+            shape: shape,
+            price: price,
+          };
+        }
+        const productPrice = product.price;
+        const productCost = productPrice * 0.3;
+        const productProfit = (productPrice - productCost) * quantity;
+        transformedProductProfits[productId].profit += productProfit;
+      }
+    }
+
+    const totalStockSoldArray = Object.values(transformedTotalStockSold);
+    const productProfitsArray = Object.values(transformedProductProfits);
+
+    const totalSales = productProfitsArray.reduce(
+      (total, product) => total + product.profit,
+      0
+    );
+
+    const salesReport = {
+      totalSales,
+      totalStockSold: totalStockSoldArray,
+      productProfits: productProfitsArray,
+    };
+
+    return salesReport;
+  } catch (error) {
+    console.error("Error generating the sales report:", error.message);
+  }
+};
+
+const getStartDate = (interval) => {
+  const start = new Date();
+  if (interval === "week") {
+    start.setDate(start.getDate() - start.getDay()); // Start of the week
+  } else if (interval === "year") {
+    start.setMonth(0, 1); // Start of the year
+  }
+  return start;
+};
+
+const getEndDate = (interval) => {
+  const end = new Date();
+  if (interval === "week") {
+    end.setDate(end.getDate() - end.getDay() + 6); // End of the week
+  } else if (interval === "year") {
+    end.setMonth(11, 31); // End of the year
+  }
+  return end;
+};
 
 // exportings
 // =========================

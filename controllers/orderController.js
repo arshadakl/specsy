@@ -78,7 +78,7 @@ const CreateOrderAnalatic = async () => {
         totalOrders,
       });
     } else {
-      orderAnalytics.totalSalesAmount = totalSalesAmount;
+      orderAnalytics.totalSalesAmount = totalSalesAmount*0.3;
       orderAnalytics.totalOrders = totalOrders;
     }
 
@@ -568,6 +568,10 @@ const changeOrderStatus = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
     }
+    if(status=="Delivered"){
+      let analaticResult = await CreateOrderAnalatic();
+      console.log(analaticResult);
+    } 
 
     // Find the product within the order by its ID (using .toString() for comparison)
     const productInfo = order.products.find(
@@ -577,10 +581,7 @@ const changeOrderStatus = async (req, res) => {
     productInfo.OrderStatus = status;
     productInfo.StatusLevel = statusLevel;
     productInfo.updatedAt = Date.now();
-    if(status=="Deliverd"){
-      let analaticResult = await CreateOrderAnalatic();
-      console.log(analaticResult);
-    }  
+     
     const result = await order.save();
 
     console.log(result);

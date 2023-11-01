@@ -13,9 +13,9 @@
 
             <h6 class="mb-3">Filter Report :</h6>
             <div >
-              <button id="daily" onclick="reportMake('daily')" class="btn btn-inverse-info ml-0 px-4">Daily</button>
-              <button id="weekly" onclick="reportMake('weekly')" class="btn btn-inverse-info ml-3 px-4">Weekly</button>
-              <button id="yearly" onclick="reportMake('yearly')" class="btn btn-inverse-info ml-3 px-4">Yearly</button>
+              <button id="daily" onclick="reportMake('day')" class="btn btn-inverse-info ml-0 px-4">Daily</button>
+              <button id="weekly" onclick="reportMake('week')" class="btn btn-inverse-info ml-3 px-4">Weekly</button>
+              <button id="yearly" onclick="reportMake('year')" class="btn btn-inverse-info ml-3 px-4">Yearly</button>
             </div>
             
           </div>
@@ -246,8 +246,9 @@
       type: 'POST',
       data: {data},
       success: function(response){
+        response.auth==0 ? window.location.href="/admin":
         console.log(response);
-        revenue.innerHTML="₹"+response.report.totalSalesProfit
+        revenue.innerHTML="₹"+response.report.totalSalesAmount
         totalSale.innerHTML=response.report.totalOrders 
         reportTime.innerHTML =  "Report generated on :"+formatDate(response.report.reportDate)
         // downloadBtn.setAttribute("href",`/admin/reports/${response.fileName}`);
