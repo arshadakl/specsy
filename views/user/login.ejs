@@ -75,8 +75,12 @@
 			  <div id="myAlert1" data-aos="fade-down" 
 						class="alert alert-dark  py-4	 fade show fs-5 fixed-top alt text-center text-white"
 				role="alert">
-				<strong>Uh-oh!</strong> You are not verified users. please click to<a
-					href="/reotp?id=<%- verifyId %>"> <span class="text-info link-underline-light"> verify Now
+				<form action="/reotp" method="post" id="verifyForm" style="display: none;">
+					<input type="text" value="<%- verifyId %>" name="id" hidden>
+					<button class="btn btn-dark" type="submit" >Request again</button>
+				  </form>
+				<strong>Uh-oh!</strong> You are not verified users. please click to<a style="cursor: pointer;" id="reVerify"
+					> <span class="text-info link-underline-light"> verify Now
 					</span></a>
 		<%}else if(blockErr===1){%>
 				<div id="myAlert2" data-aos="fade-down"
@@ -93,3 +97,11 @@
 				<p class="fs-6 form-text text-white">Your password has been successfully updated.</p>
 			</div>
 		<%}%>
+
+		<script>
+			const reVerify = document.getElementById("reVerify");
+			const verifyForm = document.getElementById("verifyForm")
+			reVerify.addEventListener("click", () => {
+                verifyForm.submit();
+            });
+		</script>

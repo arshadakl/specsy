@@ -139,27 +139,86 @@ inputs.forEach((input, index1) => {
 
 // otp timer
 
-function startCountdown(durationInSeconds) {
-	const timerElement = document.getElementById("timer");
-	let timeLeft = durationInSeconds;
+// function startCountdown(durationInSeconds) {
+// 	const timerElement = document.getElementById("timer");
+// 	let timeLeft = durationInSeconds;
 
-	const countdownInterval = setInterval(function() {
-		const minutes = Math.floor(timeLeft / 60);
-		const seconds = timeLeft % 60;
+// 	const countdownInterval = setInterval(function() {
+// 		const minutes = Math.floor(timeLeft / 60);
+// 		const seconds = timeLeft % 60;
 
-		const minutesStr = String(minutes).padStart(2, '0');
-		const secondsStr = String(seconds).padStart(2, '0');
+// 		const minutesStr = String(minutes).padStart(2, '0');
+// 		const secondsStr = String(seconds).padStart(2, '0');
 
-		timerElement.textContent = `${minutesStr}:${secondsStr}`;
+// 		timerElement.textContent = `${minutesStr}:${secondsStr}`;
 
-		if (timeLeft <= 0) {
-			clearInterval(countdownInterval);
-			timerElement.textContent = "00:00";
-			timerElement.textContent="The OTP has expired"
-		} else {
-			timeLeft--;
-		}
-	}, 1000);
-}
+// 		if (timeLeft <= 0) {
+// 			clearInterval(countdownInterval);
+// 			timerElement.textContent = "00:00";
+// 			timerElement.textContent="The OTP has expired"
+// 		} else {
+// 			timeLeft--;
+// 		}
+// 	}, 1000);
+// }
 
-startCountdown(120);
+// startCountdown(59);
+
+
+// Add an event listener to the OTP form for submission
+document.getElementById("otpForm").addEventListener("submit", function (event) {
+	// Prevent the default form submission behavior
+	event.preventDefault();
+
+  
+	// Reset the countdown storage
+	resetCountdownStorage();
+
+	this.submit();
+  });
+
+
+
+
+function startCountdown(durationInSeconds, redirectToURL) {
+    const timerElement = document.getElementById("timer");
+    let timeLeft = durationInSeconds;
+
+    // Check if there is a stored timeLeft value in localStorage
+    const storedTimeLeft = localStorage.getItem("timeLeft");
+
+    if (storedTimeLeft) {
+      timeLeft = parseInt(storedTimeLeft);
+    }
+
+    const countdownInterval = setInterval(function() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+
+      const minutesStr = String(minutes).padStart(2, '0');
+      const secondsStr = String(seconds).padStart(2, '0');
+
+      timerElement.textContent = `${minutesStr}:${secondsStr}`;
+
+      if (timeLeft <= 0) {
+        clearInterval(countdownInterval);
+        timerElement.textContent = "00:00";
+        timerElement.textContent = "The OTP has expired";
+
+        // Remove the stored timeLeft value from localStorage
+        localStorage.removeItem("timeLeft");
+
+        // Redirect to the specified URL
+        window.location.href = redirectToURL;
+      } else {
+        timeLeft--;
+
+        // Store the remaining time in localStorage
+        localStorage.setItem("timeLeft", timeLeft.toString());
+      }
+    }, 1000);
+  }
+
+  function resetCountdownStorage() {
+	localStorage.removeItem("timeLeft");
+  }

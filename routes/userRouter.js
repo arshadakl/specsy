@@ -47,7 +47,7 @@ router.get('/otp',userController.optPageLoad)
 router.post('/otp',userController.otpValid)
 router.get('/expire',userController.otpValid)
 
-router.get('/reotp',userController.reVerifyUser)
+router.post('/reotp',userController.reVerifyUser)
 router.get('/verifypage',userController.verifyPageLoad)
 
 // user profile related routers

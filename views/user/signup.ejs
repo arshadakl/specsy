@@ -1,6 +1,6 @@
 <%- include('../user/layouts/header.ejs') %>
 
-	<main class="main">
+	<main class="main"  ;>
 
 
 		<div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
@@ -22,51 +22,34 @@
 
 								<form action="signup" method="post">
 									<div class="form-group">
-										<label for="register-email-2">User Name *</label>
-										<input type="text" class="form-control" id="" name="userName" required>
+										<label for="register-username">User Name *</label>
+										<input type="text" class="form-control" id="register-username" name="userName" required>
 									</div>
 									<div class="form-group">
-										<label for="register-email-2">Full Name *</label>
-										<input type="text" class="form-control" id="" name="fullName" required>
+										<label for="register-fullname">Full Name *</label>
+										<input type="text" class="form-control" id="register-fullname" name="fullName" required>
 									</div>
-
 									<div class="form-group">
-										<label for="register-email-2">Your email address *</label>
-										<input type="email" class="form-control" id="register-email-2" name="email"
-											required>
-									</div><!-- End .form-group -->
-
-
-
-
-
+										<label for="register-email">Your email address *</label>
+										<input type="email" class="form-control" id="register-email" name="email" required>
+									</div>
 									<div class="form-group">
 										<label for="register-password">Password *</label>
-										<input type="password" class="form-control" id="register-password"
-											name="password" required>
+										<input type="password" class="form-control" id="register-password" name="password" required>
 									</div>
-
 									<div class="form-group">
 										<label for="register-confirm-password">Confirm password *</label>
-										<input type="password" class="form-control" id="register-confirm-password"
-											 required>
+										<input type="password" class="form-control" id="register-confirm-password" required>
 										<p id="password-match-error" style="color: red; font-size: 12px;"></p>
 									</div>
-									<!-- test end -->
-									<!-- <div class="form-group">
-							    			<label for="register-password-2">Confirm password *</label>
-							    			<input type="password" class="form-control" id="register-password-2" name="register-password" required>
-							    		</div>  -->
-
 									<div class="form-footer">
 										<button type="submit" class="btn btn-outline-primary-login py-4 w-100">
 											<span>SIGN UP</span>
 											<i class="icon-long-arrow-right"></i>
 										</button>
-
-
-									</div><!-- End .form-footer -->
+									</div>
 								</form>
+								
 								<div class="text-center">
 									<a href="/login">Already have an account? login</a>
 								</div>
@@ -78,7 +61,23 @@
 			</div><!-- End .container -->
 		</div><!-- End .login-page section-bg -->
 	</main><!-- End .main -->
+	<div id="FormAlert" data-aos="fade-down" class="alert alert-danger col-3 fixed-top "
+        style="display: none; left: 20px; top:20px; border-radius: 7px; opacity: 0.9;" role="alert">
+        <h6 class="alert-heading">Registration Validation Failed</h6>
+         <p id="FormErorr" class="fs-6 form-text text-white"></p>
+    </div>
 	<script>
+
+		
+         function showFormValidAlert() {
+            console.log("alert fun called...");
+            $("#FormAlert").fadeIn();
+    
+            setTimeout(function () {
+            $("#FormAlert").fadeOut();
+            }, 5000);
+         }
+
 		
 		const passwordField = document.getElementById("register-password");
 		const confirmPasswordField = document.getElementById("register-confirm-password");
@@ -101,6 +100,99 @@
 		// Add an event listener to the confirm password field to check for matching passwords
 		confirmPasswordField.addEventListener("keyup", checkPasswordsMatch)
 	</script>
+	<!-- <script>
+		document.querySelector('form').addEventListener('submit', function(event) {
+			const emailInput = document.querySelector('#register-email');
+			const emailValue = emailInput.value;
+			const emailPattern = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+	
+			if (!emailPattern.test(emailValue)) {
+				alert('Invalid email address. Please enter a valid email.');
+				emailInput.focus();
+				event.preventDefault();
+			}
+		});
+	</script> -->
+	<!-- FormErorr.innerHTML=""
+				showFormValidAlert() -->
+	<script>
+		document.querySelector('form').addEventListener('submit', function(event) {
+			const FormErorr = document.getElementById("FormErorr")
+			const usernameInput = document.querySelector('#register-username');
+			const fullNameInput = document.querySelector('#register-fullname');
+			const emailInput = document.querySelector('#register-email');
+			const passwordInput = document.querySelector('#register-password');
+			const confirmPasswordInput = document.querySelector('#register-confirm-password');
+			const usernameValue = usernameInput.value;
+			const fullNameValue = fullNameInput.value;
+			const emailValue = emailInput.value;
+			const passwordValue = passwordInput.value;
+			const confirmPasswordValue = confirmPasswordInput.value;
+	
+			if (usernameValue.trim() === "") {
+				// alert('User Name cannot be blank. Please enter a valid User Name.');
+				FormErorr.innerHTML="User Name cannot be blank. Please enter a valid User Name."
+				showFormValidAlert()
+				usernameInput.focus();
+				event.preventDefault();
+			}
+	
+			if (fullNameValue.trim() === "") {
+				// alert('Full Name cannot be blank. Please enter a valid Full Name.');
+				FormErorr.innerHTML="Full Name cannot be blank. Please enter a valid Full Name."
+				showFormValidAlert()
+				fullNameInput.focus();
+				event.preventDefault();
+			}
+	
+			if (emailValue.trim() === "") {
+				// alert('Email cannot be blank. Please enter a valid email address.');
+				FormErorr.innerHTML="Email cannot be blank. Please enter a valid email address."
+				showFormValidAlert()
+				emailInput.focus();
+				event.preventDefault();
+			} else {
+				const emailPattern = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+				if (!emailPattern.test(emailValue)) {
+					// alert('Invalid email address. Please enter a valid email.');
+					FormErorr.innerHTML="Invalid email address. Please enter a valid email."
+					showFormValidAlert()
+					emailInput.focus();
+					event.preventDefault();
+				}
+			}
+	
+			if (passwordValue.length < 6) {
+				// alert('Password must be at least 6 characters long.');
+				FormErorr.innerHTML="Password must be at least 6 characters long."
+				showFormValidAlert()
+				passwordInput.focus();
+				event.preventDefault();
+			} else if (/^(.)\1+$/.test(passwordValue)) {
+				// alert('Password cannot consist of all the same characters.');
+				FormErorr.innerHTML="Password cannot consist of all the same characters."
+				showFormValidAlert()
+				passwordInput.focus();
+				event.preventDefault();
+			}
+	
+			if (passwordValue !== confirmPasswordValue) {
+				// alert('Passwords do not match. Please confirm your password.');
+				FormErorr.innerHTML="Passwords do not match. Please confirm your password."
+				showFormValidAlert()
+				confirmPasswordInput.focus();
+				event.preventDefault();
+			}
+		});
+
+		
+	</script>
+	
+	
+	
+	
+	
+	
 	<%- include('../user/layouts/footer.ejs') %>
 
 
