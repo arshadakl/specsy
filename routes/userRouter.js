@@ -71,6 +71,8 @@ router.post('/checkout/paymentselection',auth.isLogin,orderController.paymentSel
 router.post('/checkout/placeorder',auth.isLogin,orderController.placeOrderManage)
 router.get('/checkout/placeorder',auth.isLogin,orderController.orderStatusPageLoad)
 router.post('/checkout/placeorder/verify-payment',auth.isLogin,orderController.orderStatusPageLoad)
+router.get('/checkout/placeorder/amountverify',auth.isLogin,orderController.amountVerify)
+
 
 
 //add address 

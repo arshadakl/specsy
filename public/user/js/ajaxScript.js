@@ -238,3 +238,38 @@ function couponApply(){
         }
     })
 }
+
+
+function removeCoupon(){
+
+    const code = document.getElementById("couponInput")
+    const discount = document.getElementById("dicountDisplay")
+    const discount2 = document.getElementById("dicountDisplay2")
+    const total = document.getElementById('totalDisplay')
+    const total2 = document.getElementById('totalDisplay2')
+    const couponShow = document.getElementById("couponShow")
+
+
+    const appliedCouponInput = document.getElementById("couponApInput")
+    const couponInDiv = document.getElementById("couponInDiv")
+    const couponPass = document.getElementById("couponPass")
+    couponPass.value=""
+    couponShow.classList.add("couponHide")
+    couponInDiv.classList.remove("couponHide")
+    $.ajax({
+        url:"/checkout/placeorder/amountverify",
+        method:'get',
+        success: (response)=>{
+            total.innerHTML=response
+            total2.innerHTML=response
+            discount.innerHTML=0
+            discount2.innerHTML=0
+            code.value=""
+        }
+    })
+
+
+
+
+
+}

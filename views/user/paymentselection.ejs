@@ -56,7 +56,7 @@
 
                                 <h5 class="text-dark mb-3">2. &nbsp; Payment method</h5>
                                 <%if(walletStatus==0){%>
-                                <div class="col-md-12 mb-2"> <p class="text-danger"> *Balance insufficient; Wallet option unavailable. <b> Use an alternative payment method</b></p></div>
+                                <div class="col-md-12 mb-2"> <p class="text-danger"> <b> *Balance insufficient; Wallet option unavailable. Use an alternative payment method</b></p></div>
                                 <%}%>
                                 <form action="/checkout/paymentselection" id="paymentForm" method="post">
 
@@ -65,12 +65,12 @@
                                             <label class="p-3 border rounded-4 m-2 custom-label">
                                                 <div class="form-check d-flex align-items-center mx-4">
                                                     <%if(walletStatus==1){%>
-                                                    <input class="form-check-input" type="radio" name="paymentMethod" value="wallet" id="codRadio"  >
+                                                    <input class="form-check-input" type="radio" name="paymentMethod" value="wallet" id="walletRadio"  >
                                                     <div class="mx-5 p-3">
                                                         <b>Wallet Pay</b> 
                                                     </div>
                                                     <%}else{%>
-                                                        <input class="form-check-input" type="radio"  id="codRadio"  disabled>
+                                                        <input class="form-check-input" type="radio"  disabled>
                                                     <div class="mx-5 p-3 text-light">
                                                         <b>Wallet Pay</b> 
                                                     </div>
@@ -180,23 +180,25 @@
         </script>
 
         <script>
-            // Get references to the radio buttons and the submit button
-            const codRadio = document.getElementById('codRadio');
-            const onlineRadio = document.getElementById('onlineRadio');
-            const paymentBtn = document.getElementById('paymentBtn');
+        const codRadio = document.getElementById('codRadio');
+        const onlineRadio = document.getElementById('onlineRadio');
+        const walletRadio = document.getElementById('walletRadio');
+        const paymentBtn = document.getElementById('paymentBtn');
 
-            // Add event listeners to the radio buttons
-            codRadio.addEventListener('change', toggleButtonState);
-            onlineRadio.addEventListener('change', toggleButtonState);
+        // Add event listeners to the radio buttons
+        codRadio.addEventListener('change', toggleButtonState);
+        onlineRadio.addEventListener('change', toggleButtonState);
+        walletRadio.addEventListener('change', toggleButtonState);
+        
+        // Function to toggle the button state based on the radio button selection
+        function toggleButtonState() {
+              if (codRadio.checked || onlineRadio.checked || walletRadio.checked) {
+                  paymentBtn.disabled = false; // Enable the button if any of the radio buttons is selected
+              } else {
+                  paymentBtn.disabled = true; // Disable the button if no radio button is selected
+           }
+        }
 
-            // Function to toggle the button state based on the radio button selection
-            function toggleButtonState() {
-                if (codRadio.checked || onlineRadio.checked) {
-                    paymentBtn.disabled = false; // Enable the button if a radio button is selected
-                } else {
-                    paymentBtn.disabled = true; // Disable the button if no radio button is selected
-                }
-            }
 
         </script>
         <%- include('../user/layouts/footer.ejs') %>

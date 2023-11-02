@@ -329,10 +329,12 @@ const placeOrderManage = async (req, res) => {
     //coupon checking
     // ===================
     if (req.body.coupon != "") {
-      let couponDetails = await CouponDB.findById(req.body.coupon);
+      const couponDetails = await CouponDB.findById(req.body.coupon);
       total -= couponDetails.discount_amount;
       discountDetails.codeId = couponDetails._id;
       discountDetails.amount = couponDetails.discount_amount;
+      couponDetails.usersUsed.push(req.session.user_id);
+      await couponDetails.save();
     }
 
     // console.log(cartProducts);
@@ -1529,7 +1531,14 @@ function formatDateTime(dateString) {
   return date.toLocaleString(undefined, options).replace(',', '');
 }
 
-
+const amountVerify = async(req,res)=>{
+  try {
+    const total = await calculateTotalPrice(req.session.user_id);
+    res.json(total);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 // =============+++++++++++++++=======================
 // exportings
 // ====================
@@ -1546,4 +1555,5 @@ module.exports = {
   orderStatusPageLoad,
   returnOrderProduct,
   downloadInvoices,
+  amountVerify
 };

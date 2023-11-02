@@ -135,7 +135,7 @@ const ApplyCoupon = async (req, res) => {
       });
     }
 
-    coupon.usersUsed.push(userId);
+    // coupon.usersUsed.push(userId);
     await coupon.save();
     let redeem = {
       code: coupon.code,
