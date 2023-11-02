@@ -55,11 +55,30 @@
                                 <hr>
 
                                 <h5 class="text-dark mb-3">2. &nbsp; Payment method</h5>
-
+                                <%if(walletStatus==0){%>
+                                <div class="col-md-12 mb-2"> <p class="text-danger"> *Balance insufficient; Wallet option unavailable. <b> Use an alternative payment method</b></p></div>
+                                <%}%>
                                 <form action="/checkout/paymentselection" id="paymentForm" method="post">
 
                                     <div class="col-12 row">
-                                        <div class="col-md-5">
+                                        <div class="col-md-6">
+                                            <label class="p-3 border rounded-4 m-2 custom-label">
+                                                <div class="form-check d-flex align-items-center mx-4">
+                                                    <%if(walletStatus==1){%>
+                                                    <input class="form-check-input" type="radio" name="paymentMethod" value="wallet" id="codRadio"  >
+                                                    <div class="mx-5 p-3">
+                                                        <b>Wallet Pay</b> 
+                                                    </div>
+                                                    <%}else{%>
+                                                        <input class="form-check-input" type="radio"  id="codRadio"  disabled>
+                                                    <div class="mx-5 p-3 text-light">
+                                                        <b>Wallet Pay</b> 
+                                                    </div>
+                                                    <%}%>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-6">
                                             <label class="p-3 border rounded-4 m-2 custom-label">
                                                 <div class="form-check d-flex align-items-center mx-4">
                                                     <input class="form-check-input" type="radio" name="paymentMethod" value="COD" id="codRadio">
@@ -69,13 +88,13 @@
                                                 </div>
                                             </label>
                                         </div>
-                                        <div class="col-md-7">
+                                        <div class="col-md-12">
                                             <label class="p-3 border rounded-4 m-2 custom-label">
                                                 <div class="form-check d-flex align-items-center mx-4">
                                                     <input class="form-check-input" type="radio" name="paymentMethod" value="Online" id="onlineRadio" >
                                                     <div class="mx-4 p-3 row d-flex justify-content-between">
                                                         <span> <b>Online Payment</b></span>
-                                                        <img width="130px" class="d-flex align-items-end mx-3" src="/user/images/payment-icons.jpg" alt="">
+                                                        <img width="120px" class="d-flex align-items-end mx-3" src="/user/images/payment-icons.jpg" alt="">
                                                     </div>
                                                 </div>
                                             </label>

@@ -101,7 +101,7 @@
                                 </tr>
                                     <td> <%=history[i].purpose%></td>
                                     <td style="font-weight: 500;">₹ <%=history[i].totalAmount%></td>
-                                    <td><%= history[i].paymentMethod== "Cash on Delivery" ? "COD" : "Online"%></td>
+                                    <td><%= history[i].paymentMethod== "Cash on Delivery" ? "COD" : history[i].paymentMethod%></td>
                                     
                                     <td><%=formattedDate %></td>
                                     <td  >

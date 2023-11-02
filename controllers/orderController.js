@@ -224,10 +224,17 @@ const reciveShippingAddress = async (req, res) => {
         // console.log("Selected Address:", selectedAddress);
         // res.redirect('/checkout/paymentselection')
         let total = await calculateTotalPrice(req.session.user_id);
+       
+        const walletDetails = await WalletDB.findOne({user:req.session.user_id},{balance:1,_id:0});
+        console.log(walletDetails.balance);
+        let walletStatus = 1;
+        if(total>walletDetails.balance){
+           walletStatus = 0
+        }
         return res.render("paymentselection", {
           user: req.session.user_id,
           address: selectedAddress,
-          total,
+          total,walletStatus,
         });
       } else {
         console.log("Specific address not found.");
@@ -345,12 +352,21 @@ const placeOrderManage = async (req, res) => {
       orderDate: new Date(),
       trackId,
     });
+    const walletDetails = await WalletDB.findOne({user:req.session.user_id})
+    if (paymentType === "wallet" && total>walletDetails.balance) {
+      return res.json({
+        cod: true,
+        orderId: 0,
+        status: "Fail",
+      });
+
+    }
 
     const placeorder = await order.save();
     // let analaticResult = await CreateOrderAnalatic();
     // console.log(analaticResult);
     console.log(placeorder._id);
-    if (paymentType !== "Online") {
+    if (paymentType === "COD") {
       console.log(placeorder._id);
       let changeOrderStatus = await OrderDB.updateOne(
         { _id: placeorder._id },
@@ -387,7 +403,7 @@ const placeOrderManage = async (req, res) => {
         orderId: placeorder._id,
         status: "success",
       });
-    } else {
+    } else if(paymentType === "Online") {
       //here manage when the order is online
       let order = await genarateRazorpay(placeorder._id, total);
 
@@ -408,11 +424,185 @@ const placeOrderManage = async (req, res) => {
         email: userData.email,
       };
       return res.json({ order, user });
+    }else if(paymentType === "wallet"){
+
+      //wallet managment##################
+      
+      console.log(placeorder._id);
+      let changeOrderStatus = await OrderDB.updateOne(
+        { _id: placeorder._id },
+        {
+          $set: {
+            "products.$[].OrderStatus": "placed",
+          },
+        }
+      );
+      let changePaymentStatus = await OrderDB.updateOne(
+        { _id: placeorder._id },
+        {
+          $set: {
+            "products.$[].paymentStatus": "success",
+          },
+        }
+      );
+      // console.log(changeOrderStatus);
+      await CartDB.deleteOne({ user: req.session.user_id });
+      walletDetails.balance -= total
+      await walletDetails.save();
+      const PaymentHistory = await createPaymentHistory(
+        req.session.user_id,
+        placeorder,
+        paymentType,
+        discountDetails,
+        trackId
+      );
+      console.log(PaymentHistory);
+      // return res.render("orderStatus", {
+      //   success: 1,
+      //   user: req.session.user_id
+      // });
+      return res.json({
+        cod: true,
+        orderId: placeorder._id,
+        status: "success",
+      });
+
     }
   } catch (error) {
     console.log(error.message);
   }
 };
+// const placeOrderManage = async (req, res) => {
+//   let discountDetails = {
+//     codeId: 0,
+//     amount: 0,
+//   };
+//   try {
+//     // console.log(req.body.address);
+//     let addressId = req.body.address;
+
+//     let paymentType = req.body.payment;
+//     const cartDetails = await CartDB.findOne({ user: req.session.user_id });
+
+//     let userAddrs = await addressDB.findOne({ userId: req.session.user_id });
+//     const shipAddress = userAddrs.addresses.find((address) => {
+//       return address._id.toString() === addressId.toString();
+//     });
+
+//     // console.log("collected:", shipAddress);
+
+//     if (!shipAddress) {
+//       return res.status(400).json({ error: "Address not found" });
+//     }
+//     // console.log("collected :" + shipAddress);
+//     const { country, fullName, mobileNumber, pincode, city, state } =
+//       shipAddress;
+//     // console.log(state);
+
+//     const cartProducts = cartDetails.products.map((productItem) => ({
+//       productId: productItem.product,
+//       quantity: productItem.quantity,
+//       OrderStatus: "pending",
+//       StatusLevel: 1,
+//       paymentStatus: "pending",
+//       "returnOrderStatus.status": "none",
+//       "returnOrderStatus.reason": "none",
+//     }));
+//     let total = await calculateTotalPrice(req.session.user_id);
+//     //coupon checking
+//     // ===================
+//     if (req.body.coupon != "") {
+//       let couponDetails = await CouponDB.findById(req.body.coupon);
+//       total -= couponDetails.discount_amount;
+//       discountDetails.codeId = couponDetails._id;
+//       discountDetails.amount = couponDetails.discount_amount;
+//     }
+
+//     // console.log(cartProducts);
+//     const trackId = await generateUniqueTrackId();
+//     const order = new OrderDB({
+//       userId: req.session.user_id,
+//       "shippingAddress.country": country,
+//       "shippingAddress.fullName": fullName,
+//       "shippingAddress.mobileNumber": mobileNumber,
+//       "shippingAddress.pincode": pincode,
+//       "shippingAddress.city": city,
+//       "shippingAddress.state": state,
+//       products: cartProducts,
+//       totalAmount: total,
+//       paymentMethod: paymentType,
+//       coupon: req.body.coupon ? req.body.coupon : "none",
+//       orderDate: new Date(),
+//       trackId,
+//     });
+
+//     const placeorder = await order.save();
+//     // let analaticResult = await CreateOrderAnalatic();
+//     // console.log(analaticResult);
+//     console.log(placeorder._id);
+//     if (paymentType !== "Online") {
+//       console.log(placeorder._id);
+//       let changeOrderStatus = await OrderDB.updateOne(
+//         { _id: placeorder._id },
+//         {
+//           $set: {
+//             "products.$[].OrderStatus": "placed",
+//           },
+//         }
+//       );
+//       let changePaymentStatus = await OrderDB.updateOne(
+//         { _id: placeorder._id },
+//         {
+//           $set: {
+//             "products.$[].paymentStatus": "success",
+//           },
+//         }
+//       );
+//       // console.log(changeOrderStatus);
+//       await CartDB.deleteOne({ user: req.session.user_id });
+//       const PaymentHistory = await createPaymentHistory(
+//         req.session.user_id,
+//         placeorder,
+//         paymentType,
+//         discountDetails,
+//         trackId
+//       );
+//       console.log(PaymentHistory);
+//       // return res.render("orderStatus", {
+//       //   success: 1,
+//       //   user: req.session.user_id
+//       // });
+//       return res.json({
+//         cod: true,
+//         orderId: placeorder._id,
+//         status: "success",
+//       });
+//     } else {
+//       //here manage when the order is online
+//       let order = await genarateRazorpay(placeorder._id, total);
+
+//       let userData = await UserDB.findById(req.session.user_id);
+
+//       // payment history create
+//       const PaymentHistory = await createPaymentHistory(
+//         req.session.user_id,
+//         placeorder,
+//         paymentType,
+//         discountDetails,
+//         trackId
+//       );
+//       console.log(PaymentHistory);
+//       let user = {
+//         name: fullName,
+//         mobile: mobileNumber,
+//         email: userData.email,
+//       };
+//       return res.json({ order, user });
+//     }
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
 // ==============
 // ==============
 
@@ -431,7 +621,8 @@ const orderPageLoad = async (req, res) => {
         const product = await ProductDB.findById(productId).select(
           "product_name images price"
         );
-        const userDetails = await UserDB.findById(order.userId).select(
+        const userDetails = await UserDB.findById(order.userId)
+        .select(
           "userName"
         );
         // console.log(userDetails);
