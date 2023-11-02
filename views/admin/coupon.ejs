@@ -44,6 +44,7 @@
                                             <th> validTo </th>
                                             <th> Minimum Spend</th>
                                             <th> Maximum users</th>
+                                            <th> Edit</th>
                                             <th> Remove</th>
 
                                         </tr>
@@ -53,6 +54,7 @@
                                         <%for(i=0;i<Coupons.length;i++){%>
                                             <% var dateFrom=new Date(Coupons[i].validFrom); %>
                                                 <% var dateTo=new Date(Coupons[i].validTo); %>
+                                                <% const options = { year: 'numeric', month: '2-digit', day: '2-digit' };%>
                                                     <tr>
                                                         <!-- list -->
                                                         <td class="text-uppercase">
@@ -62,11 +64,11 @@
                                                             <%=Coupons[i].discount_amount%>
                                                         </td>
                                                         <td>
-                                                            <%= dateFrom.toLocaleDateString() %>
+                                                            <%= dateFrom.toLocaleDateString(undefined, options) %>
 
                                                         </td>
                                                         <td>
-                                                            <%= dateTo.toLocaleDateString() %>
+                                                            <%= dateTo.toLocaleDateString(undefined,options) %>
                                                         </td>
 
                                                         <td>
@@ -74,6 +76,12 @@
                                                         </td>
                                                         <td>
                                                             <%=Coupons[i].maxUsers%>
+                                                        </td>
+                                                        <td>
+
+                                                            <a type="button" class="btn btn-inverse-info" href="/admin/coupon/update?id=<%= Coupons[i]._id%>">
+                                                                Edit
+                                                            </a>
                                                         </td>
                                                         <td>
 

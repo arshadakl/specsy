@@ -64,10 +64,13 @@ router.post('/orders/manage/cancel',auth.isLogin,orderController.cancelOrder)
 router.post('/orders/manage/changestatus',auth.isLogin,orderController.changeOrderStatus)
 
 //coupon related routers
-router.get('/coupon',auth.isLogin,couponController.couponPageLoad)
+router.get('/coupon',couponController.couponPageLoad)
 router.get('/coupon/add',auth.isLogin,couponController.addCouponPageLoad)
 router.post('/coupon/add',auth.isLogin,couponController.addNewCoupon)
 router.get('/coupon/delete',auth.isLogin,couponController.deleteCoupon)
+router.get('/coupon/update',couponController.editCouponPageLoad)
+router.post('/coupon/update',couponController.editCoupon)
+
 
 //report make related routers
 router.post('/report/genarate',auth.jsonIsLogin,adminController.genarateSalesReports)
