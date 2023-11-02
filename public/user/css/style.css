@@ -16573,7 +16573,9 @@ button:focus {
 .nav-dashboard .nav-link:hover,
 .nav-dashboard .nav-link:focus,
 .nav-dashboard .nav-link.active {
-    color: #c96
+    color: #000;
+    font-weight: 500;
+    
 }
 
 .nav-dashboard .nav-link.active {
@@ -20167,5 +20169,22 @@ button:focus {
     }
 
 
+    /* profile page related css  */
+.profile-nav-tabs{
+ background: #F3F3F9;
+ color: #000;
+ border-radius: 7px;
+ padding-left: 2rem;
+ margin-bottom: 5px;
+ border: 0.1px solid #c0bfbf;
+}
+
+.profile-inputs{
+    color: #000;
+    border: 0.1px solid #c0bfbf; 
+    border-radius: 7px;
+    background: #F3F3F9;
+}
+.profile-inputs-div{}
 
     

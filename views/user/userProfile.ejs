@@ -21,10 +21,10 @@
             <div class="page-content">
                 <div class="dashboard">
                     <div class="container">
-                        <div class="row">
+                        <div class="row  p-5" style="border-radius: 7px; background: #F3F3F9; ">
                             <aside class="col-md-4 col-lg-3">
                                 <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
-                                    <li class="nav-item">
+                                    <li class="nav-item profile-nav-tabs">
                                         <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab"
                                             href="#tab-dashboard" role="tab" aria-controls="tab-dashboard"
                                             aria-selected="true">My Profile</a>
@@ -36,33 +36,33 @@
                                     <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Downloads</a>
                                 </li> -->
 
-                                    <li class="nav-item ">
+                                    <li class="nav-item profile-nav-tabs">
                                         <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account"
                                             role="tab" aria-controls="tab-account" aria-selected="false">Edit
                                             Details</a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li class="nav-item profile-nav-tabs">
                                         <a class="nav-link" id="tab-order-link" data-toggle="tab" href="#tab-order"
                                             role="tab" aria-controls="tab-order" aria-selected="false">My Orders</a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li class="nav-item profile-nav-tabs">
                                         <a class="nav-link"   href="/profile/coupons"
                                            >Offers</a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li class="nav-item profile-nav-tabs">
                                         <a class="nav-link"   href="/Wallet"
                                            >Wallet</a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li class="nav-item profile-nav-tabs">
                                         <a class="nav-link" href="/logout">Sign Out</a>
                                     </li>
                                 </ul>
                             </aside><!-- End .col-lg-3 -->
 
                             <div class="col-md-8 col-lg-9">
-                                <div class="tab-content">
-                                    <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel"
-                                        aria-labelledby="tab-dashboard-link">
+                                <div class="tab-content " >
+                                    <div class="tab-pane fade show active p-5" id="tab-dashboard" role="tabpanel"
+                                        aria-labelledby="tab-dashboard-link" style="  border-radius: 7px;">
                                         <h6 class="text-center fs-1 font-monospace text-decoration-underline ">My
                                             Profile</h6>
 
@@ -89,39 +89,39 @@
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <label>user Name </label>
-                                                    <input type="text" class="form-control" value="<%= user.userName %>"
+                                                    <input  type="text" class="form-control profile-inputs" value="<%= user.userName %>"
                                                         disabled>
 
                                                 </div><!-- End .col-sm-6 -->
 
                                                 <div class="col-sm-6">
                                                     <label>Full Name </label>
-                                                    <input type="text" class="form-control" value="<%= user.fullName %>"
+                                                    <input type="text" class="form-control profile-inputs" value="<%= user.fullName %>"
                                                         disabled>
                                                 </div><!-- End .col-sm-6 -->
                                             </div><!-- End .row -->
 
                                             <label>Email address </label>
-                                            <input type="email" class="form-control" value="<%= user.email %>" disabled>
+                                            <input type="email" class="form-control profile-inputs" value="<%= user.email %>" disabled>
 
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <label>Shipping Address *</label>
-                                                    <input type="text" class="form-control"
+                                                    <input type="text" class="form-control profile-inputs"
                                                         value="<%= user.address.shippingAddress %>"
                                                         name="shippingAddress" disabled>
                                                 </div><!-- End .col-sm-6 -->
 
                                                 <div class="col-sm-6">
                                                     <label>State </label>
-                                                    <input type="text" class="form-control" name="state"
+                                                    <input type="text" class="form-control profile-inputs" name="state"
                                                         value="<%= user.address.state %>" disabled>
                                                 </div><!-- End .col-sm-6 -->
                                             </div><!-- End .row -->
                                             <div class="row">
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-6 profile-inputs-div">
                                                     <label>Pin Code </label>
-                                                    <input type="number" class="form-control"
+                                                    <input type="number" class="form-control profile-inputs"
                                                         value="<%= user.address.pincode %>" name="pincode" disabled>
                                                 </div><!-- End .col-sm-6 -->
 
@@ -201,7 +201,7 @@
                                             <!-- user profile -->
                                             <div class="form-group">
                                                 <!-- Hidden file input -->
-                                                <input type="file" class="form-control-file" name="image"
+                                                <input type="file" class="form-control-file " name="image"
                                                     id="imageUpload" accept="image/*" style="display: none;">
 
                                                 <!-- Dummy user profile image, which is also a clickable link to trigger file input -->
@@ -219,7 +219,7 @@
 
                                                     <div>
                                                         <button type="submit" id="updateAvatarButton"
-                                                            class="btn btn-outline-dark" disabled>click to update
+                                                            class="btn btn-outline-dark profile-inputs" disabled>click to update
                                                             Avatar</button>
                                                     </div>
                                                 </label>
@@ -232,39 +232,39 @@
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <label>user Name *</label>
-                                                    <input type="text" class="form-control" value="<%= user.userName %>"
+                                                    <input type="text" class="form-control profile-inputs" value="<%= user.userName %>"
                                                         name="userName">
                                                 </div><!-- End .col-sm-6 -->
 
                                                 <div class="col-sm-6">
                                                     <label>Full Name *</label>
-                                                    <input type="text" class="form-control" name="fullName"
+                                                    <input type="text" class="form-control profile-inputs" name="fullName"
                                                         value="<%= user.fullName %>">
                                                 </div><!-- End .col-sm-6 -->
                                             </div><!-- End .row -->
 
                                             <label>Email address *</label>
-                                            <input type="email" class="form-control" name="email"
+                                            <input type="email" class="form-control profile-inputs" name="email"
                                                 value="<%= user.email %>">
 
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <label>Shipping Address *</label>
-                                                    <input type="text" class="form-control"
+                                                    <input type="text" class="form-control profile-inputs"
                                                         value="<%= user.address.shippingAddress%>"
                                                         name="shippingAddress">
                                                 </div><!-- End .col-sm-6 -->
 
                                                 <div class="col-sm-6">
                                                     <label>State *</label>
-                                                    <input type="text" class="form-control" name="state"
+                                                    <input type="text" class="form-control profile-inputs" name="state"
                                                         value="<%= user.address.state %>">
                                                 </div><!-- End .col-sm-6 -->
                                             </div><!-- End .row -->
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <label>Pin Code *</label>
-                                                    <input type="number" class="form-control"
+                                                    <input type="number" class="form-control profile-inputs"
                                                         value="<%= user.address.pincode %>" name="pincode">
                                                 </div><!-- End .col-sm-6 -->
 
@@ -302,14 +302,14 @@
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <label>Current Password </label>
-                                                        <input type="password" name="oldPassword" class="form-control"
+                                                        <input type="password" name="oldPassword" class="profile-inputs form-control"
                                                             required>
 
                                                     </div><!-- End .col-sm-6 -->
 
                                                     <div class="col-sm-6">
                                                         <label>Create New Password </label>
-                                                        <input type="password" name="newPassword" class="form-control"
+                                                        <input type="password" name="newPassword" class="form-control profile-inputs"
                                                             required>
                                                     </div><!-- End .col-sm-6 -->
                                                 </div><!-- End .row -->
