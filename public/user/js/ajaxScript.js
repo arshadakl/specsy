@@ -192,7 +192,7 @@ function removeWishItem(productId){
 
 
 //couponInput ,applyBtn
-
+//apply Coupon 
 function couponApply(){
     let code = document.getElementById("couponInput").value
     let discount = document.getElementById("dicountDisplay")
@@ -267,9 +267,5 @@ function removeCoupon(){
             code.value=""
         }
     })
-
-
-
-
 
 }
