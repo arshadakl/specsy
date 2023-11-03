@@ -5,6 +5,7 @@ const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
 const CouponDB = require("../models/orderModel").Coupon;
 
+
 // cart total calculate
 // =============================
 const calculateTotalPrice = async (userId) => {
@@ -46,11 +47,22 @@ const couponPageLoad = async (req, res) => {
 //add coupone page load
 const addCouponPageLoad = async (req, res) => {
   try {
-    res.render("addcoupon");
+    res.render("addcoupon",{ codeErr:req.session.couponErr},
+    (err, html) => {
+      if (!err) {
+        req.session.couponErr=false;
+        res.send(html); // Send the rendered HTML to the client
+      } else {
+        console.log(err.message);
+      }
+    }
+    );
   } catch (error) {
     console.log(error.message);
   }
 };
+
+
 
 // manage adding coupons
 // ------------------------
@@ -65,17 +77,27 @@ const addNewCoupon = async (req, res) => {
       minimumSpend,
       maxUsers,
     } = req.body;
-    const coupon = new CouponDB({
-      code,
-      discount_amount,
-      validFrom,
-      validTo,
-      description,
-      minimumSpend,
-      maxUsers,
-    });
-    await coupon.save();
-    return res.redirect("/admin/coupon");
+
+    const couponValidation = await CouponDB.findOne({code:code})
+    console.log(couponValidation);
+
+    if(!couponValidation) {
+      const coupon = new CouponDB({
+        code,
+        discount_amount,
+        validFrom,
+        validTo,
+        description,
+        minimumSpend,
+        maxUsers,
+      });
+      await coupon.save();
+      return res.redirect("/admin/coupon");
+    }else{
+      req.session.couponErr = 1
+      return res.redirect("/admin/coupon/add");
+    }
+    
   } catch (error) {
     console.log(error.message);
   }
@@ -190,43 +212,30 @@ const editCoupon = async (req, res) => {
     const validFromDate = validFrom; // No conversion needed
     const validToDate = validTo; // No conversion needed
 
-    const updateCoupon = await CouponDB.updateOne(
-      { _id: req.query.id },
-      {
-        $set: {
-          code: code,
-          discount_amount: discount_amount,
-          validFrom: validFromDate,
-          validTo: validToDate,
-          description: description,
-          minimumSpend: minimumSpend,
-          maxUsers: maxUsers,
-        },
-      }
-    );
-
-    // const coupon = await CouponDB.findOne({ _id: req.query.id });
-    // console.log(req.query.id);
-    // if (!coupon) {
-    //   return { success: false, message: "Coupon not found" };
-    // }
-
-    // // Update the coupon properties with the new data
-    // coupon.couponCode = updatedData.couponCode;
-    // coupon.validFrom = updatedData.validFrom;
-    // coupon.validTo = updatedData.validTo;
-    // coupon.minSpend = updatedData.minSpend;
-    // coupon.maxUsers = updatedData.maxUsers;
-    // coupon.usersUsed = updatedData.usersUsed;
-
-    // // Save the updated coupon
-    // await coupon.save();
-    // console.log(updateCoupon);
+    const couponValidation = await CouponDB.findOne({code:code})
+    console.log(couponValidation);
+      const updateCoupon = await CouponDB.updateOne(
+        { _id: req.query.id },
+        {
+          $set: {
+            code: code,
+            discount_amount: discount_amount,
+            validFrom: validFromDate,
+            validTo: validToDate,
+            description: description,
+            minimumSpend: minimumSpend,
+            maxUsers: maxUsers,
+          },
+        }
+      );
+  
     return res.redirect("/admin/coupon");
+
   } catch (error) {
     console.log(error.message);
   }
 };
+
 
 // exporting
 // =============

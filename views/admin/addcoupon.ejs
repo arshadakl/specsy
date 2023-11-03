@@ -99,6 +99,22 @@
                 <span class="row "><i class="fa-sharp fa-light fa-circle-xmark fa-shake" style="color: #ff0505; font-size: 18px;"></i> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess"></p></span>
                  
             </div>
+
+            <%if(codeErr==1){%>
+                <div class="content-wrapper ">
+                    <div id="CodeAlert" data-aos="fade-down" class="alert alert-danger col-md-3 col-8 mx-auto fixed-top "
+                    style="  top:30px; border-radius: 7px; opacity: 0.9; " role="alert">
+                    <h6 class="alert-heading text-center">Code Not available</h6>
+                    <hr>
+                    <span class="row "> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess">This coupon code isn't available, it's already been used</p></span>
+                     
+                </div>
+                <script>
+                      setTimeout(function () {
+                        $("#CodeAlert").fadeOut();
+                      }, 5000);
+                </script>
+            <%}%>
         </footer>
         <!-- partial -->
         
@@ -106,6 +122,8 @@
         
     </div>
     <script>
+
+        
 
         $("#start-date").datepicker({
             dateFormat: 'yy-mm-dd',
@@ -120,11 +138,9 @@
             dateFormat: 'yy-mm-dd'
         });
 
+        
 
     </script>
-    <script>
-        
-        </script>
       
 
 
