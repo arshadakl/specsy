@@ -159,7 +159,7 @@
                         <h4 class="card-title">Add New Category</h4>
                         <!-- <p class="card-description"> Basic form elements </p> -->
                         <hr class="white-line">
-                        <form class="forms-sample" action="/admin/category" method="post" enctype="multipart/form-data">
+                        <form class="forms-sample" action="/admin/category" method="post" enctype="multipart/form-data" onsubmit="return categoryValidation()">
 
                             <div class="form-group  row">
                                 <div class="col-12 col-md-3 text-light">
@@ -170,14 +170,14 @@
                                                     alt="Preview" />
                                             </div>
                                             <input name="icon" type="file" accept="image/*" id="imageInput1"
-                                                class="imageInput" required>
+                                                class="imageInput" >
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-9 mt-2">
-                                    <label for="exampleInputName1">Category Name</label>
+                                    <label for="categoryName">Category Name</label>
                                     <input type="text" class="form-control  text-light" name="category_name"
-                                        id="exampleInputName1" placeholder="name" required>
+                                        id="categoryName" placeholder="name" >
                                     <button type="submit" class="btn btn-lg btn-inverse-primary mr-2 mt-5">Add
                                         Category</button>
 
@@ -196,7 +196,14 @@
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->
         <footer class="footer">
-
+            <div class="content-wrapper ">
+                <div id="FormAlert" data-aos="fade-down" class="alert alert-danger col-md-4 col-8 mx-auto fixed-top "
+                style="display: none;  top:30px; border-radius: 7px; opacity: 0.9; " role="alert">
+                <h6 class="alert-heading text-center">Please provide only valid data.</h6>
+                <hr>
+                <span class="row "><i class="fa-sharp fa-light fa-circle-xmark fa-shake" style="color: #ff0505; font-size: 18px;"></i> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess"></p></span>
+                 
+            </div>
         </footer>
         <!-- partial -->
     </div>

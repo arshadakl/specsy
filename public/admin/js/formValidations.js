@@ -65,3 +65,28 @@ function validateCouponForm() {
   return true;
 }
 
+
+function categoryValidation() {
+  const categoryName = document.getElementById("categoryName");
+  const imageInput = document.getElementById("imageInput1");
+
+  if (categoryName.value.trim() === "") {
+    ValidErrMess.innerHTML = "Category Name must not be empty.";
+    showFormValidAlert();
+    return false;
+  }
+
+  if (!isNaN(parseInt(categoryName.value))) {
+    ValidErrMess.innerHTML = "Category Name cannot be a valid integer.";
+    showFormValidAlert();
+    return false;
+  }
+
+  if (!imageInput.files || imageInput.files.length === 0) {
+    ValidErrMess.innerHTML = "Please select an image.";
+    showFormValidAlert();
+    return false;
+  }
+
+  return true;
+}
