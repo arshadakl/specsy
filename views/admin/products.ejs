@@ -78,13 +78,18 @@
                                                         class="btn btn-inverse-info">Edit Product</a>
                                                 </td>
                                                 <td>
+                                                    <% if (products[i].unlist == 1) { %>
+                                                        <button data-id="<%= products[i]._id %>" onclick="productAction('<%= products[i]._id %>')"  class="btn btn-inverse-danger">list</button>
+                                                        <% } else { %>
+                                                            <button data-id="<%= products[i]._id %>" onclick="productAction('<%= products[i]._id %>')" class="btn btn-inverse-success">Unlist</button>
+                                                    <% } %>
                                                     <!-- <a href="/admin/products/deleteproduct?id=<%= products[i]._id %>" class="btn btn-inverse-danger">Delete Item</a> -->
                                                     <!-- Button trigger modal -->
-                                                    <button type="button" class="btn btn-inverse-danger"
+                                                    <!-- <button type="button" class="btn btn-inverse-danger"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#mod<%= products[i]._id %>">
                                                         Delete Item
-                                                    </button>
+                                                    </button> -->
 
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="mod<%= products[i]._id %>" tabindex="-1"

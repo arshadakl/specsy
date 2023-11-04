@@ -82,3 +82,33 @@ function formatDate(inputDate) {
   
     return formattedDate;
   }
+
+
+  function productAction(id) {
+    // Send an AJAX request to update the user's block status
+    const listBtn = document.getElementById(`BTN${id}`);
+    $.ajax({
+        url: '/admin/productlist',
+        method: "post",
+        data: { id: id },
+        success: function (response) {
+            let targetproduct = response.product;
+            // let targetproduct = users.find((user) => {
+            //     return user._id === id;
+            // });
+
+            // Update the button class and text based on the user's block status
+            if (targetproduct.unlist == 0) {
+                // listBtn.removeClass('btn-inverse-danger').addClass('btn-inverse-success').text('Unlist');
+                $(`button[data-id="${id}"]`).removeClass('btn-inverse-danger').addClass('btn-inverse-success').text('Unlist');
+
+            } else {
+                // listBtn.removeClass('btn-inverse-success').addClass('btn-inverse-danger').text('List');
+                $(`button[data-id="${id}"]`).removeClass('btn-inverse-success').addClass('btn-inverse-danger').text('List');
+            }
+        },
+        error: function (error) {
+            console.error("Error:", error);
+        }
+    });
+}

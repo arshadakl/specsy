@@ -299,6 +299,7 @@ const placeOrderManage = async (req, res) => {
     let addressId = req.body.address;
 
     let paymentType = req.body.payment;
+    console.log("PYAMENT TYPE: "+paymentType);
     const cartDetails = await CartDB.findOne({ user: req.session.user_id });
 
     let userAddrs = await addressDB.findOne({ userId: req.session.user_id });
@@ -368,7 +369,7 @@ const placeOrderManage = async (req, res) => {
     // let analaticResult = await CreateOrderAnalatic();
     // console.log(analaticResult);
     console.log(placeorder._id);
-    if (paymentType === "COD") {
+    if (paymentType == "Cash on Delivery") {
       console.log(placeorder._id);
       let changeOrderStatus = await OrderDB.updateOne(
         { _id: placeorder._id },

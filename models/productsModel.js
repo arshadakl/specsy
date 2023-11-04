@@ -25,6 +25,9 @@ const productSchema = mongoose.Schema({
         type:Number,
         require:true
     },
+    unlist:{
+        type:Number
+    },
     images:{
         image1:{
             type:String,

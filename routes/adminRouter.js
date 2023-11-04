@@ -48,6 +48,8 @@ router.post('/products/addproduct',auth.isLogin,fileUpload.productImagesUpload,p
 router.get('/products/editproduct',auth.isLogin,productController.productEditPageLoad)
 router.post('/products/editproduct',auth.isLogin,fileUpload.productImagesUpload,productController.updateProduct)
 router.get('/products/deleteproduct',auth.isLogin,productController.deleteproduct)
+router.post('/productlist',auth.isLogin,productController.prducutListUnlist)
+
 
 // category related Routers
 router.get('/category',auth.isLogin,categoryController.categoryPageLoad)

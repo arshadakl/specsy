@@ -300,6 +300,36 @@ const shopPageSearch = async (req, res) => {
   } catch (error) {}
 };
 
+
+// This used to list and unlist user , this function working with Ajax
+// ---------------------------------------
+
+const prducutListUnlist = async (req, res) => {
+  try {
+    let listStatus = await ProductDB.findOne({ _id: req.body.id });
+    
+    console.log(listStatus.unlist);
+    if (listStatus.unlist === 0) {
+      await ProductDB.updateOne(
+        { _id: req.body.id },
+        { $set: { unlist: 1 } }
+      );
+    } else {
+      await ProductDB.updateOne(
+        { _id: req.body.id },
+        { $set: { unlist: 0 } }
+      );
+    }
+
+    let product = await ProductDB.findOne({_id: req.body.id});
+    // console.log(product);
+    res.json({ product: product });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
 module.exports = {
   singleProductLoad,
   productPageLoad,
@@ -311,4 +341,5 @@ module.exports = {
   deleteproduct,
   shopPageLoad,
   shopPageSearch,
+  prducutListUnlist
 };

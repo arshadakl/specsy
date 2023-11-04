@@ -7,7 +7,7 @@ function showFormValidAlert() {
   }, 5000);
 }
 
-// couponpage validation 
+// couponpage validation
 // ============================
 function validateCouponForm() {
   // Get form input values
@@ -41,7 +41,6 @@ function validateCouponForm() {
     return false;
   }
 
-
   // Check if validFrom is after or equal to validTo
   if (validFrom >= validTo) {
     // alert("Valid Date From must be earlier than Valid Date To.");
@@ -60,8 +59,6 @@ function validateCouponForm() {
   }
 
   //check code is valid using ajax with pass code
- 
- 
 
   // If all validation checks pass, allow form submission
   return true;
@@ -103,32 +100,36 @@ function validateProductForm() {
   const description = document.getElementsByName("description")[0].value;
   const imageInputs = document.querySelectorAll(".imageInput");
 
-  if (productName.trim() === "" || isNaN(price) || isNaN(stock) || description.trim() === "") {
-      // alert("All fields must be filled out.");
-      ValidErrMess.innerHTML = "All fields must be filled out.";
-      showFormValidAlert();
-      return false;
+  if (
+    productName.trim() === "" ||
+    isNaN(price) ||
+    isNaN(stock) ||
+    description.trim() === ""
+  ) {
+    // alert("All fields must be filled out.");
+    ValidErrMess.innerHTML = "All fields must be filled out.";
+    showFormValidAlert();
+    return false;
   }
 
   if (price < 0 || stock < 0) {
-      // alert("Price and Stock cannot have negative values.");
-      ValidErrMess.innerHTML = "Price and Stock cannot have negative values.";
-      showFormValidAlert();
-      return false;
+    // alert("Price and Stock cannot have negative values.");
+    ValidErrMess.innerHTML = "Price and Stock cannot have negative values.";
+    showFormValidAlert();
+    return false;
   }
 
   for (const imageInput of imageInputs) {
-      if (!imageInput.files || imageInput.files.length === 0) {
-          // alert("Please select images for all fields.");
-          ValidErrMess.innerHTML = "Please select images for all fields.";
-          showFormValidAlert();
-          return false;
-      }
+    if (!imageInput.files || imageInput.files.length === 0) {
+      // alert("Please select images for all fields.");
+      ValidErrMess.innerHTML = "Please select images for all fields.";
+      showFormValidAlert();
+      return false;
+    }
   }
 
   return true;
 }
-
 
 //edit product form validations
 function validateEditProductForm() {
@@ -137,21 +138,54 @@ function validateEditProductForm() {
   const stock = parseInt(document.getElementsByName("stock")[0].value);
   const description = document.getElementsByName("description")[0].value;
 
-  if (productName.trim() === "" || isNaN(price) || isNaN(stock) || description.trim() === "") {
-      // alert("All fields must be filled out.");
-      ValidErrMess.innerHTML = "All fields must be filled out.";
-      showFormValidAlert();
-      return false;
+  if (
+    productName.trim() === "" ||
+    isNaN(price) ||
+    isNaN(stock) ||
+    description.trim() === ""
+  ) {
+    // alert("All fields must be filled out.");
+    ValidErrMess.innerHTML = "All fields must be filled out.";
+    showFormValidAlert();
+    return false;
   }
 
   if (price < 0 || stock < 0) {
-      // alert("Price and Stock cannot have negative values.");
-      ValidErrMess.innerHTML = "Price and Stock cannot have negative values.";
-      showFormValidAlert();
-      return false;
+    // alert("Price and Stock cannot have negative values.");
+    ValidErrMess.innerHTML = "Price and Stock cannot have negative values.";
+    showFormValidAlert();
+    return false;
   }
 
-  
-
   return true;
+}
+
+function validUserEditForm() {
+  const userName = document.getElementById("userName").value;
+  const fullName = document.getElementById("fullName").value;
+  const email = document.getElementById("email").value;
+
+  if (userName.trim() === "" || fullName.trim() === "") {
+    // alert("All fields must be filled out.");
+    ValidErrMess.innerHTML = "All fields must be filled out.";
+    showFormValidAlert();
+    return false;
+  }
+
+  if (email.trim() === "") {
+    // alert('Email cannot be blank. Please enter a valid email address.');
+    ValidErrMess.innerHTML = "Email fields must be filled out.";
+    showFormValidAlert();
+    return false;
+  } else {
+    const emailPattern = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+    if (!emailPattern.test(emailValue)) {
+      // alert('Invalid email address. Please enter a valid email.');
+      ValidErrMess.innerHTML = "Invalid email address. Please enter a valid email.";
+      showFormValidAlert();
+      return false;
+    }
+  }
+
+  return true
 }
