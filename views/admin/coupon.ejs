@@ -58,7 +58,12 @@
                                                     <tr>
                                                         <!-- list -->
                                                         <td class="text-uppercase">
-                                                            <%=Coupons[i].code%>
+                                                            
+                                                            <%if(Coupons[i].code.length>15){%>
+                                                                <%= Coupons[i].code.substring(0, 15) + "..." %>
+                                                            <%}else{%>
+                                                                <%= Coupons[i].code %>
+                                                            <%}%>
                                                         </td>
                                                         <td>
                                                             <%=Coupons[i].discount_amount%>

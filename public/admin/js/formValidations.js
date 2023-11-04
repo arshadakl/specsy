@@ -7,6 +7,8 @@ function showFormValidAlert() {
   }, 5000);
 }
 
+// couponpage validation 
+// ============================
 function validateCouponForm() {
   // Get form input values
   var code = document.getElementById("exampleInputName1").value;
@@ -65,7 +67,8 @@ function validateCouponForm() {
   return true;
 }
 
-
+//category validations
+// ======================
 function categoryValidation() {
   const categoryName = document.getElementById("categoryName");
   const imageInput = document.getElementById("imageInput1");
@@ -87,6 +90,68 @@ function categoryValidation() {
     showFormValidAlert();
     return false;
   }
+
+  return true;
+}
+
+//add product Fields validations
+// ================================
+function validateProductForm() {
+  const productName = document.getElementsByName("product_name")[0].value;
+  const price = parseFloat(document.getElementsByName("price")[0].value);
+  const stock = parseInt(document.getElementsByName("stock")[0].value);
+  const description = document.getElementsByName("description")[0].value;
+  const imageInputs = document.querySelectorAll(".imageInput");
+
+  if (productName.trim() === "" || isNaN(price) || isNaN(stock) || description.trim() === "") {
+      // alert("All fields must be filled out.");
+      ValidErrMess.innerHTML = "All fields must be filled out.";
+      showFormValidAlert();
+      return false;
+  }
+
+  if (price < 0 || stock < 0) {
+      // alert("Price and Stock cannot have negative values.");
+      ValidErrMess.innerHTML = "Price and Stock cannot have negative values.";
+      showFormValidAlert();
+      return false;
+  }
+
+  for (const imageInput of imageInputs) {
+      if (!imageInput.files || imageInput.files.length === 0) {
+          // alert("Please select images for all fields.");
+          ValidErrMess.innerHTML = "Please select images for all fields.";
+          showFormValidAlert();
+          return false;
+      }
+  }
+
+  return true;
+}
+
+
+//edit product form validations
+function validateEditProductForm() {
+  const productName = document.getElementsByName("product_name")[0].value;
+  const price = parseFloat(document.getElementsByName("price")[0].value);
+  const stock = parseInt(document.getElementsByName("stock")[0].value);
+  const description = document.getElementsByName("description")[0].value;
+
+  if (productName.trim() === "" || isNaN(price) || isNaN(stock) || description.trim() === "") {
+      // alert("All fields must be filled out.");
+      ValidErrMess.innerHTML = "All fields must be filled out.";
+      showFormValidAlert();
+      return false;
+  }
+
+  if (price < 0 || stock < 0) {
+      // alert("Price and Stock cannot have negative values.");
+      ValidErrMess.innerHTML = "Price and Stock cannot have negative values.";
+      showFormValidAlert();
+      return false;
+  }
+
+  
 
   return true;
 }

@@ -49,7 +49,11 @@
                                                                 alt="image" />
                                                         </td>
                                                         <td>
-                                                            <%= categories[i].category_name%>
+                                                            <%if(categories[i].category_name.length>15){%>
+                                                                <%= categories[i].category_name.substring(0, 15) + "..." %>
+                                                            <%}else{%>
+                                                                <%= categories[i].category_name %>
+                                                            <%}%>
                                                         </td>
                                                         <td>
                                                             <!-- <a href="/admin/category/delete?id=<%= categories[i]._id %>" class="btn btn-inverse-danger">Delete Item</a> -->
@@ -93,8 +97,11 @@
                                                                                         <div
                                                                                             class="card-body text-start">
                                                                                             <h4 class="card-title ">
-                                                                                                <%= categories[i].category_name
-                                                                                                    %>
+                                                                                                <%if(categories[i].category_name.length>15){%>
+                                                                                                    <%= categories[i].category_name.substring(0, 15) + "..." %>
+                                                                                                <%}else{%>
+                                                                                                    <%= categories[i].category_name %>
+                                                                                                <%}%>
                                                                                             </h4>
                                                                                             <p class="card-text">This
                                                                                                 Category Added on <br>

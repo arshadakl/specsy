@@ -11,18 +11,18 @@
             <h4 class="card-title">Edit Product</h4>
             <!-- <p class="card-description"> Basic form elements </p> -->
             <form class="forms-sample " action="/admin/products/editproduct?id=<%= product._id %>" method="post"
-              enctype="multipart/form-data">
+              enctype="multipart/form-data" onsubmit="return validateEditProductForm()">
 
               <div class="form-group  row">
                 <div class="col-6  text-light">
                   <label for="exampleInputName1">Product Titile</label>
                   <input type="text" class="form-control  text-light" name="product_name"
-                    value="<%= product.product_name %>" id="exampleInputName1" placeholder="Name" required>
+                    value="<%= product.product_name %>" id="exampleInputName1" placeholder="Name" >
                 </div>
                 <div class="col-6">
                   <label for="exampleInputName1">Price</label>
                   <input type="number" class="form-control text-light" id="exampleInputName1"
-                    value="<%= product.price %>" name="price" placeholder="price" required>
+                    value="<%= product.price %>" name="price" placeholder="price" >
                 </div>
 
               </div>
@@ -66,7 +66,7 @@
                     <div class="col-sm-12">
                       <label class="col-sm-3 col-form-label">Number of Stock</label>
                       <input type="number" value="<%= product.stock %>" class="form-control text-light"
-                        id="exampleInputName1" name="stock" placeholder="Enter Stock" required>
+                        id="exampleInputName1" name="stock" placeholder="Enter Stock" >
                     </div>
                   </div>
                 </div>
@@ -75,7 +75,7 @@
               <div class="form-group mt-2">
                 <label for="exampleTextarea1">Description</label>
                 <textarea name="description" value="<%= product.description %>" class="form-control text-light"
-                  id="exampleTextarea1" rows="6" required><%= product.description %></textarea>
+                  id="exampleTextarea1" rows="6" ><%= product.description %></textarea>
               </div>
               <div class="">
                 <!-- <label class="col-sm-3 col-form-label">Images</label> -->
@@ -201,7 +201,14 @@
     <!-- content-wrapper ends -->
     <!-- partial:partials/_footer.html -->
     <footer class="footer">
-
+      <div class="content-wrapper ">
+        <div id="FormAlert" data-aos="fade-down" class="alert alert-danger col-md-4 col-8 mx-auto fixed-top "
+        style="display: none;  top:30px; border-radius: 7px; opacity: 0.9; " role="alert">
+        <h6 class="alert-heading text-center">Please provide only valid data.</h6>
+        <hr>
+        <span class="row "><i class="fa-sharp fa-light fa-circle-xmark fa-shake" style="color: #ff0505; font-size: 18px;"></i> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess"></p></span>
+         
+    </div>
     </footer>
     <!-- partial -->
   </div>

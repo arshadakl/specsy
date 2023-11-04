@@ -53,8 +53,12 @@
                                                         src="/products/images/<%= products[i].images.image1 %>"
                                                         alt="image" />
                                                 </td>
-                                                <td>
-                                                    <%= products[i].product_name %>
+                                                <td >
+                                                    <%if(products[i].product_name.length>15){%>
+                                                        <%= products[i].product_name.substring(0, 15) + "..." %>
+                                                    <%}else{%>
+                                                        <%= products[i].product_name %>
+                                                    <%}%>
                                                 </td>
                                                 <td>
                                                     <%= products[i].frame_shape %>
@@ -112,7 +116,11 @@
                                                                             <div class="col-md-9">
                                                                                 <div class="card-body">
                                                                                     <h5 class="card-title">
-                                                                                        <%= products[i].product_name %>
+                                                                                        <%if(products[i].product_name.length>15){%>
+                                                                                            <%= products[i].product_name.substring(0, 15) + "..." %>
+                                                                                        <%}else{%>
+                                                                                            <%= products[i].product_name %>
+                                                                                        <%}%>
                                                                                     </h5>
                                                                                     <p class="card-text">₹<%=
                                                                                             products[i].price %>
@@ -164,4 +172,22 @@
         </footer>
         <!-- partial -->
     </div>
+    <script>
+        // function onload() {
+        //     alert("cc")
+        //   var containers = document.getElementsByClassName("wordBr");
+        //   var maxCharacters = 5; // Set the desired character limit
+        
+        //   for (var i = 0; i < containers.length; i++) {
+        //     var container = containers[i];
+        
+        //     if (container.textContent.length > maxCharacters) {
+        //       container.textContent = container.textContent.substring(0, maxCharacters) + "...";
+        //     }
+        //   }
+        // }
+        
+        // window.onload = onload;
+
+    </script>
     <%- include('../admin/layouts/footer.ejs') %>
