@@ -14,7 +14,7 @@ const singleProductLoad = async (req, res) => {
       let relatedProducts = await ProductDB.find({
         $and: [
           { frame_shape: product[0].frame_shape },
-          { _id: { $ne: product[0]._id } },
+          { _id: { $ne: product[0]._id } },{unlist:{$eq:0}}
         ],
       });
       res.render("product", {
@@ -251,23 +251,22 @@ const getProductDetails = async (id) => {
 // ----------------------------------------------------------------
 const shopPageLoad = async (req, res) => {
   try {
+    const categories = await CategoryDB.find()
     let page = req.query.page || 1;
     let pageDB = Number(page) - 1;
     let productPerPage = 9;
     let totalProduct = await ProductDB.countDocuments();
     let totalPage = Math.ceil(totalProduct / productPerPage);
-    let products = await ProductDB.find()
+    let products = await ProductDB.find({unlist:{$eq:0}})
       .skip(pageDB * productPerPage)
       .limit(productPerPage);
-    // let products = await ProductDB.find()
-    // console.log(totalPage);
-    // console.log(products);
 
     res.render("shop", {
       products: products,
       user: req.session.user_id,
       totalPage,
       curentPage: Number(page),
+      categories
     });
     // res.status(200).json(products)
   } catch (error) {
@@ -277,12 +276,23 @@ const shopPageLoad = async (req, res) => {
 
 const shopPageSearch = async (req, res) => {
   try {
+    const categories = await CategoryDB.find()
     let page = req.query.page || 1;
     let pageDB = Number(page) - 1;
     let productPerPage = 9;
     let key = req.query.key;
-    let totalProduct = await ProductDB.countDocuments();
+    
+    // Calculate the total number of products that match the search criteria
+    let totalProduct = await ProductDB.countDocuments({
+      $or: [
+        { product_name: { $regex: key, $options: "i" } },
+        { frame_shape: { $regex: key, $options: "i" } },
+      ],
+    });
+    
     let totalPage = Math.ceil(totalProduct / productPerPage);
+    
+    // Query products based on the search criteria and pagination
     let products = await ProductDB.find({
       $or: [
         { product_name: { $regex: key, $options: "i" } },
@@ -291,15 +301,18 @@ const shopPageSearch = async (req, res) => {
     })
       .skip(pageDB * productPerPage)
       .limit(productPerPage);
+    
     res.render("shop", {
       products: products,
       user: req.session.user_id,
       totalPage,
       curentPage: Number(page),
+      categories
     });
-  } catch (error) {}
+  } catch (error) {
+    // Handle errors appropriately
+  }
 };
-
 
 // This used to list and unlist user , this function working with Ajax
 // ---------------------------------------
@@ -330,6 +343,285 @@ const prducutListUnlist = async (req, res) => {
 };
 
 
+
+
+
+
+// const queryTester = async (req, res) => {
+//   try {
+//     let page = req.query.page || 1;
+//     let pageDB = Number(page) - 1;
+//     let productPerPage = 9;
+//     let key = req.query.key || "";
+//     let frameShape = req.query.frame_shape || "";
+//     let gender = req.query.gender || "";
+//     let minPrice = req.query.min_price || "";
+//     let maxPrice = req.query.max_price || "";
+
+//     // Get the categories query parameter as a comma-separated string
+//     const categoriesQueryParam = req.query.categories;
+
+//     // Parse the categories into an array by splitting on the comma delimiter
+//     const categories = categoriesQueryParam ? categoriesQueryParam.split(',') : [];
+
+//     // Construct a regex pattern for each category
+//     const categoryRegexPatterns = categories.map(category => new RegExp(`^${category}$`, 'i'));
+
+//     // Construct the $or array based on the provided search parameters
+//     const orConditions = [
+//       key ? { product_name: { $regex: key, $options: "i" } } : {},
+//       frameShape ? { frame_shape: { $regex: frameShape, $options: "i" } } : {},
+//       gender ? { gender: { $regex: gender, $options: "i" } } : {},
+//       (minPrice !== "" && maxPrice !== "") ? { price: { $gte: minPrice, $lte: maxPrice } } : {},
+//       categories.length ? { category: { $in: categoryRegexPatterns } } : {},
+//     ];
+
+//     // Build the aggregation pipeline
+//     const pipeline = [
+//       {
+//         $match: {
+//           $or: orConditions
+//         }
+//       },
+//       {
+//         $skip: pageDB * productPerPage
+//       },
+//       {
+//         $limit: productPerPage
+//       }
+//     ];
+
+//     // Perform aggregation
+//     const aggregationResult = await ProductDB.aggregate(pipeline);
+
+//     // Calculate the total number of products that match the search criteria
+//     const totalProduct = await ProductDB.aggregate([
+//       { $match: { $or: orConditions } },
+//       { $count: "total" }
+//     ]);
+
+//     let totalPage = Math.ceil(totalProduct.length > 0 ? totalProduct[0].total / productPerPage : 0);
+//     console.log(aggregationResult);
+//     res.render("shop", {
+//       products: aggregationResult,
+//       totalPage,
+//       curentPage: Number(page),
+//       user: req.session.user_id,
+//       totalPage,
+// });
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+// queryTester
+// const categories = await CategoryDB.find()
+
+
+// const queryTester = async (req, res) => {
+//   try {
+//     const categories = await CategoryDB.find();
+
+//     let page = req.query.page || 1;
+//     let pageDB = Number(page) - 1;
+//     let productPerPage = 9;
+//     let key = req.query.key;
+
+//     // Define the base search criteria
+//     const searchCriteria = {};
+
+//     if (key) {
+//       searchCriteria.$or = [
+//         { product_name: { $regex: key, $options: "i" } },
+//         { frame_shape: { $regex: key, $options: "i" } },
+//         { gender: { $regex: key, $options: "i" } },
+//       ];
+//     }
+
+//     if (Array.isArray(req.query.frame_shape)) {
+//       // Handle multiple frame_shape values as an array
+//       searchCriteria.frame_shape = {
+//         $in: req.query.frame_shape.map((shape) => ({
+//           $regex: shape,
+//           $options: "i",
+//         })),
+//       };
+//     } else if (req.query.frame_shape) {
+//       // Handle a single frame_shape value
+//       searchCriteria.frame_shape = {
+//         $regex: req.query.frame_shape,
+//         $options: "i",
+//       };
+//     }
+
+//     if (req.query.gender) {
+//       searchCriteria.gender = { $regex: req.query.gender, $options: "i" };
+//     }
+
+//     if (req.query.min_price && req.query.max_price) {
+//       searchCriteria.price = {
+//         $gte: req.query.min_price,
+//         $lte: req.query.max_price,
+//       };
+//     } else if (req.query.min_price) {
+//       searchCriteria.price = { $gte: req.query.min_price };
+//     } else if (req.query.max_price) {
+//       searchCriteria.price = { $lte: req.query.max_price };
+//     }
+
+//     // Calculate the total number of products that match the search criteria
+//     let totalProduct = await ProductDB.countDocuments(searchCriteria);
+
+//     let totalPage = Math.ceil(totalProduct / productPerPage);
+
+//     // Query products based on the search criteria and pagination
+//     let products = await ProductDB.find(searchCriteria)
+//       .skip(pageDB * productPerPage)
+//       .limit(productPerPage);
+
+//     res.render("shop", {
+//       products: products,
+//       user: req.session.user_id,
+//       totalPage,
+//       curentPage: Number(page),
+//       categories,
+//     });
+//   } catch (error) {
+//     // Handle errors appropriately
+//   }
+// };
+
+
+// const queryTester = async (req, res) => {
+//   try {
+//     const categories = await CategoryDB.find();
+
+//     let page = req.query.page || 1;
+//     let pageDB = Number(page) - 1;
+//     let productPerPage = 9;
+//     let key = req.query.key;
+
+//     // Define the base search criteria
+//     const searchCriteria = {};
+
+//     if (key) {
+//       searchCriteria.$or = [
+//         { product_name: { $regex: key, $options: "i" } },
+//         { frame_shape: { $regex: key, $options: "i" } },
+//         { gender: { $regex: key, $options: "i" } },
+//       ];
+//     }
+
+//     if (req.query.frame_shape) {
+//       // Split the comma-separated values and handle them as an array
+//       const frameShapes = req.query.frame_shape.split(',');
+
+//       // Check if frameShapes is an array and not empty
+//       if (Array.isArray(frameShapes) && frameShapes.length > 0) {
+//         // Handle multiple frame_shape values as an array
+//         searchCriteria.frame_shape = { $in: frameShapes };
+//       }
+//     }
+
+//     if (req.query.gender) {
+//       searchCriteria.gender = { $regex: req.query.gender, $options: "i" };
+//     }
+
+//     // ... (rest of the code remains the same)
+//   } catch (error) {
+//     // Handle errors appropriately
+//   }
+// };
+
+const queryTester = async (req, res) => {
+  try {
+    const categories = await CategoryDB.find();
+    const page = req.query.page || 1;
+    const pageDB = Number(page) - 1;
+    const productPerPage = 9;
+    const key = req.query.key || "";
+    let query = {};
+
+    // Calculate the total number of products that match the search criteria
+    let totalProduct;
+
+    if (key !== "") {
+      totalProduct = await ProductDB.countDocuments({
+        $or: [
+          { product_name: { $regex: key, $options: "i" } },
+          { frame_shape: { $regex: key, $options: "i" } },
+        ],
+      });
+    } else {
+      // Check and accumulate filter conditions based on query parameters
+      if (req.query.frame_shape) {
+        const frameShapes = req.query.frame_shape.split("%2C").map(shape => shape.charAt(0).toUpperCase() + shape.slice(1));
+        query.frame_shape = { $in: frameShapes };
+      }
+
+      if (req.query.gender) {
+        const capitalizedGender = req.query.gender.split(",").map(shape => shape.charAt(0).toUpperCase() + shape.slice(1));
+        query.gender = capitalizedGender;
+      }
+
+      if (req.query.minPrice && req.query.maxPrice) {
+        const minPrice = parseFloat(req.query.minPrice);
+        const maxPrice = parseFloat(req.query.maxPrice);
+        query.price = { $gte: minPrice, $lte: maxPrice };
+      }
+
+      // Continue to add more filter conditions as needed
+
+      // Calculate the total number of products that match the filter conditions
+      totalProduct = await ProductDB.countDocuments(query);
+    }
+
+    const totalPage = Math.ceil(totalProduct / productPerPage);
+
+    console.log(query);
+    // Query products based on the search or filter criteria and pagination
+    const products = key !== ""
+      ? await ProductDB.find({
+          $or: [
+            { product_name: { $regex: key, $options: "i" } },
+            { frame_shape: { $regex: key, $options: "i" } },
+          ],
+        })
+        .skip(pageDB * productPerPage)
+        .limit(productPerPage)
+      : await ProductDB.find(query)
+        .skip(pageDB * productPerPage)
+        .limit(productPerPage);
+// console.log(products);
+    res.render("shop", {
+      products,
+      user: req.session.user_id,
+      totalPage,
+      curentPage: Number(page),
+      categories,
+    });
+  } catch (error) {
+    console.log(error.message);
+    // Handle the error
+    res.status(500).send("An error occurred");
+  }
+};
+
+
+
+
+// res.json({
+//   products: aggregationResult,
+//   totalPage,
+//   curentPage: Number(page),
+// });
+// res.render("shop", {
+//   products: products,
+//   user: req.session.user_id,
+//   totalPage,
+//   curentPage: Number(page),
+// });
+// http://example.com/products?&key=glasses&price_min=20&price_max=50&categories=eyewear,accessories&gender=unisex&frame_shape=rectangle
+
 module.exports = {
   singleProductLoad,
   productPageLoad,
@@ -341,5 +633,6 @@ module.exports = {
   deleteproduct,
   shopPageLoad,
   shopPageSearch,
-  prducutListUnlist
+  prducutListUnlist,
+  queryTester
 };

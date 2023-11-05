@@ -57,8 +57,8 @@ router.post('/updatePhoto',auth.isLogin,fileUpload.upload.single("image"),userCo
 
 // user cart related routers
 router.get('/cart',auth.isLogin,userController.cartPageLoad)
-router.post('/addtocart',auth.isLogin,userController.addtoCart)
-router.post('/changeqty',auth.isLogin,userController.productQuantityHandlling)
+router.post('/addtocart',auth.jsonIsLogin,userController.addtoCart)
+router.post('/changeqty',auth.jsonIsLogin,userController.productQuantityHandlling)
 router.delete('/removecartproduct',auth.isLogin,userController.removeCartItem)
 
 // product related routers
@@ -96,7 +96,7 @@ router.post('/checkout/verify-payment',auth.isLogin,orderController.verifyPaymen
 
 //wishlist related
 router.get('/wishlist',auth.isLogin,wishlistController.wishListPageLoad)
-router.post('/addtowishlist',auth.isLogin,wishlistController.addToWishlist)
+router.post('/addtowishlist',auth.jsonIsLogin,wishlistController.addToWishlist)
 router.delete('/removewishitem',auth.jsonIsLogin,wishlistController.removeItemFromWish)
 
 //coupons
@@ -104,8 +104,10 @@ router.get('/profile/coupons',auth.isLogin,couponController.couponUserPageLoad)
 router.post('/checkout/placeorder/coupon',couponController.ApplyCoupon)
 
 //shop page router
-router.get('/shop',productController.shopPageLoad)
-router.get('/shop/search',productController.shopPageSearch)   
+// router.get('/shop',productController.shopPageLoad)
+router.get('/shop',productController.queryTester)
+// router.get('/shop/search',productController.shopPageSearch)   
+// router.get('/shop/search',productController.queryTester)   
 
 
 //wallet page router
@@ -113,6 +115,6 @@ router.get('/wallet',auth.isLogin,walletController.walletPageLoader)
 
 
 // test case
-router.get('/test',userController.testLoad)
+router.get('/test',productController.queryTester)
 
 module.exports = router

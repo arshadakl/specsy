@@ -5,9 +5,9 @@ const CategoryDB = require("../models/productsModel").category;
 const OrderDB = require("../models/orderModel").Order;
 const PaymentDB = require("../models/paymentModel").TransactionHistory;
 const AnalyticsDB = require("../models/analyticModel");
-const XLSX = require("xlsx");
+// const XLSX = require("xlsx");
 const ExcelJS = require("exceljs");
-const pdfMake = require("pdfmake");
+// const pdfMake = require("pdfmake");
 const puppeteer = require("puppeteer");
 
 const salesReportPageLoad = async (req, res) => {
@@ -18,6 +18,7 @@ const salesReportPageLoad = async (req, res) => {
       start = req.query.start;
       end = new Date(req.query.end); // Convert to Date
       end.setDate(end.getDate() + 1); // Add one day to the end date
+      console.log(end);
     } else {
       today = new Date();
       start = new Date(today);

@@ -173,7 +173,7 @@ const sentVerifyMailForForgetPass = async (name, email) => {
 // ---------------------------------------
 const homePageLoad = async (req, res) => {
   try {
-    let product = await ProductDB.find({});
+    let product = await ProductDB.find({unlist:{$eq:0}});
     res.render("home", {
       user: req.session.user_id,
       products: product,
