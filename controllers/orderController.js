@@ -728,6 +728,18 @@ const cancelOrder = async (req, res) => {
     console.log(productInfo);
     productInfo.OrderStatus = "canceled";
     productInfo.updatedAt = Date.now();
+
+    if(order.paymentMethod!=="Cash on Delivery"){
+      let refundStatus = await refundManagement(
+        oderId,
+        productId,
+        order.trackId,
+        req.session.user_id
+      );
+      console.log();
+    }
+
+
     const result = await order.save();
 
     console.log(result);
