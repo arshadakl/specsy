@@ -33,6 +33,7 @@ const categoryPageLoad = async (req, res) => {
   
       let result = await category.save();
       console.log(result);
+      req.session.CategoryAdded=1
       res.redirect("/admin/category");
     } catch (error) {
       console.log(error.message);

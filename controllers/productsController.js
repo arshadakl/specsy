@@ -61,7 +61,14 @@ const productPageLoad = async (req, res) => {
   try {
     let products = await ProductDB.find({});
     // console.log(products);
-    res.render("products", { products: products });
+    res.render("products", { products: products ,productcAdded:req.session.productcAdded},(err, html) => {
+      if (!err) {
+        req.session.productcAdded=false
+        res.send(html); // Send the rendered HTML to the client
+      } else {
+        console.log(err.message);
+      }
+    });
   } catch (error) {
     console.log(error.message);
   }
@@ -125,6 +132,7 @@ const addProduct = async (req, res) => {
 
     let result = await product.save();
     console.log(result);
+    req.session.productcAdded=1
     res.redirect("/admin/products");
   } catch (error) {
     console.log(error.message);
@@ -219,7 +227,7 @@ const updateProduct = async (req, res) => {
     );
 
     console.log(update);
-
+    req.session.productcAdded=2
     res.redirect("/admin/products");
   } catch (error) {
     if (req.fileFilterError && req.fileFilterError.redirectTo) {

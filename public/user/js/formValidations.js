@@ -44,9 +44,9 @@ function validateEmail(email) {
     return emailRegex.test(email);
 }
 
-function validatePincode(pincode) {
-    return !isNaN(pincode);
-}
+// function validatePincode(pincode) {
+//     return !isNaN(pincode);
+// }
 
 
 
@@ -91,8 +91,7 @@ function validateMobileNumber(mobileNumber) {
 }
 
 function validatePincode(pincode) {
-    return /^\d{6}$/.test(pincode);
-    // return !isNaN(pincode);
+    return !isNaN(pincode);
 }
 
 

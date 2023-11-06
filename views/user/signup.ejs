@@ -117,6 +117,9 @@
 				showFormValidAlert() -->
 	<script>
 		document.querySelector('form').addEventListener('submit', function(event) {
+			function resetCountdownStorage() {
+				localStorage.removeItem("timeLeft");
+  			}
 			const FormErorr = document.getElementById("FormErorr")
 			const usernameInput = document.querySelector('#register-username');
 			const fullNameInput = document.querySelector('#register-fullname');

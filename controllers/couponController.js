@@ -38,7 +38,14 @@ const calculateTotalPrice = async (userId) => {
 const couponPageLoad = async (req, res) => {
   try {
     const Coupons = await CouponDB.find();
-    res.render("coupon", { Coupons });
+    res.render("coupon", { Coupons,couponAdded:req.session.couponAdded },(err, html) => {
+      if (!err) {
+        req.session.couponAdded=false
+        res.send(html); // Send the rendered HTML to the client
+      } else {
+        console.log(err.message);
+      }
+    });
   } catch (error) {
     console.log(error.message);
   }
@@ -92,6 +99,7 @@ const addNewCoupon = async (req, res) => {
         maxUsers,
       });
       await coupon.save();
+      req.session.couponAdded =1
       return res.redirect("/admin/coupon");
     }else{
       req.session.couponErr = 1
@@ -228,7 +236,7 @@ const editCoupon = async (req, res) => {
           },
         }
       );
-  
+      req.session.couponAdded =2
     return res.redirect("/admin/coupon");
 
   } catch (error) {

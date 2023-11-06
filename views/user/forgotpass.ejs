@@ -84,6 +84,12 @@
                 AOS.init();
             </script>
             <script src="user/js/main.js"></script>
+            <script>
+                 function resetCountdownStorage() {
+                	localStorage.removeItem("timeLeft");
+                 }
+                 window.onload=resetCountdownStorage
+            </script>
 
 </body>
 

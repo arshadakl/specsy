@@ -177,6 +177,17 @@ const homePageLoad = async (req, res) => {
     res.render("home", {
       user: req.session.user_id,
       products: product,
+      SignupMess:req.session.SignupMess
+    },
+    (err, html) => {
+      if (!err) {
+        // Set session variables to false after rendering
+        req.session.SignupMess=false
+
+        res.send(html); // Send the rendered HTML to the client
+      } else {
+        console.log(err.message);
+      }
     });
   } catch (error) {
     console.log(error.message);
@@ -401,12 +412,12 @@ const otpValid = async (req, res) => {
     let num = req.body;
     if (req.query.userId) {
       console.log("expire called....");
-      res.render("verifyNotfy", { wrong: 1, userId: req.query.userId });
+      return res.render("verifyNotfy", { wrong: 1, userId: req.query.userId });
       console.log("otp expired..");
       otp=null
     } else if (req.query.forget) {
       console.log("expire called....");
-      res.render("verifyNotfy", { wrong: 3, userId: 0 });
+      return res.render("verifyNotfy", { wrong: 3, userId: 0 });
       console.log("otp expired..");
     } else {
       enterdOtp = "" + num.a + num.b + num.c + num.d + num.e + num.f;
@@ -419,9 +430,10 @@ const otpValid = async (req, res) => {
         console.log(updatInfo);
         req.session.loggedIn = true;
         req.session.user_id = req.query.id;
-        res.render("verifyNotfy", { wrong: 0 });
+        req.session.SignupMess = 1
+        return res.render("verifyNotfy", { wrong: 0 });
       } else {
-        res.render("verifyNotfy", { userId: req.query.id, wrong: 2 });
+        return res.render("verifyNotfy", { userId: req.query.id, wrong: 2 });
         console.log("otp wrong");
       }
     }
@@ -442,12 +454,14 @@ const profilePageLoad = async (req, res) => {
         user: userData,
         updatePassErr: req.session.updatePassErr,
         updatePass: req.session.updatePass,
+        profilUpdate:req.session.profilUpdate
       },
       (err, html) => {
         if (!err) {
           // Reset session variables after rendering
           req.session.updatePassErr = false;
           req.session.updatePass = false;
+          req.session.profilUpdate= false
           res.send(html);
         } else {
           console.log(err.message);
@@ -492,6 +506,7 @@ const updatePhoto = async (req, res) => {
       { $set: { image: req.file.filename } }
     );
     console.log(updatePhoto);
+    req.session.profilUpdate = 2 
     userData = await takeUserData(req.session.user_id);
     // res.render("userProfile", { user: userData });
     res.render(
@@ -500,12 +515,14 @@ const updatePhoto = async (req, res) => {
         user: userData,
         updatePassErr: req.session.updatePassErr,
         updatePass: req.session.updatePass,
+        profilUpdate:req.session.profilUpdate
       },
       (err, html) => {
         if (!err) {
           // Reset session variables after rendering
           req.session.updatePassErr = false;
           req.session.updatePass = false;
+          req.session.profilUpdate = false;
           res.send(html);
         } else {
           console.log(err.message);
@@ -542,6 +559,7 @@ const updateUserData = async (req, res) => {
     );
     console.log(updateUser);
     userData = await takeUserData(req.session.user_id);
+    req.session.profilUpdate = 1
     // res.render("userProfile", { user: userData });
     res.render(
       "userProfile",
@@ -549,12 +567,14 @@ const updateUserData = async (req, res) => {
         user: userData,
         updatePassErr: req.session.updatePassErr,
         updatePass: req.session.updatePass,
+        profilUpdate:req.session.profilUpdate
       },
       (err, html) => {
         if (!err) {
           // Reset session variables after rendering
           req.session.updatePassErr = false;
           req.session.updatePass = false;
+          req.session.profilUpdate =false
           res.send(html);
         } else {
           console.log(err.message);
@@ -1014,6 +1034,14 @@ const allOrdersPageLoad = async (req, res) => {
     res.render("allorders", {
       user: req.session.user_id,
       products: productWiseOrders,
+      cancel:req.session.OrderCanceled
+    },(err,html)=>{
+      if (!err) {
+        req.session.OrderCanceled=false
+        res.send(html); // Send the rendered HTML to the client
+      } else {
+        console.log(err.message);
+      }
     });
   } catch (error) {
     console.log(error.message);
@@ -1099,6 +1127,7 @@ const updateShippingAddress = async (req, res) => {
     selectedAddress.city = Addres.city;
     selectedAddress.state = Addres.state;
     await userAddress.save();
+    // req.session.profilUpdate = 1
 
     res.redirect("/profile/user_address");
     // console.log(selectedAddress);

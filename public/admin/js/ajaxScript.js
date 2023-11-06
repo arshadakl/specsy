@@ -1,5 +1,9 @@
 
 
+setTimeout(function() {
+    document.getElementById('myAlert').style.display = 'none';
+}, 5000);
+
 function blockButton(id) {
     // Send an AJAX request to update the user's block status
     $.ajax({
@@ -112,3 +116,5 @@ function formatDate(inputDate) {
         }
     });
 }
+
+

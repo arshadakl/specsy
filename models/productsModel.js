@@ -67,10 +67,29 @@ const categorySchema = mongoose.Schema({
     }
 })
 
+// Define the banner schema
+const bannerSchema = new mongoose.Schema({
+    image: {
+      type: String, // You can store the image URL or file path as a string
+      required: true,
+    },
+    subtext: {
+      type: String,
+      required: true,
+    },
+    mainHead: {
+      type: String,
+      required: true,
+    },
+  });
+// Create the Banner model
+const Banner = mongoose.model('Banner', bannerSchema);
+
 const category = mongoose.model('category',categorySchema)
 
 const product = mongoose.model("product",productSchema)
 module.exports = {
     product,
-    category
+    category,
+    Banner
 }

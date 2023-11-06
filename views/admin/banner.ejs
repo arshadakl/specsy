@@ -1,0 +1,85 @@
+<%- include('../admin/layouts/header.ejs') %>
+
+    <div class="main-panel">
+        <div class="content-wrapper">
+
+
+
+
+            <div class="row ">
+                <div class="col-12 grid-margin">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between">
+                                <h4 class="card-title">
+                                    <p class=""></p>Banner Management
+                                </h4>
+
+                            </div>
+                            <hr class="white-line my-4">
+                            <div class="mb-5 col-12 row">
+                                <div class="col-md-6 col-12">
+                                    <img style="width: 480px;" src="/user/images/slider/slide-1.jpg" alt="banner-img">
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <h4>Topsale Collection</h4>
+                                    <h1>Frame Your World</h1>
+                                    <button class="btn btn-inverse-primary"  data-bs-target="#mod" data-bs-toggle="modal" data-bs-target="#mod">Change Banner</button>
+                                   
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- content-wrapper ends -->
+
+
+
+        <div class="modal fade" id="mod" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                                                                                                                                                                                                                                                       aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- <h1 class="modal-title fs-5" id="exampleModalLabel">
+Modal title</h1> -->
+                        <h5 class="modal-title ">Edit Banner</h5>
+                        <button type="button" class=" btn mdi mdi-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-12 rounded-image-preview">
+                            <label for="imageInput1" class="image-label">image 1
+                              <div class="rounded-image-preview">
+                                <img id="imagePreview1"
+                                  src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                                  alt="Preview" />
+                              </div>
+                              <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput">
+                            </label>
+                          </div>
+                        
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Not
+                                Now</button>
+                            <a type="button" href="#" class="btn btn-inverse-danger">Delete
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- partial:partials/_footer.html -->
+
+
+
+            <footer class="footer">
+
+            </footer>
+            <!-- partial -->
+        </div>
+        <%- include('../admin/layouts/footer.ejs') %>

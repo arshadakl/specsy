@@ -173,7 +173,19 @@
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->
         <footer class="footer">
-
+           <%if(productcAdded==1){%>
+            <div id="myAlert" data-aos="fade-down" class="alert alert-success col-3 fixed-top "
+            style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9; z-index: 10000;" role="alert">
+            <h6 class="alert-heading text-center">New Product Added <i class="fa-duotone fa-box-open-full fa-bounce"></i></h6>
+            <!-- <p class="fs-6 form-text text-white">Your password has been successfully updated.</p> -->
+         </div>
+         <%}else if(productcAdded==2){%>
+         <div id="myAlert" data-aos="fade-down" class="alert alert-success col-3 fixed-top "
+            style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9; z-index: 10000;" role="alert">
+            <h6 class="alert-heading text-center">Product Details Edited <i class="fa-duotone fa-box-open-full fa-shake"></i></h6>
+            <!-- <p class="fs-6 form-text text-white">Your password has been successfully updated.</p> -->
+         </div>
+         <%}%>
         </footer>
         <!-- partial -->
     </div>

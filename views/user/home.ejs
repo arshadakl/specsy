@@ -422,7 +422,17 @@
             </div><!-- End .container -->
         </div><!-- End .cta -->
     </main><!-- End .main -->
-
+    <!-- id="myAlert" -->
+    <%if(SignupMess==1){%>
+    <div id="myAlert"  data-aos="fade-up" class="alert alert-dark col-3 fixed-top font-monospace py-4" style="left: 20px; top:75vh; opacity: 0.9; border-radius: 7px;" role="alert">
+        <h4 class="alert-heading text-success" style="font-size: 15px;">Signup Successful <i class="fa-duotone fa-badge-check fa-bounce" style="--fa-primary-color: #ffffff; --fa-secondary-color: #01e427; --fa-secondary-opacity: 0.8;"></i></h4>
+        <p class=" form-text text-white" style="font-size: 13px;">Congratulations, your new account has been successfully created!</p>
+      </div>
+    <%}%>  
+    <!-- <div  data-aos="fade-down" class="alert alert-success col-3 fixed-top "
+    style="left: 20px; top:20px; border-radius: 7px; opacity: 0.9; z-index: 10000;" role="alert">
+    <h6 class="alert-heading">Login Success</h6>
+    </div> -->
 
 <!-- Sign in / Register Modal -->
 
