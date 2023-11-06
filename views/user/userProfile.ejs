@@ -226,7 +226,7 @@
                                             </div>
                                         </form>
 
-                                        <form action="/updateUser" method="post">
+                                        <form action="/updateUser" method="post" onsubmit=" return userProfieValidation()">
 
                                             <!-- profile end -->
                                             <div class="row">
@@ -270,17 +270,7 @@
 
 
                                             </div>
-                                            <!-- <small class="form-text">This will be how your name will be displayed in the account section and in reviews</small> -->
-
-
-                                            <!-- <label>Current password (leave blank to leave unchanged)</label>
-                                                             <input type="password" class="form-control">
-
-                                                             <label>New password (leave blank to leave unchanged)</label>
-                                                             <input type="password" class="form-control">
-
-                                                             <label>Confirm new password</label>
-                                                             <input type="password" class="form-control mb-2"> -->
+                                           
 
                                             <button type="submit" class="btn btn-outline-primary-login">
                                                 <span>SAVE CHANGES</span>
@@ -336,6 +326,15 @@
             </div><!-- End .page-content -->
         </main><!-- End .main -->
 
+        <!-- <div class="content-wrapper ">
+            <div id="FormAlert" data-aos="fade-down" class="alert alert-danger col-md-4 col-8 mx-auto fixed-top "
+            style=" display: none; top:30px; border-radius: 7px; opacity: 0.9; z-index: 1000000;" role="alert">
+            <h6 class="alert-heading text-center ">Please provide only valid data.</h6>
+            <hr>
+            <span class="row "><i class="fa-sharp fa-light fa-circle-xmark fa-shake" style="color: #ff0505; font-size: 18px;"></i> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess" class=" text-white"></p></span>
+             
+         </div> -->
+
 
         <%- include('../user/layouts/footer.ejs') %>
 
@@ -359,6 +358,22 @@
                         <p class="fs-6 form-text text-white">Please enter your Correct password.</p>
                     </div>
                     <%}%>
+
+                    
+                        <!-- <div class="content-wrapper ">
+                            <div id="FormAlertValid" data-aos="fade-down" class="alert alert-danger col-md-3 col-8 mx-auto fixed-top "
+                            style="  top:30px; border-radius: 7px; opacity: 0.9; " role="alert">
+                            <h6 class="alert-heading text-center">Code Not available</h6>
+                            <hr>
+                            <span class="row "> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess">This coupon code isn't available, it's already been used</p></span>
+                             
+                        </div>
+                        <script>
+                              setTimeout(function () {
+                                $("#FormAlertValid").fadeOut();
+                              }, 5000);
+                        </script> -->
+                    
 
 
                         <script>

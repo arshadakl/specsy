@@ -160,50 +160,34 @@
                         <h5 class="" id="exampleModalLabel">Add New Address</h5>
                         <button type="button" class=" btn-dark " data-bs-dismiss="modal" aria-label="Close">x</button>
                     </div>
-                    <form action="/shippingaddress" method="post">
+                    <form action="/shippingaddress" method="post" onsubmit="return validateUserAddressForm()">
                         <div class="modal-body p-4">
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Country/Region
-                                </label>
-                                <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="country" required>
+                                <label for="Countryadd" class="form-label m-0">Country/Region</label>
+                                <input type="text" class="form-control address-input" id="Countryadd" name="country">
                             </div>
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Full name (First and Last
-                                    name)
-                                </label>
-                                <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="fullName" required>
+                                <label for="fullNameadd" class="form-label m-0">Full name (First and Last name)</label>
+                                <input type="text" class="form-control address-input" id="fullNameadd" name="fullName">
                             </div>
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Mobile number
-                                </label>
-                                <input type="number" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="mobileNumber" required>
+                                <label for="mobileNumberadd" class="form-label m-0">Mobile number</label>
+                                <input type="number" class="form-control address-input" id="mobileNumberadd" name="mobileNumber">
                             </div>
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Area, Street, Sector,
-                                    Village
-                                </label>
-                                <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="city" required>
+                                <label for="cityadd" class="form-label m-0">Area, Street, Sector, Village</label>
+                                <input type="text" class="form-control address-input" id="cityadd" name="city">
                             </div>
-
                             <div class=" row ">
                                 <div class=" col-6">
-                                    <label for="exampleFormControlInput1" class="form-label m-0">State
-                                    </label>
-                                    <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                        name="state" required>
+                                    <label for="stateadd" class="form-label m-0">State</label>
+                                    <input type="text" class="form-control address-input" id="stateadd" name="state">
                                 </div>
                                 <div class=" col-6">
-                                    <label for="exampleFormControlInput1" class="form-label m-0">Pincode
-                                    </label>
-                                    <input type="number" class="form-control address-input"
-                                        id="exampleFormControlInput1" name="pincode" required>
+                                    <label for="pincodeadd" class="form-label m-0">Pincode</label>
+                                    <input type="number" class="form-control address-input" id="pincodeadd" name="pincode">
                                 </div>
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <a class="btn btn-outline-primary-2" style="border-radius: 7px;"

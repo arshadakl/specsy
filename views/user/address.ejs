@@ -69,52 +69,52 @@
                                         <button type="button" class=" btn-dark " data-bs-dismiss="modal"
                                             aria-label="Close">x</button>
                                     </div>
-                                    <form action="/profile/user_address/edit" method="post">
+                                    <form action="/profile/user_address/edit" method="post" onsubmit="return validateUserAddressFormUpdate()">
                                         <div class="modal-body p-4">
                                             <div class="mb-1">
-                                                <label for="exampleFormControlInput1"
+                                                <label for="Countryedit"
                                                     class="form-label m-0">Country/Region
                                                 </label>
                                                 <input type="text" class="form-control address-input"
-                                                    id="exampleFormControlInput1" name="country" value="<%=address[i].country%>" required>
+                                                    id="Countryedit" name="country" value="<%=address[i].country%>" >
                                             </div>
                                             <div class="mb-1">
-                                                <label for="exampleFormControlInput1" class="form-label m-0">Full name
+                                                <label for="fullNameedit" class="form-label m-0">Full name
                                                     (First and Last
                                                     name)
                                                 </label>
                                                 <input type="text" class="form-control address-input"
-                                                    id="exampleFormControlInput1" value="<%=address[i].fullName%>" name="fullName"  required>
+                                                    id="fullNameedit" value="<%=address[i].fullName%>" name="fullName"  >
                                             </div>
                                             <div class="mb-1">
-                                                <label for="exampleFormControlInput1" class="form-label m-0">Mobile
+                                                <label for="mobileNumberedit" class="form-label m-0">Mobile
                                                     number
                                                 </label>
                                                 <input type="number" class="form-control address-input"
-                                                    id="exampleFormControlInput1" value="<%=address[i].mobileNumber%>" pattern="[0-9]{10,12}" maxlength="12" name="mobileNumber" required>
+                                                    id="mobileNumberedit" value="<%=address[i].mobileNumber%>"  name="mobileNumber" >
                                             </div>
                                             
                                             <div class="mb-1">
-                                                <label for="exampleFormControlInput1" class="form-label m-0">Area,
+                                                <label for="cityedit" class="form-label m-0">Area,
                                                     Street, Sector,
                                                     Village
                                                 </label>
                                                 <input type="text" class="form-control address-input"
-                                                    id="exampleFormControlInput1" value="<%=address[i].city%>" name="city" required>
+                                                    id="cityedit" value="<%=address[i].city%>" name="city" >
                                             </div>
 
                                             <div class=" row ">
                                                 <div class=" col-6">
-                                                    <label for="exampleFormControlInput1" class="form-label m-0">State
+                                                    <label for="stateedit" class="form-label m-0">State
                                                     </label>
                                                     <input type="text" class="form-control address-input"
-                                                        id="exampleFormControlInput1" name="state" value="<%=address[i].state%>" required>
+                                                        id="stateedit" name="state" value="<%=address[i].state%>" >
                                                 </div>
                                                 <div class=" col-6">
-                                                    <label for="exampleFormControlInput1" class="form-label m-0">Pincode
+                                                    <label for="pincodeedit" class="form-label m-0">Pincode
                                                     </label>
                                                     <input type="number" value="<%=address[i].pincode%>" class="form-control address-input"
-                                                        id="exampleFormControlInput1" name="pincode" required>
+                                                        id="pincodeedit" name="pincode" >
                                                 </div>
                                                 <input value="<%=address[i]._id%>" class="form-control address-input"
                                                         id="exampleFormControlInput1" name="adressId" hidden required>
@@ -197,72 +197,46 @@
                         <h5 class="" id="exampleModalLabel">Add New Address</h5>
                         <button type="button" class=" btn-dark " data-bs-dismiss="modal" aria-label="Close">x</button>
                     </div>
-                    <form action="/profile/user_address" method="post">
+                    <form action="/profile/user_address" method="post" onsubmit="return validateUserAddressForm()">
                         <div class="modal-body p-4">
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Country/Region
-                                </label>
-                                <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="country" required>
+                                <label for="Countryadd" class="form-label m-0">Country/Region</label>
+                                <input type="text" class="form-control address-input" id="Countryadd" name="country">
                             </div>
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Full name (First and Last
-                                    name)
-                                </label>
-                                <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="fullName" required>
+                                <label for="fullNameadd" class="form-label m-0">Full name (First and Last name)</label>
+                                <input type="text" class="form-control address-input" id="fullNameadd" name="fullName">
                             </div>
-                            <!-- <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Mobile number
-                                </label>
-                                <input type="number" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="mobileNumber" required>
-                            </div> -->
-
                             <div class="mb-1">
-                                <label for="mobileNumberInput" class="form-label m-0">Mobile number</label>
-                                <input type="number" class="form-control address-input" id="mobileNumberInput" name="mobileNumber" required>
+                                <label for="mobileNumberadd" class="form-label m-0">Mobile number</label>
+                                <input type="number" class="form-control address-input" id="mobileNumberadd" name="mobileNumber">
                             </div>
-                            
-
-
                             <div class="mb-1">
-                                <label for="exampleFormControlInput1" class="form-label m-0">Area, Street, Sector,
-                                    Village
-                                </label>
-                                <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                    name="city" required>
+                                <label for="cityadd" class="form-label m-0">Area, Street, Sector, Village</label>
+                                <input type="text" class="form-control address-input" id="cityadd" name="city">
                             </div>
-
                             <div class=" row ">
                                 <div class=" col-6">
-                                    <label for="exampleFormControlInput1" class="form-label m-0">State
-                                    </label>
-                                    <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                        name="state" required>
+                                    <label for="stateadd" class="form-label m-0">State</label>
+                                    <input type="text" class="form-control address-input" id="stateadd" name="state">
                                 </div>
                                 <div class=" col-6">
-                                    <label for="exampleFormControlInput1" class="form-label m-0">Pincode
-                                    </label>
-                                    <input type="number" class="form-control address-input"
-                                        id="exampleFormControlInput1" name="pincode" required>
+                                    <label for="pincodeadd" class="form-label m-0">Pincode</label>
+                                    <input type="number" class="form-control address-input" id="pincodeadd" name="pincode">
                                 </div>
                             </div>
-
                         </div>
                         <div class="modal-footer">
-                            <a class="btn btn-outline-primary-2" style="border-radius: 7px;"
-                                data-bs-dismiss="modal">Close</a>
-                            <button type="submit" class="btn btn-outline-primary-2"
-                                style="border-radius: 7px; background: #000; color: #fff;">Add
-                                now</button>
+                            <a class="btn btn-outline-primary-2" style="border-radius: 7px;" data-bs-dismiss="modal">Close</a>
+                            <button type="submit" class="btn btn-outline-primary-2" style="border-radius: 7px; background: #000; color: #fff;">Add now</button>
                         </div>
                     </form>
+                    
                 </div>
             </div>
         </div>
         <!-- model end -->
-        <script>
+        <!-- <script>
             document.addEventListener('DOMContentLoaded', function () {
                 var mobileNumberInput = document.getElementById("mobileNumberInput");
         
@@ -280,7 +254,7 @@
                     }
                 });
             });
-        </script>
+        </script> -->
         
         
         

@@ -104,6 +104,11 @@ const addProduct = async (req, res) => {
         .resize(480, 480)
         .toFile("public/products/crop/" + img[i]);
     }
+    for (let i = 0; i < img.length; i++) {
+      await sharp("public/products/images/" + img[i])
+        .resize(480, 480)
+        .toFile("public/products/crop/" + img[i]);
+    }
 
     let product = new ProductDB({
       product_name: details.product_name,

@@ -22,7 +22,7 @@
                                     <div class="row">
                                         <figure class="product-main-image">
                                             <img id="product-zoom"
-                                                src="/products/images/<%= product[0].images.image1 %>"
+                                                src="/products/crop/<%= product[0].images.image1 %>"
                                                 data-zoom-image="/products/images/<%= product[0].images.image1 %>"
                                                 alt="product image">
 
@@ -33,30 +33,30 @@
 
                                         <div id="product-zoom-gallery" class="product-image-gallery">
                                             <a class="product-gallery-item active" href="#"
-                                                data-image="/products/images/<%= product[0].images.image1 %>"
+                                                data-image="/products/crop/<%= product[0].images.image1 %>"
                                                 data-zoom-image="/products/images/<%= product[0].images.image1 %>">
-                                                <img src="/products/images/<%= product[0].images.image1 %>"
+                                                <img src="/products/crop/<%= product[0].images.image1 %>"
                                                     alt="product side">
                                             </a>
 
                                             <a class="product-gallery-item" href="#"
-                                                data-image="/products/images/<%= product[0].images.image2 %>"
+                                                data-image="/products/crop/<%= product[0].images.image2 %>"
                                                 data-zoom-image="/products/images/<%= product[0].images.image2 %>">
-                                                <img src="/products/images/<%= product[0].images.image2 %>"
+                                                <img src="/products/crop/<%= product[0].images.image2 %>"
                                                     alt="product cross">
                                             </a>
 
                                             <a class="product-gallery-item" href="#"
-                                                data-image="/products/images/<%= product[0].images.image3 %>"
+                                                data-image="/products/crop/<%= product[0].images.image3 %>"
                                                 data-zoom-image="/products/images/<%= product[0].images.image3 %>">
-                                                <img src="/products/images/<%= product[0].images.image3 %>"
+                                                <img src="/products/crop/<%= product[0].images.image3 %>"
                                                     alt="product with model">
                                             </a>
 
                                             <a class="product-gallery-item" href="#"
-                                                data-image="/products/images/<%= product[0].images.image4 %>"
+                                                data-image="/products/crop/<%= product[0].images.image4 %>"
                                                 data-zoom-image="/products/images/<%= product[0].images.image4 %>">
-                                                <img src="/products/images/<%= product[0].images.image4 %>"
+                                                <img src="/products/crop/<%= product[0].images.image4 %>"
                                                     alt="product back">
                                             </a>
                                         </div><!-- End .product-image-gallery -->
@@ -175,7 +175,7 @@
                                 <figure class="product-media">
                                     <!-- <span class="product-label label-out">Out of Stock</span> -->
                                     <a href="/product?id=<%= pro._id %>">
-                                        <img src="/products/images/<%= pro.images.image1 %>" alt="Product image"
+                                        <img src="/products/crop/<%= pro.images.image1 %>" alt="Product image"
                                             class="product-image">
                                     </a>
 

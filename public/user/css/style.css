@@ -16575,7 +16575,7 @@ button:focus {
 .nav-dashboard .nav-link.active {
     color: #000;
     font-weight: 500;
-    
+
 }
 
 .nav-dashboard .nav-link.active {
@@ -20155,7 +20155,7 @@ button:focus {
     height: 280px;
     width: 450px;
     border-radius: 3rem;
-    background: rgb(0,0,0);
+    background: rgb(0, 0, 0);
     background: radial-gradient(circle at 10% 20%, rgb(87, 108, 117) 0%, rgb(37, 50, 55) 100.2%);
 }
 
@@ -20163,28 +20163,44 @@ button:focus {
     position: relative;
     height: 200px;
     overflow: auto;
-    }
-    .table-wrapper-scroll-y {
-    display: block;
-    }
-
-
-    /* profile page related css  */
-.profile-nav-tabs{
- background: #F3F3F9;
- color: #000;
- border-radius: 7px;
- padding-left: 2rem;
- margin-bottom: 5px;
- border: 0.1px solid #c0bfbf;
 }
 
-.profile-inputs{
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+
+/* profile page related css  */
+.profile-nav-tabs {
+    background: #F3F3F9;
     color: #000;
-    border: 0.1px solid #c0bfbf; 
+    border-radius: 7px;
+    padding-left: 2rem;
+    margin-bottom: 5px;
+    border: 0.1px solid #c0bfbf;
+}
+
+.profile-inputs {
+    color: #000;
+    border: 0.1px solid #c0bfbf;
     border-radius: 7px;
     background: #F3F3F9;
 }
 
+.filtterClear {
+    width: 9rem;
+    border-radius: 7px;
+    border: 0.1px solid #747373;
+    background-color: #fff;
+    font-size: 12px;
+    transition: all 0.5s ease;
 
-    
+}
+.filtterClear:hover {
+    background: #000;
+    transition: ease-in-out;
+    color:#fff;
+    width: 9.1rem;
+    font-weight:  600;
+    transition: all 0.5s ease;
+}
