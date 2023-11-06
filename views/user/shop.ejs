@@ -259,7 +259,7 @@
                                                     </div><!-- End .custom-checkbox -->
                                                 </div><!-- End .filter-item -->
 
-
+                                                <button onclick="genderClear()">clear</button>
 
                                             </div><!-- End .filter-items -->
                                         </div><!-- End .widget-body -->
@@ -280,22 +280,22 @@
                                             <div class="filter-items">
                                                 <div class="filter-item">
                                                     <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" onclick="selectPrice(500,1000)" id="C5001000">
-                                                        <label class="custom-control-label" for="C5001000">500-1000</label>
+                                                        <input type="checkbox" class="custom-control-input" onclick="selectPrice(500,1000)" id="C500">
+                                                        <label class="custom-control-label" for="C500">500-1000</label>
                                                     </div><!-- End .custom-checkbox -->
                                                 </div><!-- End .filter-item -->
 
                                                 <div class="filter-item">
                                                     <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" onclick="selectPrice(1000,2000)" id="C10002000">
-                                                        <label class="custom-control-label" for="C10002000">1000-2000</label>
+                                                        <input type="checkbox" class="custom-control-input" onclick="selectPrice(1000,2000)" id="C1000">
+                                                        <label class="custom-control-label" for="C1000">1000-2000</label>
                                                     </div><!-- End .custom-checkbox -->
                                                 </div><!-- End .filter-item -->
 
                                                 <div class="filter-item">
                                                     <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" onclick="selectPrice(2000,5000)" id="C20005000">
-                                                        <label class="custom-control-label" for="C20005000">2000-5000</label>
+                                                        <input type="checkbox" class="custom-control-input" onclick="selectPrice(2000,5000)" id="C2000">
+                                                        <label class="custom-control-label" for="C2000">2000-5000</label>
                                                     </div><!-- End .custom-checkbox -->
                                                 </div><!-- End .filter-item -->
 
@@ -388,7 +388,9 @@
             };
         </script> -->
 
-        <script>
+
+        <!-- #working  -->
+        <!-- <script>
             let selectedCategoryItems = "";
             let selectedGender = "";
         
@@ -447,8 +449,95 @@
         
                 // Handle gender selection here (e.g., selectGender('men') or selectGender('women')).
             };
+        </script> -->
+        
+
+        <script>
+            let selectedCategoryItems = "";
+            let selectedGender = "";
+            let selectedMinPrice = "";
+            let selectedMaxPrice = "";
+        
+            function selectCategory(data) {
+                const temp = document.getElementById(data);
+        
+                if (!temp.checked) {
+                    // Deselecting a category
+                    const checkedArray = selectedCategoryItems.split(",").filter(item => item !== data);
+                    selectedCategoryItems = checkedArray.join(',');
+                } else {
+                    // Selecting a category
+                    selectedCategoryItems = selectedCategoryItems ? selectedCategoryItems + "," + data : data;
+                }
+                // Update the URL
+                updateURL();
+            }
+        
+            function selectGender(gender) {
+                selectedGender = gender;
+                // Update the URL
+                updateURL();
+            }
+        
+            function updateURL() {
+                if(selectedMinPrice==null){
+                    selectedMinPrice=""
+                    selectedMaxPrice=""
+                }
+                const url = new URL(window.location.href);
+                url.searchParams.set('frame_shape', encodeURIComponent(selectedCategoryItems));
+                url.searchParams.set('gender', selectedGender);
+                url.searchParams.set('minPrice', selectedMinPrice);
+                url.searchParams.set('maxPrice', selectedMaxPrice);
+                window.history.pushState(null, '', url);
+                location.reload();
+            }
+            
+            function selectPrice(minPrice, maxPrice) {
+                selectedMinPrice=minPrice
+                selectedMaxPrice=maxPrice
+                updateURL();
+            }
+
+            function genderClear(){
+                selectedGender = "";
+                updateURL();
+            }
+        
+            window.onload = function () {
+                const queryString = window.location.search;
+                const urlSearchParams = new URLSearchParams(queryString);
+                const categorySelected = urlSearchParams.get('frame_shape');
+                selectedCategoryItems = categorySelected ? decodeURIComponent(categorySelected) : "";
+        
+                const genderSelected = urlSearchParams.get('gender');
+                selectedGender = genderSelected || "";
+
+                const minSelected = urlSearchParams.get('minPrice');
+                const maxSelected = urlSearchParams.get('maxPrice');
+                selectedMinPrice = minSelected !== "" ? minSelected :"" ;
+                selectedMaxPrice = maxSelected !== "" ? maxSelected :""
+                // alert(selectedMinPrice)
+                if(minSelected !== "" && maxSelected !== "" ){
+                    // alert(`C${selectedMinPrice}`)
+                    document.getElementById(`C${selectedMinPrice}`).checked =true
+                }
+                if(genderSelected!=""){
+                    // alert(genderSelected)
+                    document.getElementById(selectedGender).checked =true
+                }
+        
+                const checkedCategoryItems = selectedCategoryItems.split(",");
+                for (let i = 0; i < checkedCategoryItems.length; i++) {
+                    document.getElementById(checkedCategoryItems[i]).checked = true;
+                }
+        
+                // Handle gender selection here (e.g., selectGender('men') or selectGender('women')).
+            };
         </script>
         
+        
+
 
         <!-- <script>
             let selectedCategoryItems = "";
