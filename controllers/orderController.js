@@ -61,8 +61,9 @@ const generateUniqueTrackId = async () => {
   }
 };
 
-//order analatical creation
-// =========================
+
+               //order analatical creation
+// =============================================================================
 const CreateOrderAnalatic = async () => {
   try {
     const orders = await OrderDB.find({ "products.OrderStatus": "Delivered" });
@@ -109,6 +110,8 @@ const getAlluserData = () => {
     resolve(userData);
   });
 };
+
+
 // cart total calculate
 // =============================
 const calculateTotalPrice = async (userId) => {
@@ -170,6 +173,9 @@ const daliveryDateCalculate = async () => {
     console.log(error.message);
   }
 };
+
+
+
 // load checkout page
 // =============================
 const checkoutPageLoad = async (req, res) => {
@@ -209,6 +215,8 @@ const checkoutPageLoad = async (req, res) => {
   }
 };
 
+
+
 // selecting shipping address when place order time
 // ==========================================================
 const reciveShippingAddress = async (req, res) => {
@@ -247,7 +255,9 @@ const reciveShippingAddress = async (req, res) => {
   }
 };
 
+
 // it used to select payment method
+// ====================================================================
 const paymentSelectionManage = async (req, res) => {
   try {
     console.log(req.body);
@@ -475,139 +485,7 @@ const placeOrderManage = async (req, res) => {
     console.log(error.message);
   }
 };
-// const placeOrderManage = async (req, res) => {
-//   let discountDetails = {
-//     codeId: 0,
-//     amount: 0,
-//   };
-//   try {
-//     // console.log(req.body.address);
-//     let addressId = req.body.address;
 
-//     let paymentType = req.body.payment;
-//     const cartDetails = await CartDB.findOne({ user: req.session.user_id });
-
-//     let userAddrs = await addressDB.findOne({ userId: req.session.user_id });
-//     const shipAddress = userAddrs.addresses.find((address) => {
-//       return address._id.toString() === addressId.toString();
-//     });
-
-//     // console.log("collected:", shipAddress);
-
-//     if (!shipAddress) {
-//       return res.status(400).json({ error: "Address not found" });
-//     }
-//     // console.log("collected :" + shipAddress);
-//     const { country, fullName, mobileNumber, pincode, city, state } =
-//       shipAddress;
-//     // console.log(state);
-
-//     const cartProducts = cartDetails.products.map((productItem) => ({
-//       productId: productItem.product,
-//       quantity: productItem.quantity,
-//       OrderStatus: "pending",
-//       StatusLevel: 1,
-//       paymentStatus: "pending",
-//       "returnOrderStatus.status": "none",
-//       "returnOrderStatus.reason": "none",
-//     }));
-//     let total = await calculateTotalPrice(req.session.user_id);
-//     //coupon checking
-//     // ===================
-//     if (req.body.coupon != "") {
-//       let couponDetails = await CouponDB.findById(req.body.coupon);
-//       total -= couponDetails.discount_amount;
-//       discountDetails.codeId = couponDetails._id;
-//       discountDetails.amount = couponDetails.discount_amount;
-//     }
-
-//     // console.log(cartProducts);
-//     const trackId = await generateUniqueTrackId();
-//     const order = new OrderDB({
-//       userId: req.session.user_id,
-//       "shippingAddress.country": country,
-//       "shippingAddress.fullName": fullName,
-//       "shippingAddress.mobileNumber": mobileNumber,
-//       "shippingAddress.pincode": pincode,
-//       "shippingAddress.city": city,
-//       "shippingAddress.state": state,
-//       products: cartProducts,
-//       totalAmount: total,
-//       paymentMethod: paymentType,
-//       coupon: req.body.coupon ? req.body.coupon : "none",
-//       orderDate: new Date(),
-//       trackId,
-//     });
-
-//     const placeorder = await order.save();
-//     // let analaticResult = await CreateOrderAnalatic();
-//     // console.log(analaticResult);
-//     console.log(placeorder._id);
-//     if (paymentType !== "Online") {
-//       console.log(placeorder._id);
-//       let changeOrderStatus = await OrderDB.updateOne(
-//         { _id: placeorder._id },
-//         {
-//           $set: {
-//             "products.$[].OrderStatus": "placed",
-//           },
-//         }
-//       );
-//       let changePaymentStatus = await OrderDB.updateOne(
-//         { _id: placeorder._id },
-//         {
-//           $set: {
-//             "products.$[].paymentStatus": "success",
-//           },
-//         }
-//       );
-//       // console.log(changeOrderStatus);
-//       await CartDB.deleteOne({ user: req.session.user_id });
-//       const PaymentHistory = await createPaymentHistory(
-//         req.session.user_id,
-//         placeorder,
-//         paymentType,
-//         discountDetails,
-//         trackId
-//       );
-//       console.log(PaymentHistory);
-//       // return res.render("orderStatus", {
-//       //   success: 1,
-//       //   user: req.session.user_id
-//       // });
-//       return res.json({
-//         cod: true,
-//         orderId: placeorder._id,
-//         status: "success",
-//       });
-//     } else {
-//       //here manage when the order is online
-//       let order = await genarateRazorpay(placeorder._id, total);
-
-//       let userData = await UserDB.findById(req.session.user_id);
-
-//       // payment history create
-//       const PaymentHistory = await createPaymentHistory(
-//         req.session.user_id,
-//         placeorder,
-//         paymentType,
-//         discountDetails,
-//         trackId
-//       );
-//       console.log(PaymentHistory);
-//       let user = {
-//         name: fullName,
-//         mobile: mobileNumber,
-//         email: userData.email,
-//       };
-//       return res.json({ order, user });
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-// ==============
-// ==============
 
 // orders page load
 // ----------------------
@@ -661,6 +539,7 @@ const orderPageLoad = async (req, res) => {
   }
 };
 
+
 // order management page load
 // ------------------------------
 const orderMangePageLoad = async (req, res) => {
@@ -704,6 +583,7 @@ const orderMangePageLoad = async (req, res) => {
     console.log(error.message);
   }
 };
+
 
 // order cancel
 // -----------------------
@@ -751,6 +631,7 @@ const cancelOrder = async (req, res) => {
     console.log(error.message);
   }
 };
+
 
 // cange order status
 // -------------------------
@@ -803,6 +684,7 @@ const changeOrderStatus = async (req, res) => {
   }
 };
 
+
 //payment verification
 // --------------------------
 const verifyPayment = async (req, res) => {
@@ -844,27 +726,6 @@ const verifyPayment = async (req, res) => {
 
 //razorpay payment  Signature Matching
 // ---------------------------------------
-// const paymentSignatureMatching = (payment) => {
-//   return new Promise((resolve, reject) => {
-//     const crypto = require("crypto");
-//     console.log("signature console :" + payment.razorpay_order_id);
-//     var hmac = crypto.createHmac("sha256", "5Vd91ubM3TJQvfqdtpsDA12f");
-//     hmac.update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id);
-//     hmac = hmac.digest("hex");
-
-//     console.log("hmac :" + hmac);
-//     console.log("razorpay_payment_id :" + payment.razorpay_payment_id);
-
-//     if (hmac == payment.razorpay_payment_id) {
-//       console.log("payment signatur condition called...");
-
-//       resolve({ status: true });
-//     } else {
-//       console.log("else called when signature");
-//       reject();
-//     }
-//   });
-// };
 
 const paymentSignatureMatching = (payment) => {
   return new Promise((resolve, reject) => {
@@ -887,6 +748,7 @@ const paymentSignatureMatching = (payment) => {
     }
   });
 };
+
 
 //change payment status
 // --------------------
@@ -915,6 +777,7 @@ const orderStatusPageLoad = async (req, res) => {
     console.log(error.message);
   }
 };
+
 
 // create payment history
 // --------------------------------
@@ -954,6 +817,7 @@ const createPaymentHistory = async (
     console.log(error.message);
   }
 };
+
 
 //order report maker
 // ========================
@@ -1481,56 +1345,7 @@ const generateInvoicePDF = async (invoiceData) => {
   }
 };
 
-// const generateInvoicePDF = async (invoiceData) => {
-//   try {
-//     const browser = await puppeteer.launch();
-//     const page = await browser.newPage();
 
-//     // Create an HTML template for the invoice
-//     const htmlContent = `
-//       <style>
-//         h1 {
-//           text-align: center;
-//         }
-//         table {
-//           width: 100%;
-//           border-collapse: collapse;
-//         }
-//         th, td {
-//           border: 1px solid #ddd;
-//           padding: 8px;
-//           text-align: left;
-//         }
-//         th {
-//           background-color: #f2f2f2;
-//         }
-//       </style>
-//       <h1>Invoice</h1>
-//       <table>
-//         <tr>
-//           <th>Order ID</th>
-//           <td>${invoiceData.orderId}</td>
-//         </tr>
-//         <tr>
-//           <th>Tracking ID</th>
-//           <td>${invoiceData.trackId}</td>
-//         </tr>
-//         <!-- Add more invoice details as needed -->
-//       </table>
-//     `;
-
-//     await page.setContent(htmlContent);
-//     await page.pdf({
-//       path: 'invoice.pdf',
-//       format: 'A4',
-//       printBackground: true,
-//     });
-
-//     await browser.close();
-//   } catch (error) {
-//     console.error(error.message);
-//   }
-// };
 
 
 

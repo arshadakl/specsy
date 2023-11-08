@@ -122,8 +122,7 @@
                                         </a>
                                     </li>
 
-                                    <%for(let i=Math.max(1, curentPage - 1); i <=Math.min(totalPage, curentPage + 2);
-                                                                                                                                                                                                                                                                                                   i++){%>
+                                    <%for(let i=Math.max(1, curentPage - 1); i <=Math.min(totalPage, curentPage + 2); i++){%>
                                         <%if(i===curentPage){%>
                                             <li class="page-item active" aria-current="page">
                                                 <a class="page-link">
@@ -141,8 +140,7 @@
 
                                                         <li class="page-item-total">of <%= totalPage %>
                                                         </li>
-                                                        <li
-                                                                                                                                                                                                                                                                                                                       class="page-item <%if(curentPage === totalPage){%> disabled<%}%>">
+                                                        <li class="page-item <%if(curentPage === totalPage){%> disabled<%}%>">
                                                             <a class="page-link page-link-next" href="/shop?page=<%= Number(curentPage) + 1 %>"
                                                                                                                                                                                                                                                                                                                            aria-label="Next">
                                                                 Next <span aria-hidden="true"><i

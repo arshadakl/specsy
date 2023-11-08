@@ -89,8 +89,11 @@
                                                         class="btn-inverse-danger" 
                                                     <%}else if(orders[i].orderDetails.OrderStatus == "OutforDelivery"){%>
                                                         class="btn-warning btn-sm" 
+                                                    <%}else if(orders[i].orderDetails.OrderStatus == "Returned"){%>
+                                                        class="btn-inverse-info " 
                                                     <%}%> 
-
+                                                    Returned
+                                                
                                                     ><%= orders[i].orderDetails.OrderStatus %>
                                                 </button>
                                                 </td>

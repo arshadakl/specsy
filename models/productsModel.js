@@ -81,9 +81,17 @@ const bannerSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+    bannerNumber:{
+        type:Number,
+        required: true
+    },
+    link:{
+        type:String,
+        required: true
+    }
   });
 // Create the Banner model
-const Banner = mongoose.model('Banner', bannerSchema);
+const banner = mongoose.model('banner', bannerSchema);
 
 const category = mongoose.model('category',categorySchema)
 
@@ -91,5 +99,5 @@ const product = mongoose.model("product",productSchema)
 module.exports = {
     product,
     category,
-    Banner
+    banner
 }

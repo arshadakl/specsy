@@ -17,6 +17,8 @@ const auth = require('../middleware/admin')
 
 // image uploading middleware
 const fileUpload = require('../middleware/fileUpload')
+
+
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended:true}))
 
@@ -99,7 +101,10 @@ router.get('/sales-report/export-PDF-report',auth.isLogin,reportController.gener
 
 router.get('/admin/error-page',adminController.errorpageHandil)
 
-// router.get('/banner',bannerController.BannerPageLoader)
+router.get('/banner',bannerController.BannerPageLoader)
+router.get('/banner/edit',bannerController.bannerEditPageLoad)
+
+router.post('/banner',auth.isLogin,fileUpload.uploadBanner.single('image'),bannerController.bannerUpdate)
 
 //exporting
 module.exports = router

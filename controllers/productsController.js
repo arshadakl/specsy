@@ -323,7 +323,7 @@ const shopPageSearch = async (req, res) => {
       categories
     });
   } catch (error) {
-    // Handle errors appropriately
+    console.log(error.message);
   }
 };
 
@@ -545,6 +545,8 @@ const prducutListUnlist = async (req, res) => {
 //   }
 // };
 
+// Search with fillter 
+// ===============================================
 const queryTester = async (req, res) => {
   try {
     const categories = await CategoryDB.find();

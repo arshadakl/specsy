@@ -3,6 +3,8 @@ const ProductDB = require("../models/productsModel").product;
 const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
+const BannerDB = require("../models/productsModel").banner;
+
 const bcrypt = require("bcrypt");
 const nodemiler = require("nodemailer");
 require("dotenv").config();
@@ -173,11 +175,14 @@ const sentVerifyMailForForgetPass = async (name, email) => {
 // ---------------------------------------
 const homePageLoad = async (req, res) => {
   try {
+
     let product = await ProductDB.find({unlist:{$eq:0}});
+    const banners = await BannerDB.find()
     res.render("home", {
       user: req.session.user_id,
       products: product,
-      SignupMess:req.session.SignupMess
+      SignupMess:req.session.SignupMess,
+      banners
     },
     (err, html) => {
       if (!err) {

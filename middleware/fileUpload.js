@@ -60,6 +60,7 @@ const productImagesUpload = uploadProduct.fields([
 
 
 // category icon adding 
+// ====================
 const storageCategory = multer.diskStorage({
     destination:function(req,file,callbacks){
         callbacks(null,path.join(__dirname, '../public/products/icons'))
@@ -69,11 +70,38 @@ const storageCategory = multer.diskStorage({
     }
   })
   
-  const uploadCategory = multer({storage:storageCategory})
-  
+const uploadCategory = multer({storage:storageCategory})
 
+
+//bannerUpload
+// ==================
+// const storageBanner = multer.diskStorage({
+//   destination:function(req,file,callbacks){
+//     console.log("multer called");
+//       callbacks(null,path.join(__dirname, '../public/products/Banner'))
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
+//   }
+// })
+
+
+const storageBanner = multer.diskStorage({
+  destination:function(req,file,callbacks){
+      callbacks(null,path.join(__dirname, '../public/products/Banner/temp'))
+  },
+  filename:function(req,file,callbacks){
+      const  name = Date.now()+"-"+file.originalname;
+      callbacks(null,name)
+  }
+})
+
+const uploadBanner = multer({storage:storageBanner})
+  
+// ====================================
 module.exports={
     upload,
     productImagesUpload,
-    uploadCategory
+    uploadCategory,
+    uploadBanner
 }

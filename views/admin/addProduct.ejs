@@ -10,18 +10,20 @@
           <div class="card-body">
             <h4 class="card-title">Add New Product</h4>
             <!-- <p class="card-description"> Basic form elements </p> -->
-            <form class="forms-sample " action="/admin/products/addproduct" method="post" enctype="multipart/form-data" onsubmit="return validateProductForm()">
+            <form class="forms-sample " action="/admin/products/addproduct" method="post" enctype="multipart/form-data"
+                                                                                                                                                                                                                                                                           onsubmit="return validateProductForm()">
 
               <div class="form-group  row">
+                
                 <div class="col-6  text-light">
                   <label for="exampleInputName1">Product Titile</label>
                   <input type="text" class="form-control  text-light" name="product_name" id="exampleInputName1"
-                    placeholder="Name" >
+                                                                                                                                                                                                                                                                                 placeholder="Name">
                 </div>
                 <div class="col-6">
                   <label for="exampleInputName1">Price</label>
                   <input type="number" class="form-control text-light" id="exampleInputName1" name="price"
-                    placeholder="price" >
+                                                                                                                                                                                                                                                                                 placeholder="price">
                 </div>
 
               </div>
@@ -33,8 +35,9 @@
                       <select name="frame_shape" class="form-control text-light" required>
                         <option value="" disabled selected>Select Category</option>
                         <% for(i in categories){%>
-                          <option <% if(categories[i].block==1){ %>disabled<%}%> ><%= categories[i].category_name %></option>
-                        <%}%>
+                          <option <% if(categories[i].block==1){ %>disabled<%}%> ><%= categories[i].category_name %>
+                          </option>
+                          <%}%>
                       </select>
                     </div>
                   </div>
@@ -60,7 +63,7 @@
                     <div class="col-sm-12">
                       <label class="col-sm-3 col-form-label">Number of Stock</label>
                       <input type="number" class="form-control text-light" id="exampleInputName1" name="stock"
-                    placeholder="Enter Stock" >
+                                                                                                                                                                                                                                                                                     placeholder="Enter Stock">
                     </div>
                   </div>
                 </div>
@@ -68,7 +71,7 @@
 
               <div class="form-group mt-2">
                 <label for="exampleTextarea1">Description</label>
-                <textarea name="description" class="form-control text-light" id="exampleTextarea1" rows="4" ></textarea>
+                <textarea name="description" class="form-control text-light" id="exampleTextarea1" rows="4"></textarea>
               </div>
               <div class="">
                 <!-- <label class="col-sm-3 col-form-label">Images</label> -->
@@ -79,9 +82,8 @@
                     <div class="col-lg-3 col-md-6 rounded-image-preview">
                       <label for="imageInput1" class="image-label">image 1
                         <div class="rounded-image-preview">
-                          <img id="imagePreview1"
-                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
-                            alt="Preview" />
+                          <img id="imagePreview1" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                                                                                                                                                                                                                                                                                         alt="Preview" />
                         </div>
                         <input name="image1" type="file" accept="image/*" id="imageInput1" class="imageInput">
                       </label>
@@ -90,33 +92,30 @@
                     <div class="col-lg-3 col-md-6 rounded-image-preview">
                       <label for="imageInput2" class="image-label">image 2
                         <div class="rounded-image-preview">
-                          <img id="imagePreview2"
-                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
-                            alt="Preview" />
+                          <img id="imagePreview2" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                                                                                                                                                                                                                                                                                         alt="Preview" />
                         </div>
-                        <input name="image2" type="file" accept="image/*" id="imageInput2" class="imageInput" >
+                        <input name="image2" type="file" accept="image/*" id="imageInput2" class="imageInput">
                       </label>
                     </div>
 
                     <div class="col-lg-3 col-md-6 rounded-image-preview">
                       <label for="imageInput3" class="image-label">image 3
                         <div class="rounded-image-preview">
-                          <img id="imagePreview3"
-                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
-                            alt="Preview" />
+                          <img id="imagePreview3" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                                                                                                                                                                                                                                                                                         alt="Preview" />
                         </div>
-                        <input name="image3" type="file" accept="image/*" id="imageInput3" class="imageInput" >
+                        <input name="image3" type="file" accept="image/*" id="imageInput3" class="imageInput">
                       </label>
                     </div>
 
                     <div class="col-lg-3 col-md-6 rounded-image-preview">
                       <label for="imageInput4" class="image-label">image 4
                         <div class="rounded-image-preview">
-                          <img id="imagePreview4"
-                            src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
-                            alt="Preview" />
+                          <img id="imagePreview4" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                                                                                                                                                                                                                                                                                         alt="Preview" />
                         </div>
-                        <input name="image4" type="file" accept="image/*" id="imageInput4" class="imageInput" >
+                        <input name="image4" type="file" accept="image/*" id="imageInput4" class="imageInput">
                       </label>
                     </div>
 
@@ -140,13 +139,15 @@
     <!-- partial:partials/_footer.html -->
     <footer class="footer">
       <div class="content-wrapper ">
-        <div id="FormAlert" data-aos="fade-down" class="alert alert-danger col-md-4 col-8 mx-auto fixed-top "
-        style="display: none;  top:30px; border-radius: 7px; opacity: 0.9; " role="alert">
-        <h6 class="alert-heading text-center">Please provide only valid data.</h6>
-        <hr>
-        <span class="row "><i class="fa-sharp fa-light fa-circle-xmark fa-shake" style="color: #ff0505; font-size: 18px;"></i> &nbsp;&nbsp;&nbsp; <p id="ValidErrMess"></p></span>
-         
-     </div>
+        <div id="FormAlert" data-aos="fade-down" class="alert alert-danger col-md-4 col-8 mx-auto fixed-top " style="display: none;  top:30px; border-radius: 7px; opacity: 0.9; "
+                                                                                                                                                                                                                                                                       role="alert">
+          <h6 class="alert-heading text-center">Please provide only valid data.</h6>
+          <hr>
+          <span class="row "><i class="fa-sharp fa-light fa-circle-xmark fa-shake"
+                                                                                                                                                                                                                                                                           style="color: #ff0505; font-size: 18px;"></i>
+            &nbsp;&nbsp;&nbsp; <p id="ValidErrMess"></p></span>
+
+        </div>
     </footer>
     <!-- partial -->
   </div>
