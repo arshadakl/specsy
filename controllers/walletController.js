@@ -7,6 +7,8 @@ const OrderDB = require("../models/orderModel").Order;
 const PaymentDB = require("../models/paymentModel").TransactionHistory;
 const WalletDB = require("../models/paymentModel").Wallet;
 const AnalyticsDB = require("../models/analyticModel");
+const path = require("path");
+const error500 = path.join(__dirname, 'views', 'error.html')
 
 // wallet page localsAsTemplateData
 // ---------------------------------
@@ -19,6 +21,7 @@ const walletPageLoader = async(req,res)=>{
         res.render("wallet",{user:req.session.user_id,history,userData,wallet})
     } catch (error) {
         console.log(error.message);
+        res.status(500).sendFile(error500)
     }
 }
 
@@ -60,5 +63,6 @@ function generateUniqueWalletId(userId) {
   
 
 module.exports ={
-    walletPageLoader
+    walletPageLoader,
+    createUserWallet
 }

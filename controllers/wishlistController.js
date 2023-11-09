@@ -1,6 +1,8 @@
 const UserDB = require("../models/userModel").User;
 const WishDB = require("../models/userModel").Wishlist;
 const ProductDB = require("../models/productsModel").product;
+const path = require("path");
+const error500 = path.join(__dirname, 'views', 'error.html')
 
 // add to wishlist
 // ----------------
@@ -32,7 +34,7 @@ const addToWishlist = async (req, res) => {
     }
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ status: "error" });
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -67,6 +69,8 @@ const wishListPageLoad = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
+
   }
 };
 
@@ -85,6 +89,8 @@ const removeItemFromWish = async(req,res)=>{
     console.log(wishList);
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
+
   }
 }
 

@@ -9,6 +9,8 @@ const AnalyticsDB = require("../models/analyticModel");
 const WalletDB = require("../models/paymentModel").Wallet;
 const puppeteer = require("puppeteer");
 const path = require("path");
+const error500 = path.join(__dirname, 'views', 'error.html')
+
 
 const Razorpay = require("razorpay");
 const mongoose = require("mongoose");
@@ -212,6 +214,7 @@ const checkoutPageLoad = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -252,6 +255,7 @@ const reciveShippingAddress = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -293,6 +297,7 @@ const paymentSelectionManage = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -483,6 +488,7 @@ const placeOrderManage = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -536,6 +542,7 @@ const orderPageLoad = async (req, res) => {
     res.render("orders", { orders: productWiseOrdersArray });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -581,6 +588,7 @@ const orderMangePageLoad = async (req, res) => {
     res.render("orderManagment", { product: productOrder, orderId, productId });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -629,6 +637,7 @@ const cancelOrder = async (req, res) => {
     res.json({ cancel: 1 });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -681,6 +690,7 @@ const changeOrderStatus = async (req, res) => {
     );
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -752,10 +762,7 @@ const paymentSignatureMatching = (payment) => {
 
 //change payment status
 // --------------------
-const changePaymentStatus = async (id) => {
-  try {
-  } catch (error) {}
-};
+
 
 const orderStatusPageLoad = async (req, res) => {
   try {
@@ -775,6 +782,7 @@ const orderStatusPageLoad = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -910,6 +918,8 @@ const returnOrderProduct = async (req, res) => {
     return res.json({ status: true });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
+
   }
 };
 
@@ -1342,6 +1352,7 @@ const generateInvoicePDF = async (invoiceData) => {
     await browser.close();
   } catch (error) {
     console.error(error.message);
+    
   }
 };
 

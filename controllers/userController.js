@@ -4,6 +4,10 @@ const CartDB = require("../models/userModel").Cart;
 const addressDB = require("../models/userModel").UserAddress;
 const OrderDB = require("../models/orderModel").Order;
 const BannerDB = require("../models/productsModel").banner;
+const path = require("path");
+const error500 = path.join(__dirname, 'views', 'error.html')
+const walletController = require("../controllers/walletController");
+
 
 const bcrypt = require("bcrypt");
 const nodemiler = require("nodemailer");
@@ -435,6 +439,8 @@ const otpValid = async (req, res) => {
         console.log(updatInfo);
         req.session.loggedIn = true;
         req.session.user_id = req.query.id;
+        let wallet = await walletController.createUserWallet(req.query.id)
+        console.log(wallet);
         req.session.SignupMess = 1
         return res.render("verifyNotfy", { wrong: 0 });
       } else {
@@ -471,13 +477,13 @@ const profilePageLoad = async (req, res) => {
         } else {
           console.log(err.message);
           // Handle rendering error here, if necessary
-          res.status(500).send("Internal Server Error");
+          res.status(500).sendFile(error500);
         }
       }
     );
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Internal Server Error");
+    res.status(500).sendFile(error500);
   }
 };
 
@@ -532,12 +538,13 @@ const updatePhoto = async (req, res) => {
         } else {
           console.log(err.message);
           // Handle rendering error here, if necessary
-          res.status(500).send("Internal Server Error");
+          res.status(500).sendFile(error500)
         }
       }
     );
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -584,12 +591,13 @@ const updateUserData = async (req, res) => {
         } else {
           console.log(err.message);
           // Handle rendering error here, if necessary
-          res.status(500).send("Internal Server Error");
+          res.status(500).sendFile(error500);
         }
       }
     );
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500);
   }
 };
 
@@ -620,6 +628,7 @@ const changepassword = async (req, res) => {
       });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -651,6 +660,7 @@ const cartPageLoad = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -700,6 +710,7 @@ const addtoCart = async (req, res) => {
     console.log(result);
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -823,6 +834,7 @@ const productQuantityHandlling = async (req, res) => {
     // console.log(qtyChange);
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -846,6 +858,7 @@ const removeCartItem = async (req, res) => {
     res.json({ remove: 1 });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -856,6 +869,7 @@ const forgetpasswordPageLoad = async (req, res) => {
     res.render("forgotpass", { wrong: 0 });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -883,6 +897,7 @@ const manageForgetPassword = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -900,6 +915,7 @@ const forgetOTPpageLoad = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 // set new user passs
@@ -917,6 +933,7 @@ const createNewpassword = async (req, res) => {
     res.redirect("/login");
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -954,23 +971,13 @@ const addShippingAddress = async (req, res) => {
 
     // Save the updated userAddress document
     let result = await userAddress.save();
-    // let addr = req.body;
-    // const address = new addressDB({
-    //   userId:req.session.user_id,
-    //   country: addr.country,
-    //   fullName: addr.fullName,
-    //   mobileNumber: addr.mobileNumber,
-    //   city: addr.city,
-    //   state: addr.state,
-    //   pincode: addr.pincode,
-    // });
-    // let result  = await address.save()
-    // console.log(result);
+  
     let total = await calculateTotalPrice(req.session.user_id);
     // res.render("checkout", { user: req.session.user_id, total });
     res.redirect("/checkout");
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -1033,9 +1040,7 @@ const allOrdersPageLoad = async (req, res) => {
         productWiseOrders.push(productWiseOrder);
       }
     }
-    //  testing END+++++++++====================
-    // console.log(productWiseOrders);
-    // console.log(productWiseOrders);
+
     res.render("allorders", {
       user: req.session.user_id,
       products: productWiseOrders,
@@ -1050,6 +1055,7 @@ const allOrdersPageLoad = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -1072,6 +1078,7 @@ const loadShippingAddressPage = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -1111,6 +1118,7 @@ const addShippingAddressFromProfile = async (req, res) => {
     res.redirect("/profile/user_address");
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -1138,6 +1146,7 @@ const updateShippingAddress = async (req, res) => {
     // console.log(selectedAddress);
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -1156,6 +1165,7 @@ const deleteShippingAddress = async (req, res) => {
     return res.json({ remove: 1 });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
@@ -1172,6 +1182,7 @@ const testLoad = async (req, res) => {
     res.render("wishlist", { user: 0 });
   } catch (error) {
     console.log(error.message);
+    res.status(500).sendFile(error500)
   }
 };
 
