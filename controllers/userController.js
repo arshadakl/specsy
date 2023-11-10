@@ -182,7 +182,17 @@ const homePageLoad = async (req, res) => {
 
     let product = await ProductDB.find({unlist:{$eq:0}});
     const banners = await BannerDB.find()
-    res.render("home", {
+    console.log("Debug==:" +product);
+    if(!product){
+      return res.render("home", {
+        user: req.session.user_id,
+        products: 0,
+        SignupMess:false,
+        banners
+      })
+    }
+
+    return res.render("home", {
       user: req.session.user_id,
       products: product,
       SignupMess:req.session.SignupMess,
@@ -993,7 +1003,7 @@ const allOrdersPageLoad = async (req, res) => {
 
     if (userOrders.length === 0) {
       console.log("No orders found for the user.");
-      return res.render("allorders", { user: userId, products: false });
+      return res.render("allorders", { user: userId, products: false,cancel:false });
     }
 
     // Create an array to hold product-wise order details

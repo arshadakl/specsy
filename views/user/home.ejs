@@ -212,6 +212,7 @@
                                 }
                             }
                         }'>
+                        <%if(products!=0){%>
                         <% for(i=0;i<6;i++) {%>
                         <div class="product product-11 text-center border">
                             <figure class="product-media">
@@ -240,6 +241,11 @@
                             </div><!-- End .product-action -->
                         </div><!-- End .product -->
                         <%}%>
+                        <%}else{%>
+                            <div  class=" d-flex justify-content-center" style="width: 100%;">
+                                <h5 >No Products</h5>
+                            </div>
+                         <%}%>   
 
                        
                     </div>
@@ -321,6 +327,7 @@
                         <div class="row justify-content-center">
                             
                            <!-- new ariverd products -->
+                           <%if(products!=0){%>
                            <% for(i=0;i<9;i++) {%>
                             <div class="col-6 col-md-4 col-lg-3 border m-1 mt-2 pt-3">
                                 <div class="product product-11 mt-v3 text-center">
@@ -352,6 +359,9 @@
                             </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
 
                         <%}%>
+                        <%}else{%>
+                            <h5>No Products</h5>
+                         <%}%>  
                            
 
                             

@@ -32,6 +32,14 @@ const salesReportPageLoad = async (req, res) => {
       createSalesReport(start, end),
       getMostSellingProducts(),
     ]);
+    console.log("Debugger ====:"+sales,SoldProducts);
+    if(sales === 0 ||SoldProducts==0 ){
+      res.render("salesreport", {
+        // week: WeeklySales,
+        Mproducts: 0,
+        sales:0,
+      });
+    }
     console.log(SoldProducts);
     res.render("salesreport", {
       // week: WeeklySales,
@@ -70,6 +78,10 @@ const createSalesReport = async (startDate, endDate) => {
         $lte: endDate,
       },
     });
+
+    if(!orders){
+      return 0
+    }
 
     const transformedTotalStockSold = {};
     const transformedProductProfits = {};
@@ -183,24 +195,24 @@ const getMostSellingProducts = async () => {
   try {
     const pipeline = [
       {
-        $unwind: "$products", // Split order into individual products
+        $unwind: "$products", 
       },
       {
         $group: {
           _id: "$products.productId",
-          count: { $sum: "$products.quantity" }, // Count the sold quantity
+          count: { $sum: "$products.quantity" },
         },
       },
       {
         $lookup: {
-          from: "products", // Name of your Product model's collection
+          from: "products",
           localField: "_id",
           foreignField: "_id",
           as: "productData",
         },
       },
       {
-        $sort: { count: -1 }, // Sort by count in descending order
+        $sort: { count: -1 },
       },
       {
         $limit: 6, // Limit to the top 6 products
@@ -208,6 +220,9 @@ const getMostSellingProducts = async () => {
     ];
 
     const mostSellingProducts = await OrderDB.aggregate(pipeline);
+    if(!mostSellingProducts){
+      return 0
+    }
     console.log(mostSellingProducts[0].productData);
     return mostSellingProducts;
   } catch (error) {

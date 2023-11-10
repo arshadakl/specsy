@@ -443,6 +443,7 @@ const queryTester = async (req, res) => {
       : await ProductDB.find(query)
         .skip(pageDB * productPerPage)
         .limit(productPerPage);
+        // totalProduct = await ProductDB.countDocuments(query);
 // console.log(products);
     res.render("shop", {
       products,

@@ -405,7 +405,7 @@ blockquote.text-white cite span {
 }
 
 .mmenu-active .page-wrapper {
-    transform: translateX(200px)
+    /* transform: translateX(200px) */
 }
 
 @media all and (-ms-high-contrast: none),
@@ -20151,13 +20151,7 @@ button:focus {
 
 
 /* wallet related styles */
-.wallet-card {
-    height: 280px;
-    width: 450px;
-    border-radius: 3rem;
-    background: rgb(0, 0, 0);
-    background: radial-gradient(circle at 10% 20%, rgb(87, 108, 117) 0%, rgb(37, 50, 55) 100.2%);
-}
+
 
 .my-custom-scrollbar {
     position: relative;
@@ -20203,4 +20197,77 @@ button:focus {
     width: 9.1rem;
     font-weight:  600;
     transition: all 0.5s ease;
+}
+
+
+
+/* .wallet-card {
+    height: 280px;
+    width: 450px;
+    border-radius: 3rem;
+    background: rgb(0, 0, 0);
+    background: radial-gradient(circle at 10% 20%, rgb(87, 108, 117) 0%, rgb(37, 50, 55) 100.2%);
+} */
+@media screen and (min-width: 380px) {
+    .wallet-card {
+        height: 280px;
+        /* width: 350px; */
+        width: auto;
+
+        
+        
+    }
+}
+
+@media screen and (min-width: 480px) {
+    .wallet-card {
+        height: 280px;
+        /* width: 350px; */
+        width: auto;
+        
+        
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .wallet-card {
+        height: 280px;
+        width: 450px;
+        border-radius: 3rem;
+        background: rgb(0, 0, 0);
+        background: radial-gradient(circle at 10% 20%, rgb(87, 108, 117) 0%, rgb(37, 50, 55) 100.2%);
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .wallet-card {
+        height: 280px;
+        width: 650px;
+        border-radius: 3rem;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .wallet-card {
+        height: 280px;
+        width: 450px;
+        border-radius: 3rem;
+       
+    }
+}
+
+
+
+@media screen and (max-width: 1200px) {
+    .wallet-card {
+        height: auto;
+        /* width: 350px; */
+        width: auto;
+        border-radius: 3rem;
+        background: rgb(0, 0, 0);
+        background: radial-gradient(circle at 10% 20%, rgb(87, 108, 117) 0%, rgb(37, 50, 55) 100.2%);
+        
+    }
+    
+   
 }
